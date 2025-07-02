@@ -79,7 +79,7 @@ export default function CodeEditor() {
 			<div className="flex items-center px-4 h-10">
 				<Badge className="h-auto py-1 px-3 gap-1.5" variant={'muted'}>
 					<FileCodeIcon className="size-5" type={language} />
-					{node?.path.split('/').pop() || 'Untitled'}
+					{node?.path || 'Untitled'}
 				</Badge>
 				<div className="flex-1"></div>
 				<span className="text-xs text-muted-foreground">{language}</span>
