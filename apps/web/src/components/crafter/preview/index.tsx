@@ -1,16 +1,16 @@
-import { ButtonsIcons } from "@workspace/ui/components/button";
+import { ButtonsIcons } from '@workspace/ui/components/button';
 import {
 	Tabs,
 	TabsContent,
 	TabsList,
 	TabsTrigger,
-} from "@workspace/ui/components/tabs";
-import { RefreshCwIcon, ShareIcon } from "lucide-react";
+} from '@workspace/ui/components/tabs';
+import { ExternalLinkIcon, RefreshCwIcon, ShareIcon } from 'lucide-react';
 
 export default function Preview() {
 	return (
 		<div className="size-full flex flex-col pl-1 pr-3 gap-4 py-3">
-			<Tabs defaultValue="account" className="flex-1">
+			<Tabs className="flex-1" defaultValue="account">
 				<TabsList>
 					<TabsTrigger value="account">Preview</TabsTrigger>
 					<TabsTrigger value="password">Docs</TabsTrigger>
@@ -18,19 +18,23 @@ export default function Preview() {
 					<ButtonsIcons
 						items={[
 							{
-								label: "Refresh",
+								label: 'Refresh',
 								icon: <RefreshCwIcon />,
 							},
 							{
-								label: "Share Component",
+								label: 'Preview',
+								icon: <ExternalLinkIcon />,
+							},
+							{
+								label: 'Share Component',
 								icon: <ShareIcon />,
 							},
 						]}
 					/>
 				</TabsList>
 				<TabsContent
-					value="account"
 					className="flex-1 relative border rounded-2xl bg-muted/30"
+					value="account"
 				>
 					Make changes to your account here.
 				</TabsContent>
