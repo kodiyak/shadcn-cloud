@@ -24,7 +24,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 	isReady: false,
 	nodes: [{ type: 'directory', path: '/', content: '', items: [] }],
 	selectTemplate: (template) => {
-		const { description, files, title } = template;
+		const { files } = template;
 		const nodes: NodeProps[] = [{ type: 'directory', path: '/', content: '' }];
 
 		for (const [path, content] of Object.entries(files)) {
