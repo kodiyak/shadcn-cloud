@@ -27,8 +27,11 @@ const buttonVariants = cva(
 					'border bg-background/50 text-muted-foreground hover:bg-muted/35 hover:text-foreground',
 				secondary:
 					'border bg-background/50 bg-gradient-to-b from-accent/10 to-background text-muted-foreground hover:text-foreground',
-				ghost:
+				ghost: cn(
 					'text-muted-foreground hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/30',
+					'data-[state=open]:bg-accent data-[state=open]:text-foreground',
+					'dark:data-[state=open]:bg-accent/40 dark:data-[state=open]:text-foreground',
+				),
 				'ghost-purple':
 					'text-purple-400 border border-purple-500/20 hover:bg-purple-500/10 hover:text-purple-500 hover:border-purple-500/40',
 				'destructive-ghost':

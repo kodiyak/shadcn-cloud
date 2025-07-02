@@ -19,9 +19,7 @@ export default function FolderItem({ path, items = [] }: NodeProps) {
 				<AccordionTrigger removeArrow>
 					<div className="flex items-center text-left gap-2 relative">
 						<FolderIcon className="size-4 text-muted-foreground" />
-						<span>
-							{path} ({items.length})
-						</span>
+						<span>{path}</span>
 					</div>
 					<div className="absolute right-2 z-20">
 						<ButtonsIcons

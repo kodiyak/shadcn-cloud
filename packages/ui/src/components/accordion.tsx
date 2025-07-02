@@ -38,7 +38,7 @@ function AccordionTrigger({
 				className={cn(
 					'text-muted-foreground relative',
 					'focus-visible:border-ring focus-visible:ring-ring/50 px-2 h-8',
-					'data-[state=open]:text-foreground data-[state=open]:bg-accent/40 data-[state=closed]:bg-transparent',
+					'data-[state=open]:text-foreground data-[state=open]:bg-accent/50 data-[state=closed]:bg-transparent',
 					'flex flex-1 items-center justify-between gap-4 rounded-lg text-left text-sm font-medium transition-all outline-none',
 					'focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50',
 					'[&[data-state=closed]>.arrow]:rotate-90 [&[data-state=open]>.arrow]:rotate-0 [&[data-state=closed]>.arrow]:opacity-25',
