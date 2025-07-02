@@ -1,10 +1,10 @@
-import type { editor } from "monaco-editor";
+import type { editor } from 'monaco-editor';
 import type {
 	BundledHighlighterOptions,
 	BundledLanguage,
 	BundledTheme,
-} from "shiki";
-import githubDark from "shiki/themes/github-dark-dimmed.mjs";
+} from 'shiki';
+import githubDark from 'shiki/themes/github-dark-dimmed.mjs';
 
 interface AppConfig {
 	name: string;
@@ -13,50 +13,50 @@ interface AppConfig {
 }
 
 export const appConfig: AppConfig = {
-	name: "shadcn-cloud",
+	name: 'shadcn-cloud',
 	shikiOptions: {
-		themes: [{ ...githubDark, name: "default" }],
-		langs: ["typescript", "tsx", "json", "markdown"],
-		langAlias: { typescript: "tsx" },
+		themes: [{ ...githubDark, name: 'default' }],
+		langs: ['typescript', 'tsx', 'json', 'markdown', 'mdx'],
+		langAlias: { typescript: 'tsx' },
 	},
 	editorOptions: {
-		fontFamily: "var(--font-mono)",
+		fontFamily: 'var(--font-mono)',
 		fontSize: 14,
 		lineHeight: 1.8,
 		minimap: { enabled: false },
 		scrollBeyondLastLine: false,
 		fontLigatures: true,
-		renderLineHighlight: "all",
-		cursorBlinking: "blink",
-		cursorStyle: "line",
-		wordWrap: "on",
+		renderLineHighlight: 'all',
+		cursorBlinking: 'blink',
+		cursorStyle: 'line',
+		wordWrap: 'on',
 		formatOnPaste: true,
 		formatOnType: true,
-		autoIndent: "full",
+		autoIndent: 'full',
 		automaticLayout: true,
-		fontWeight: "normal",
+		fontWeight: 'normal',
 
 		// Selection and cursor settings
 		selectOnLineNumbers: true,
-		multiCursorModifier: "alt",
+		multiCursorModifier: 'alt',
 		parameterHints: {
 			enabled: true,
 		},
 
 		// Highlighting and rendering
-		occurrencesHighlight: "singleFile",
-		renderWhitespace: "none",
-		matchBrackets: "always",
+		occurrencesHighlight: 'singleFile',
+		renderWhitespace: 'none',
+		matchBrackets: 'always',
 		renderControlCharacters: false,
 		tabSize: 2,
 		insertSpaces: true,
-		cursorSmoothCaretAnimation: "on",
+		cursorSmoothCaretAnimation: 'on',
 
 		// Scrolling and scrollbar settings
 		smoothScrolling: true,
 		scrollbar: {
-			vertical: "visible",
-			horizontal: "visible",
+			vertical: 'visible',
+			horizontal: 'visible',
 			useShadows: true,
 			verticalScrollbarSize: 10,
 			horizontalScrollbarSize: 10,
@@ -66,8 +66,14 @@ export const appConfig: AppConfig = {
 
 export function shikiLangMapper(path: string) {
 	const langs: Partial<Record<BundledLanguage, string[]>> = {
-		typescript: ["ts"],
-		javascript: ["js"],
+		typescript: ['ts'],
+		javascript: ['js'],
+		tsx: ['tsx'],
+		jsx: ['jsx'],
+		json: ['json'],
+		markdown: ['md', 'markdown'],
+		md: ['md', 'markdown'],
+		mdx: ['mdx'],
 	};
 
 	return Object.entries(langs).find(([_, extensions]) =>

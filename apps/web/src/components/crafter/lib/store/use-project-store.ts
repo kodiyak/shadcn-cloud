@@ -1,23 +1,81 @@
-import { create } from "zustand";
-import type { NodeProps } from "../../types";
-import { useEditorStore } from "./use-editor-store";
+import type { TemplateProps } from '@workspace/core';
+import { create } from 'zustand';
+import type { NodeProps } from '../../types';
+import { useEditorStore } from './use-editor-store';
 
-interface CreateNodeProps extends Omit<NodeProps, "path"> {
+interface CreateNodeProps extends Omit<NodeProps, 'path'> {
 	name: string;
 }
 
 interface ProjectStore {
+	isReady: boolean;
+	selectTemplate: (template: TemplateProps) => void;
 	nodes: NodeProps[];
 	setNodes: (nodes: NodeProps[]) => void;
 	addNode: (parent: string, node: CreateNodeProps) => void;
 	deleteNode: (path: string) => void;
 	renameNode: (oldPath: string, newPath: string) => void;
 	updateContent: (path: string, content: string, isDirty: boolean) => void;
+	findNode: (path: string) => NodeProps | undefined;
 	setNodeDirty: (path: string, isDirty: boolean) => void;
 }
 
 export const useProjectStore = create<ProjectStore>((set, get) => ({
-	nodes: [{ type: "directory", path: "/", content: "", items: [] }],
+	isReady: false,
+	nodes: [{ type: 'directory', path: '/', content: '', items: [] }],
+	selectTemplate: (template) => {
+		const { description, files, title } = template;
+		const nodes: NodeProps[] = [{ type: 'directory', path: '/', content: '' }];
+
+		for (const [path, content] of Object.entries(files)) {
+			const parts = splitPath(path);
+
+			// Create directory structure
+			for (let i = 0; i < parts.length; i++) {
+				const currentPath = formatPath(parts.slice(0, i + 1).join('/'));
+				const isDir = i < parts.length - 1;
+
+				const parentNode = findNode(
+					nodes,
+					formatPath(parts.slice(0, i).join('/')),
+				);
+				console.log(
+					`Path: ${currentPath} [${parts.join(', ')}][${parentNode?.path}]`,
+				);
+
+				if (!parentNode) {
+					nodes.push({
+						type: isDir ? 'directory' : 'file',
+						path: currentPath,
+						content: '',
+						items: [],
+					});
+				}
+				if (parentNode && parentNode.type === 'directory') {
+					parentNode.items = parentNode.items || [];
+					if (!parentNode.items.some((item) => item.path === currentPath)) {
+						parentNode.items.push({
+							type: isDir ? 'directory' : 'file',
+							path: currentPath,
+							content: content || '',
+							items: [],
+						});
+					}
+				}
+			}
+		}
+
+		console.log({ nodes });
+
+		set({
+			isReady: true,
+			nodes,
+		});
+	},
+	findNode: (path) => {
+		const { nodes } = get();
+		return findNode(nodes, path);
+	},
 	setNodes: (nodes) => set({ nodes }),
 	addNode: (parent, node) => {
 		const { nodes } = get();
@@ -30,7 +88,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			return;
 		}
 
-		if (parentNode.type === "directory") {
+		if (parentNode.type === 'directory') {
 			const updatedChildren: NodeProps[] = [
 				...(parentNode.items || []),
 				{
@@ -45,7 +103,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			}));
 			useEditorStore.getState().openFile(path);
 		} else {
-			console.error("Cannot add a node to a file.");
+			console.error('Cannot add a node to a file.');
 		}
 	},
 	deleteNode: (path) => {
@@ -79,7 +137,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 function findNode(nodes: NodeProps[], path: string): NodeProps | undefined {
 	for (const node of nodes) {
 		if (node.path === path) return node;
-		if (node.type === "directory" && node.items) {
+		if (node.type === 'directory' && node.items) {
 			const found = findNode(node.items, path);
 			if (found) return found;
 		}
@@ -87,6 +145,10 @@ function findNode(nodes: NodeProps[], path: string): NodeProps | undefined {
 	return undefined;
 }
 
+function splitPath(path: string): string[] {
+	return path.split(/[\\/]/).filter(Boolean);
+}
+
 function formatPath(path: string) {
-	return `/${path.split("/").filter(Boolean).join("/")}`;
+	return `/${splitPath(path).join('/')}`;
 }

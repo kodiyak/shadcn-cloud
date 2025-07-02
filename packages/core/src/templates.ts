@@ -1,5 +1,5 @@
 export interface TemplateProps {
-	name: string;
+	title: string;
 	description: string;
-	files: Record<string, string>;
+	files: Record<string, string | undefined>;
 }

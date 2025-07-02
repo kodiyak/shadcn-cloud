@@ -23,7 +23,7 @@ function getHighlighter() {
 }
 
 export function useHighlighter() {
-	const resolvedTheme = "dark" as const;
+	const resolvedTheme = "default" as const;
 	const [hightlighter, setHighlighter] = useState<Highlighter | null>(null);
 	const initialized = useRef(false);
 	const [isReady, setIsReady] = useState(false);

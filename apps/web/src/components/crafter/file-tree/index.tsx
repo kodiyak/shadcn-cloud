@@ -1,10 +1,10 @@
-import { Accordion } from "@workspace/ui/components/accordion";
-import { ButtonsIcons } from "@workspace/ui/components/button";
-import { useDisclosure } from "@workspace/ui/hooks/use-disclosure";
-import { FilePlusIcon, FolderPlusIcon } from "lucide-react";
-import { useProjectStore } from "../lib/store/use-project-store";
-import CreateFile from "./create-file";
-import TreeItem from "./tree-item";
+import { Accordion } from '@workspace/ui/components/accordion';
+import { ButtonsIcons } from '@workspace/ui/components/button';
+import { useDisclosure } from '@workspace/ui/hooks/use-disclosure';
+import { FilePlusIcon, FolderPlusIcon } from 'lucide-react';
+import { useProjectStore } from '../lib/store/use-project-store';
+import CreateFile from './create-file';
+import TreeItem from './tree-item';
 
 export default function FileTree() {
 	const nodes = useProjectStore((state) => state.nodes);
@@ -18,34 +18,24 @@ export default function FileTree() {
 					<span className="text-xs">Workspace</span>
 					<div className="flex items-center gap-0.5">
 						<ButtonsIcons
-							size={"icon-xs"}
-							variant={"ghost"}
 							items={[
 								{
-									label: "Create File",
+									label: 'Create File',
 									icon: <FilePlusIcon />,
 									onClick: () => createFile.onOpen(),
 								},
 								{
-									label: "Create Folder",
+									label: 'Create Folder',
 									icon: <FolderPlusIcon />,
 								},
 							]}
+							size={'icon-xs'}
+							variant={'ghost'}
 						/>
 					</div>
 				</div>
-				<Accordion className="flex flex-col gap-px" type="single" collapsible>
-					<div>
-						{nodes.map((node) => (
-							<TreeItem
-								key={node.path}
-								path={node.path}
-								content={node.content}
-								type={node.type}
-								items={node.items}
-							/>
-						))}
-					</div>
+				<Accordion className="flex flex-col" type="multiple">
+					<TreeItem {...nodes[0]} />
 				</Accordion>
 			</div>
 		</>

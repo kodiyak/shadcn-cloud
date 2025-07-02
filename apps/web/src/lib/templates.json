@@ -3,40 +3,40 @@
     "title": "Minimal Button",
     "description": "Native HTML Button",
     "files": {
-      "\\button-minimal\\button-minimal\\index.mdx": "import HeroPreview from \"./previews/hero\";\r\n\r\n# Button\r\n\r\nThis is a minimal button component documentation.\r\n\r\n## Usage\r\n\r\n```tsx\r\nimport Button from \"@workspace/ui/components/button\";\r\n```\r\n\r\n```tsx\r\n<Button>Click me</Button>\r\n```\r\n",
-      "\\button-minimal\\button-minimal\\index.tsx": "import type { PropsWithChildren } from \"react\";\r\n\r\nexport default function Button({ children }: PropsWithChildren) {\r\n\treturn <button type={\"button\"}>{children}</button>;\r\n}\r\n",
-      "\\button-minimal\\button-minimal\\metadata.json": "{\r\n  \"title\": \"Minimal Button\",\r\n  \"description\": \"Native HTML Button\"\r\n}",
-      "\\button-minimal\\previews\\button-minimal\\previews\\hero.tsx": "import Button from \"..\";\r\n\r\nexport default function HeroPreview() {\r\n\treturn (\r\n\t\t<div className=\"flex flex-col\">\r\n\t\t\t<Button>Minimal Button</Button>\r\n\t\t</div>\r\n\t);\r\n}\r\n"
+      "index.mdx": "import HeroPreview from \"./previews/hero\";\r\n\r\n# Button\r\n\r\nThis is a minimal button component documentation.\r\n\r\n## Usage\r\n\r\n```tsx\r\nimport Button from \"@workspace/ui/components/button\";\r\n```\r\n\r\n```tsx\r\n<Button>Click me</Button>\r\n```\r\n",
+      "index.tsx": "import type { PropsWithChildren } from \"react\";\r\n\r\nexport default function Button({ children }: PropsWithChildren) {\r\n\treturn <button type={\"button\"}>{children}</button>;\r\n}\r\n",
+      "metadata.json": "{\r\n  \"title\": \"Minimal Button\",\r\n  \"description\": \"Native HTML Button\"\r\n}",
+      "previews\\hero.tsx": "import Button from \"..\";\r\n\r\nexport default function HeroPreview() {\r\n\treturn (\r\n\t\t<div className=\"flex flex-col\">\r\n\t\t\t<Button>Minimal Button</Button>\r\n\t\t</div>\r\n\t);\r\n}\r\n"
     }
   },
   {
     "title": "Minimal Card",
     "description": "Basic Card Component",
     "files": {
-      "\\card\\card\\index.mdx": "import HeroPreview from \"./previews/hero\";\r\n\r\n# Card\r\n\r\nThis is a minimal card component documentation.\r\n\r\n## Usage\r\n\r\n```tsx\r\nimport Card from \"@workspace/ui/components/card\";\r\n```\r\n\r\n```tsx\r\n<Card>\r\n  <h1>Title</h1>\r\n  <p>Description</p>\r\n</Card>\r\n```\r\n",
-      "\\card\\card\\index.tsx": "import type { PropsWithChildren } from \"react\";\r\n\r\nexport default function Card({ children }: PropsWithChildren) {\r\n\treturn <div className=\"card\">{children}</div>;\r\n}\r\n",
-      "\\card\\card\\metadata.json": "{\r\n  \"title\": \"Minimal Card\",\r\n  \"description\": \"Basic Card Component\"\r\n}",
-      "\\card\\previews\\card\\previews\\hero.tsx": "import Card from \"..\";\r\n\r\nexport default function HeroPreview() {\r\n\treturn (\r\n\t\t<Card>\r\n\t\t\t<h1>Title</h1>\r\n\t\t\t<p>Description</p>\r\n\t\t</Card>\r\n\t);\r\n}\r\n"
+      "index.mdx": "import HeroPreview from \"./previews/hero\";\r\n\r\n# Card\r\n\r\nThis is a minimal card component documentation.\r\n\r\n## Usage\r\n\r\n```tsx\r\nimport Card from \"@workspace/ui/components/card\";\r\n```\r\n\r\n```tsx\r\n<Card>\r\n  <h1>Title</h1>\r\n  <p>Description</p>\r\n</Card>\r\n```\r\n",
+      "index.tsx": "import type { PropsWithChildren } from \"react\";\r\n\r\nexport default function Card({ children }: PropsWithChildren) {\r\n\treturn <div className=\"card\">{children}</div>;\r\n}\r\n",
+      "metadata.json": "{\r\n  \"title\": \"Minimal Card\",\r\n  \"description\": \"Basic Card Component\"\r\n}",
+      "previews\\hero.tsx": "import Card from \"..\";\r\n\r\nexport default function HeroPreview() {\r\n\treturn (\r\n\t\t<Card>\r\n\t\t\t<h1>Title</h1>\r\n\t\t\t<p>Description</p>\r\n\t\t</Card>\r\n\t);\r\n}\r\n"
     }
   },
   {
     "title": "Minimal Checkbox",
     "description": "Native HTML Checkbox",
     "files": {
-      "\\checkbox\\checkbox\\index.mdx": "import HeroPreview from \"./previews/hero\";\r\n\r\n# Checkbox\r\n\r\nThis is a minimal checkbox component documentation.\r\n\r\n## Usage\r\n\r\n```tsx\r\nimport Checkbox from \"@workspace/ui/components/checkbox\";\r\n```\r\n\r\n```tsx\r\n<Checkbox>Accept terms</Checkbox>\r\n```\r\n",
-      "\\checkbox\\checkbox\\index.tsx": "import type { InputHTMLAttributes } from \"react\";\r\n\r\nexport default function Checkbox(props: InputHTMLAttributes<HTMLInputElement>) {\r\n\treturn <input type=\"checkbox\" {...props} />;\r\n}\r\n",
-      "\\checkbox\\checkbox\\metadata.json": "{\r\n  \"title\": \"Minimal Checkbox\",\r\n  \"description\": \"Native HTML Checkbox\"\r\n}",
-      "\\checkbox\\previews\\checkbox\\previews\\hero.tsx": "import Checkbox from \"..\";\r\n\r\nexport default function HeroPreview() {\r\n\treturn (\r\n\t\t<div className=\"flex flex-col\">\r\n\t\t\t<Checkbox>Accept terms</Checkbox>\r\n\t\t</div>\r\n\t);\r\n}\r\n"
+      "index.mdx": "import HeroPreview from \"./previews/hero\";\r\n\r\n# Checkbox\r\n\r\nThis is a minimal checkbox component documentation.\r\n\r\n## Usage\r\n\r\n```tsx\r\nimport Checkbox from \"@workspace/ui/components/checkbox\";\r\n```\r\n\r\n```tsx\r\n<Checkbox>Accept terms</Checkbox>\r\n```\r\n",
+      "index.tsx": "import type { InputHTMLAttributes } from \"react\";\r\n\r\nexport default function Checkbox(props: InputHTMLAttributes<HTMLInputElement>) {\r\n\treturn <input type=\"checkbox\" {...props} />;\r\n}\r\n",
+      "metadata.json": "{\r\n  \"title\": \"Minimal Checkbox\",\r\n  \"description\": \"Native HTML Checkbox\"\r\n}",
+      "previews\\hero.tsx": "import Checkbox from \"..\";\r\n\r\nexport default function HeroPreview() {\r\n\treturn (\r\n\t\t<div className=\"flex flex-col\">\r\n\t\t\t<Checkbox>Accept terms</Checkbox>\r\n\t\t</div>\r\n\t);\r\n}\r\n"
     }
   },
   {
     "title": "Minimal Input",
     "description": "Native HTML Input",
     "files": {
-      "\\input\\input\\index.mdx": "import HeroPreview from \"./previews/hero\";\r\n\r\n# Input\r\n\r\nThis is a minimal input component documentation.\r\n\r\n## Usage\r\n\r\n```tsx\r\nimport Input from \"@workspace/ui/components/input\";\r\n```\r\n\r\n```tsx\r\n<Input placeholder=\"Type here\" />\r\n```\r\n",
-      "\\input\\input\\index.tsx": "import type { InputHTMLAttributes } from \"react\";\r\n\r\nexport default function Input(props: InputHTMLAttributes<HTMLInputElement>) {\r\n\treturn <input {...props} />;\r\n}\r\n",
-      "\\input\\input\\metadata.json": "{\r\n  \"title\": \"Minimal Input\",\r\n  \"description\": \"Native HTML Input\"\r\n}",
-      "\\input\\previews\\input\\previews\\hero.tsx": "import Input from \"..\";\r\n\r\nexport default function HeroPreview() {\r\n\treturn (\r\n\t\t<div className=\"flex flex-col\">\r\n\t\t\t<Input placeholder=\"Type here\" />\r\n\t\t</div>\r\n\t);\r\n}\r\n"
+      "index.mdx": "import HeroPreview from \"./previews/hero\";\r\n\r\n# Input\r\n\r\nThis is a minimal input component documentation.\r\n\r\n## Usage\r\n\r\n```tsx\r\nimport Input from \"@workspace/ui/components/input\";\r\n```\r\n\r\n```tsx\r\n<Input placeholder=\"Type here\" />\r\n```\r\n",
+      "index.tsx": "import type { InputHTMLAttributes } from \"react\";\r\n\r\nexport default function Input(props: InputHTMLAttributes<HTMLInputElement>) {\r\n\treturn <input {...props} />;\r\n}\r\n",
+      "metadata.json": "{\r\n  \"title\": \"Minimal Input\",\r\n  \"description\": \"Native HTML Input\"\r\n}",
+      "previews\\hero.tsx": "import Input from \"..\";\r\n\r\nexport default function HeroPreview() {\r\n\treturn (\r\n\t\t<div className=\"flex flex-col\">\r\n\t\t\t<Input placeholder=\"Type here\" />\r\n\t\t</div>\r\n\t);\r\n}\r\n"
     }
   }
 ]
