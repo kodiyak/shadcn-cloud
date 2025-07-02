@@ -11,7 +11,7 @@ import { useEditorStore } from "../lib/store/use-editor-store";
 import { useProjectStore } from "../lib/store/use-project-store";
 
 export default function CodeEditor() {
-	const path = useEditorStore((state) => state.activePath)!;
+	const path = useEditorStore((state) => state.activePath);
 	const content = useProjectStore(
 		(state) => state.nodes.find((node) => node.path === path)?.content,
 	);
@@ -44,11 +44,9 @@ export default function CodeEditor() {
 			monaco.languages.register({ id: "javascript" });
 			monaco.languages.register({ id: "markdown" });
 
-			setLanguage(shikiLangMapper(path) ?? "typescript");
-
-			if (highlighter?.hightlighter) {
+			if (path) setLanguage(shikiLangMapper(path) ?? "typescript");
+			if (highlighter?.hightlighter)
 				shikiToMonaco(highlighter.hightlighter, monaco);
-			}
 		},
 		[path, highlighter],
 	);

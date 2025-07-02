@@ -8,7 +8,6 @@ import { useDisclosure } from "@workspace/ui/hooks/use-disclosure";
 import { FolderIcon, PlusIcon } from "lucide-react";
 import type { NodeProps } from "../types";
 import CreateFile from "./create-file";
-import FileItem from "./file-item";
 import TreeItem from "./tree-item";
 
 export default function FolderItem({ path, items = [] }: NodeProps) {
