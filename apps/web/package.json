@@ -1,0 +1,32 @@
+{
+  "name": "web",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --turbopack -p 4000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.81.2",
+    "@workspace/auth": "workspace:*",
+    "@workspace/db": "workspace:*",
+    "@workspace/ui": "workspace:*",
+    "@modpack/plugins": "0.1.4-canary.0",
+    "@modpack/core": "0.1.4-canary.0",
+    "add": "^2.0.6",
+    "axios": "^1.10.0",
+    "next": "15.3.2"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@workspace/core": "workspace:*",
+    "eslint-config-next": "15.3.2"
+  }
+}

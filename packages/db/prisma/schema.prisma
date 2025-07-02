@@ -1,0 +1,76 @@
+generator client {
+  provider   = "prisma-client-js"
+  output     = "../src/.prisma/generated"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime  @db.Timestamptz(3)
+  updatedAt     DateTime  @db.Timestamptz(3)
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  expiresAt DateTime @db.Timestamptz(3)
+  token     String
+  createdAt DateTime @db.Timestamptz(3)
+  updatedAt DateTime @db.Timestamptz(3)
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+}
+
+model Account {
+  id                    String    @id @default(uuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime? @db.Timestamptz(3)
+  refreshTokenExpiresAt DateTime? @db.Timestamptz(3)
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @db.Timestamptz(3)
+  updatedAt             DateTime  @db.Timestamptz(3)
+}
+
+model Verification {
+  id         String    @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime  @db.Timestamptz(3)
+  createdAt  DateTime? @db.Timestamptz(3)
+  updatedAt  DateTime? @db.Timestamptz(3)
+}
+
+model Jwks {
+  id         String   @id @default(uuid())
+  publicKey  String
+  privateKey String
+  createdAt  DateTime @db.Timestamptz(3)
+
+  @@map("jwks")
+}
+
+// Application Models
+// ...

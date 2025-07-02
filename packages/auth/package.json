@@ -1,0 +1,16 @@
+{
+  "name": "@workspace/auth",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "auth": "npx @better-auth/cli@latest",
+    "auth:generate": "npx dotenv-cli@latest -e ../../apps/web/.env -- npx @better-auth/cli@latest generate --output ../db/prisma/schema.prisma --config ../../apps/web/src/lib/clients/auth.ts"
+  },
+  "dependencies": {
+    "@workspace/core": "workspace:*",
+    "@workspace/db": "workspace:*"
+  }
+}
