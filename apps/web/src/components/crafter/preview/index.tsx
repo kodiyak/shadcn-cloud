@@ -5,7 +5,7 @@ import {
 	TabsList,
 	TabsTrigger,
 } from "@workspace/ui/components/tabs";
-import { RefreshCwIcon } from "lucide-react";
+import { RefreshCwIcon, ShareIcon } from "lucide-react";
 import React from "react";
 
 export default function Preview() {
@@ -22,6 +22,10 @@ export default function Preview() {
 								label: "Refresh",
 								icon: <RefreshCwIcon />,
 							},
+							{
+								label: "Share Component",
+								icon: <ShareIcon />,
+							},
 						]}
 					/>
 				</TabsList>
@@ -33,16 +37,6 @@ export default function Preview() {
 				</TabsContent>
 				<TabsContent value="password">Change your password here.</TabsContent>
 			</Tabs>
-			<div className="flex items-start">
-				<div className="flex items-center gap-2">
-					<div className="size-2.5 bg-muted rounded-2xl" />
-					<span className="text-xs text-muted-foreground">
-						Pending Compilation
-					</span>
-				</div>
-				<div className="flex-1"></div>
-				<Button>Publish Component</Button>
-			</div>
 		</div>
 	);
 }
