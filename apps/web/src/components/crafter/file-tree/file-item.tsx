@@ -1,5 +1,5 @@
 import { Button } from "@workspace/ui/components/button";
-import { FileCodeIcon, ReactIcon } from "@workspace/ui/components/icons";
+import { FileCodeIcon } from "@workspace/ui/components/icons";
 import { useEditorStore } from "../lib/store/use-editor-store";
 import type { NodeProps } from "../types";
 

@@ -115,6 +115,48 @@ function TypescriptIcon(props: SVGProps<SVGSVGElement>) {
 	);
 }
 
+function MarkdownIcon(props: SVGProps<SVGSVGElement>) {
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 16 16"
+			width="1em"
+			height="1em"
+			{...props}
+		>
+			<title>Markdown</title>
+			<path
+				fill="none"
+				stroke="#7dc4e4"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="m9.25 8.25l2.25 2.25l2.25-2.25M3.5 11V5.5l2.04 3l1.96-3V11m4-.5V5M1.65 2.5h12.7c.59 0 1.15.49 1.15 1v9c0 .51-.56 1-1.15 1H1.65c-.59 0-1.15-.49-1.15-1V3.58c0-.5.56-1.08 1.15-1.08"
+			></path>
+		</svg>
+	);
+}
+
+function MarkdownMdxIcon(props: SVGProps<SVGSVGElement>) {
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 16 16"
+			width="1em"
+			height="1em"
+			{...props}
+		>
+			<title>Markdown/MDX</title>
+			<path
+				fill="none"
+				stroke="#f5a97f"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="m9.25 8.25l2.25 2.25l2.25-2.25M3.5 11V5.5l2.04 3l1.96-3V11m4-.5V5M1.65 2.5h12.7c.59 0 1.15.49 1.15 1v9c0 .51-.56 1-1.15 1H1.65c-.59 0-1.15-.49-1.15-1V3.58c0-.5.56-1.08 1.15-1.08"
+			></path>
+		</svg>
+	);
+}
+
 function FileCodeIcon({
 	type = '',
 	...props
@@ -126,6 +168,9 @@ function FileCodeIcon({
 		ts: TypescriptIcon,
 		javascript: JavascriptIcon,
 		typescript: TypescriptIcon,
+		mdx: MarkdownMdxIcon,
+		md: MarkdownIcon,
+		markdown: MarkdownIcon,
 	}[type];
 
 	if (!Icon) return null;
@@ -139,5 +184,7 @@ export {
 	JsxIcon,
 	JavascriptIcon,
 	TypescriptIcon,
+	MarkdownIcon,
+	MarkdownMdxIcon,
 	FileCodeIcon,
 };

@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import type { NodeProps } from "../../types";
 
 interface TabProps {
 	path: string;
