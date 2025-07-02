@@ -1,4 +1,4 @@
-import { Button, ButtonsIcons } from "@workspace/ui/components/button";
+import { ButtonsIcons } from "@workspace/ui/components/button";
 import {
 	Tabs,
 	TabsContent,
@@ -6,7 +6,6 @@ import {
 	TabsTrigger,
 } from "@workspace/ui/components/tabs";
 import { RefreshCwIcon, ShareIcon } from "lucide-react";
-import React from "react";
 
 export default function Preview() {
 	return (
