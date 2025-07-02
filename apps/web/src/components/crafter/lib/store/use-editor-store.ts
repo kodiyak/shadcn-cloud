@@ -7,7 +7,7 @@ interface TabProps {
 
 interface EditorStore {
 	tabs: TabProps[];
-	activePath?: string | null;
+	activePath: string | null;
 	setTabs: (tabs: TabProps[]) => void;
 	setActivePath: (path: string) => void;
 	openFile: (path: string) => void;

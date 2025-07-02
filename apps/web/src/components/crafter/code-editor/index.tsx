@@ -52,7 +52,7 @@ export default function CodeEditor() {
 	);
 
 	if (!highlighter.isReady) return null;
-	if (!path || !content) {
+	if (path === null) {
 		return (
 			<div className="size-full px-1 py-3">
 				<div className="size-full bg-muted/30 rounded-md border flex items-center justify-center">

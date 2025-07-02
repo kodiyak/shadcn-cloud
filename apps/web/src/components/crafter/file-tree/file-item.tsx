@@ -1,9 +1,10 @@
 import { Button } from "@workspace/ui/components/button";
-import { ReactIcon } from "@workspace/ui/components/icons";
+import { FileCodeIcon, ReactIcon } from "@workspace/ui/components/icons";
 import { useEditorStore } from "../lib/store/use-editor-store";
 import type { NodeProps } from "../types";
 
 export default function FileItem({ path }: NodeProps) {
+	const filename = path.split("/").pop();
 	const activePath = useEditorStore((state) => state.activePath);
 	const openFile = useEditorStore((state) => state.openFile);
 	return (
@@ -14,8 +15,8 @@ export default function FileItem({ path }: NodeProps) {
 			onClick={() => openFile(path)}
 			data-state={path === activePath ? "open" : undefined}
 		>
-			<ReactIcon className="size-4" />
-			<span className="">{path.split("/").pop()}</span>
+			<FileCodeIcon type={filename?.split(".").pop()} className="size-4" />
+			<span className="">{filename}</span>
 		</Button>
 	);
 }
