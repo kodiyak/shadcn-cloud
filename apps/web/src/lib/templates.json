@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Minimal Button",
+    "description": "Native HTML Button",
+    "files": {
+      "\\button-minimal\\button-minimal\\index.mdx": "import HeroPreview from \"./previews/hero\";\r\n\r\n# Button\r\n\r\nThis is a minimal button component documentation.\r\n\r\n## Usage\r\n\r\n```tsx\r\nimport Button from \"@workspace/ui/components/button\";\r\n```\r\n\r\n```tsx\r\n<Button>Click me</Button>\r\n```\r\n",
+      "\\button-minimal\\button-minimal\\index.tsx": "import type { PropsWithChildren } from \"react\";\r\n\r\nexport default function Button({ children }: PropsWithChildren) {\r\n\treturn <button type={\"button\"}>{children}</button>;\r\n}\r\n",
+      "\\button-minimal\\button-minimal\\metadata.json": "{\r\n  \"title\": \"Minimal Button\",\r\n  \"description\": \"Native HTML Button\"\r\n}",
+      "\\button-minimal\\previews\\button-minimal\\previews\\hero.tsx": "import Button from \"..\";\r\n\r\nexport default function HeroPreview() {\r\n\treturn (\r\n\t\t<div className=\"flex flex-col\">\r\n\t\t\t<Button>Minimal Button</Button>\r\n\t\t</div>\r\n\t);\r\n}\r\n"
+    }
+  }
+]

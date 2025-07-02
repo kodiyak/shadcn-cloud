@@ -1,0 +1,13 @@
+{
+  "name": "@workspace/templates",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsx ./src/scripts/build-templates.ts"
+  },
+  "dependencies": {
+    "tsx": "4.20.3",
+    "@workspace/core": "workspace:*"
+  }
+}
