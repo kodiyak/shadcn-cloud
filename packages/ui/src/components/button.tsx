@@ -11,7 +11,7 @@ import {
 
 const buttonVariants = cva(
 	cn(
-		'inline-flex font-sans items-center cursor-default justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all',
+		'inline-flex font-sans items-center cursor-default justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all',
 		'disabled:bg-accent disabled:from-accent disabled:to-accent disabled:opacity-40 disabled:text-muted-foreground/50 disabled:cursor-not-allowed',
 		'shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
 		'[&_svg]:pointer-events-none [&_svg]:shrink-0',
@@ -42,18 +42,18 @@ const buttonVariants = cva(
 					'border-input data-[placeholder]:text-muted-foreground',
 					"[&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 ",
 					'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
-					'dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap',
+					'dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 border bg-transparent px-3 py-2 text-sm whitespace-nowrap',
 					'transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
 					'*:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center',
 					"*:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 				),
 			},
 			size: {
-				default: `h-12 rounded-2xl px-4 py-2 has-[>svg]:px-3 [&_svg:not([class*='size-'])]:size-5`,
-				sm: `h-10 rounded-xl gap-1.5 px-3 has-[>svg]:px-2.5 [&_svg:not([class*='size-'])]:size-5`,
-				xs: `h-8 rounded-xl gap-1.5 px-3 has-[>svg]:px-2.5 [&_svg:not([class*='size-'])]:size-4`,
+				default: `h-12 rounded-xl px-4 py-2 has-[>svg]:px-3 [&_svg:not([class*='size-'])]:size-5`,
+				sm: `h-10 rounded-lg gap-1.5 px-3 has-[>svg]:px-2.5 [&_svg:not([class*='size-'])]:size-5`,
+				xs: `h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5 [&_svg:not([class*='size-'])]:size-4`,
 				xxs: `h-8 text-xs rounded gap-1 p-0 h-auto [&_svg:not([class*='size-'])]:size-3`,
-				lg: `h-10 rounded-md px-6 has-[>svg]:px-4 [&_svg:not([class*='size-'])]:size-4`,
+				lg: `h-10 rounded-xl px-6 has-[>svg]:px-4 [&_svg:not([class*='size-'])]:size-4`,
 				icon: 'size-9 [&_svg]:size-5',
 				'icon-sm': 'size-8 rounded [&_svg]:size-5',
 				'icon-xs': 'size-5 rounded [&_svg]:size-3.5',
@@ -127,7 +127,11 @@ function ButtonsIcons({
 									<Button
 										variant={item.variant ?? variant}
 										size={item.size ?? size}
-										onClick={item.onClick}
+										onClick={(e) => {
+											e.stopPropagation();
+											e.preventDefault();
+											item.onClick?.();
+										}}
 										disabled={item.disabled}
 										className={cn('')}
 									>

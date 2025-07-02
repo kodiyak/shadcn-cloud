@@ -26,14 +26,17 @@ function AccordionItem({
 function AccordionTrigger({
 	className,
 	children,
+	removeArrow = false,
 	...props
-}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+}: React.ComponentProps<typeof AccordionPrimitive.Trigger> & {
+	removeArrow?: boolean;
+}) {
 	return (
 		<AccordionPrimitive.Header className="flex">
 			<AccordionPrimitive.Trigger
 				data-slot="accordion-trigger"
 				className={cn(
-					'text-muted-foreground',
+					'text-muted-foreground relative',
 					'focus-visible:border-ring focus-visible:ring-ring/50 px-2 h-8',
 					'data-[state=open]:text-foreground data-[state=open]:bg-accent/40 data-[state=closed]:bg-transparent',
 					'flex flex-1 items-center justify-between gap-4 rounded-lg text-left text-sm font-medium transition-all outline-none',
@@ -44,7 +47,9 @@ function AccordionTrigger({
 				{...props}
 			>
 				{children}
-				<ChevronDownIcon className="arrow text-muted-foreground pointer-events-none size-3.5 shrink-0 transition-transform duration-200" />
+				{!removeArrow && (
+					<ChevronDownIcon className="arrow text-muted-foreground pointer-events-none size-3.5 shrink-0 transition-transform duration-200" />
+				)}
 			</AccordionPrimitive.Trigger>
 		</AccordionPrimitive.Header>
 	);

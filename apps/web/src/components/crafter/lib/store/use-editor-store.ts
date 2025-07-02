@@ -1,32 +1,37 @@
-import { create } from 'zustand';
+import { create } from "zustand";
+import type { NodeProps } from "../../types";
 
 interface TabProps {
 	path: string;
-	currentState: 'readonly' | 'open' | 'draft';
 }
 
 interface EditorStore {
 	tabs: TabProps[];
-	path: string;
-	draft: Map<string, string>;
-	code?: string;
+	activePath?: string | null;
 	setTabs: (tabs: TabProps[]) => void;
-	setPath: (path: string) => void;
-	updateCode: (code: string) => void;
+	setActivePath: (path: string) => void;
+	openFile: (path: string) => void;
+	closeFile: (path: string) => void;
 }
 
 export const useEditorStore = create<EditorStore>((set) => ({
 	tabs: [],
-	path: '',
-	draft: new Map(),
-	code: undefined,
+	activePath: null,
 	setTabs: (tabs) => set({ tabs }),
-	setPath: (path) => set({ path }),
-	updateCode: (code) => {
+	setActivePath: (path) => set({ activePath: path }),
+	openFile: (path) => {
 		set((state) => {
-			const newDraft = new Map(state.draft);
-			newDraft.set(state.path, code);
-			return { draft: newDraft, code };
+			const existingTab = state.tabs.find((tab) => tab.path === path);
+			if (!existingTab) {
+				return { tabs: [...state.tabs, { path }], activePath: path };
+			}
+			return { activePath: path };
 		});
+	},
+	closeFile: (path) => {
+		set((state) => ({
+			tabs: state.tabs.filter((tab) => tab.path !== path),
+			activePath: state.activePath === path ? null : state.activePath,
+		}));
 	},
 }));

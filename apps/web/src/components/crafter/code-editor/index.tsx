@@ -8,11 +8,14 @@ import type { BundledLanguage } from "shiki";
 import { appConfig, shikiLangMapper } from "@/app.config";
 import { useHighlighter } from "../lib/hooks/use-highlighter";
 import { useEditorStore } from "../lib/store/use-editor-store";
+import { useProjectStore } from "../lib/store/use-project-store";
 
 export default function CodeEditor() {
-	const path = useEditorStore((state) => state.path);
-	const code = useEditorStore((state) => state.code);
-	const updateCode = useEditorStore((state) => state.updateCode);
+	const path = useEditorStore((state) => state.activePath)!;
+	const content = useProjectStore(
+		(state) => state.nodes.find((node) => node.path === path)?.content,
+	);
+	const updateContent = useProjectStore((state) => state.updateContent);
 	const [language, setLanguage] = useState<BundledLanguage>("tsx");
 	const highlighter = useHighlighter();
 
@@ -51,6 +54,15 @@ export default function CodeEditor() {
 	);
 
 	if (!highlighter.isReady) return null;
+	if (!path || !content) {
+		return (
+			<div className="size-full px-1 py-3">
+				<div className="size-full bg-muted/30 rounded-md border flex items-center justify-center">
+					<span className="text-muted-foreground">Select a file to edit</span>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="size-full px-1 py-3">
@@ -62,10 +74,10 @@ export default function CodeEditor() {
 						key={path}
 						options={appConfig.editorOptions}
 						path={path}
-						value={code}
+						value={content}
 						theme={"default"}
 						onChange={(value) => {
-							updateCode(value ?? "");
+							updateContent(path, value ?? "", true);
 						}}
 						onMount={onMount}
 						beforeMount={beforeMount}

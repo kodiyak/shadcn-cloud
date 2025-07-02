@@ -1,13 +1,8 @@
-export interface FileProps {
-	type: "file";
+export interface NodeProps {
+	type: "file" | "directory";
 	path: string;
 	content: string;
+	isDirty?: boolean;
+	isReadOnly?: boolean;
+	items?: NodeProps[];
 }
-
-export interface DirectoryProps {
-	type: "directory";
-	path: string;
-	children: FileOrDirectory[];
-}
-
-type FileOrDirectory = FileProps | DirectoryProps;

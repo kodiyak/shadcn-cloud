@@ -1,18 +1,53 @@
+import { Accordion } from "@workspace/ui/components/accordion";
+import { ButtonsIcons } from "@workspace/ui/components/button";
+import { useDisclosure } from "@workspace/ui/hooks/use-disclosure";
+import { FilePlusIcon, FolderPlusIcon } from "lucide-react";
+import { useProjectStore } from "../lib/store/use-project-store";
+import CreateFile from "./create-file";
 import TreeItem from "./tree-item";
 
 export default function FileTree() {
+	const nodes = useProjectStore((state) => state.nodes);
+	const createFile = useDisclosure();
+
 	return (
-		<div className="size-full pr-1 pl-3 flex flex-col overflow-y-auto">
-			<div className="flex items-center py-2">
-				<span className="text-xs">Workspace</span>
+		<>
+			<CreateFile {...createFile} parentPath="/" />
+			<div className="size-full pr-1 pl-3 flex flex-col overflow-y-auto">
+				<div className="flex items-center py-2 justify-between">
+					<span className="text-xs">Workspace</span>
+					<div className="flex items-center gap-0.5">
+						<ButtonsIcons
+							size={"icon-xs"}
+							variant={"ghost"}
+							items={[
+								{
+									label: "Create File",
+									icon: <FilePlusIcon />,
+									onClick: () => createFile.onOpen(),
+								},
+								{
+									label: "Create Folder",
+									icon: <FolderPlusIcon />,
+								},
+							]}
+						/>
+					</div>
+				</div>
+				<Accordion className="flex flex-col gap-px" type="single" collapsible>
+					<div>
+						{nodes.map((node) => (
+							<TreeItem
+								key={node.path}
+								path={node.path}
+								content={node.content}
+								type={node.type}
+								items={node.items}
+							/>
+						))}
+					</div>
+				</Accordion>
 			</div>
-			<div className="flex flex-col gap-px">
-				<TreeItem />
-				<TreeItem />
-				<TreeItem />
-				<TreeItem />
-				<TreeItem />
-			</div>
-		</div>
+		</>
 	);
 }
