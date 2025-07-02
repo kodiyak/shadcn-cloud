@@ -1,11 +1,6 @@
-'use client';
+"use client";
 
-/**
- * Placeholder for Modbox Render Component
- * Temporary code to demonstrate how to load and render modules using Modbox.
- */
-
-import { Modbox } from '@modbox/core';
+import { Modpack } from "@modpack/core";
 import {
 	cache,
 	external,
@@ -14,27 +9,27 @@ import {
 	resolver,
 	swc,
 	virtual,
-} from '@modbox/plugins';
+} from "@modpack/plugins";
 
-export default function ModboxRender() {
+export default function ModpackRender() {
 	const load = async () => {
-		const modbox = await Modbox.boot({
+		const modpack = await Modpack.boot({
 			debug: false,
 			plugins: [
 				resolver({
-					extensions: ['.js', '.ts', '.tsx', '.jsx'],
-					alias: { '@/': '/src/' },
+					extensions: [".js", ".ts", ".tsx", ".jsx"],
+					alias: { "@/": "/src/" },
 					index: true,
 				}),
 				cache(),
 				virtual(),
 				external(),
 				swc({
-					extensions: ['.js', '.ts', '.tsx', '.jsx'],
+					extensions: [".js", ".ts", ".tsx", ".jsx"],
 					jsc: {
-						target: 'es2022',
+						target: "es2022",
 						parser: {
-							syntax: 'typescript',
+							syntax: "typescript",
 							tsx: true,
 						},
 						transform: {
@@ -42,24 +37,24 @@ export default function ModboxRender() {
 							decoratorMetadata: true,
 							react: {
 								development: true,
-								runtime: 'automatic',
+								runtime: "automatic",
 							},
 						},
 					},
 					sourceMaps: true,
 					module: {
-						type: 'es6',
+						type: "es6",
 						strict: false,
 						ignoreDynamic: true,
-						importInterop: 'swc',
+						importInterop: "swc",
 					},
 				}),
 				graphBuilder(),
 				logger(),
 			],
 		});
-		modbox.fs.writeFile(
-			'/main.jsx',
+		modpack.fs.writeFile(
+			"/main.jsx",
 			`import { createRoot } from 'react-dom/client'
         import { useState } from 'react';
   
@@ -74,25 +69,25 @@ export default function ModboxRender() {
           )
         }
   
-        createRoot(document.getElementById('modboxRoot')).render(
+        createRoot(document.getElementById('ModpackRoot')).render(
           <Application />,
         )`,
 		);
 
-		await modbox.mount('/main.jsx');
+		await modpack.mount("/main.jsx");
 	};
 
 	return (
 		<div
 			style={{
-				width: '100vw',
-				height: '100vh',
-				background: '#000',
+				width: "100vw",
+				height: "100vh",
+				background: "#000",
 			}}
 		>
-			<div id={'modboxRoot'}></div>
+			<div id={"ModpackRoot"}></div>
 			<button
-				type={'button'}
+				type={"button"}
 				onClick={async () => {
 					await load();
 				}}
