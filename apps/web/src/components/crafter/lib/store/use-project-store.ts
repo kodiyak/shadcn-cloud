@@ -53,20 +53,16 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			for (let i = 0; i < parts.length; i++) {
 				const currentPath = formatPath(parts.slice(0, i + 1).join('/'));
 				const isDir = i < parts.length - 1;
-
-				const parentNode = findNode(
+				const parentNode = findNodeInTree(
 					nodes,
 					formatPath(parts.slice(0, i).join('/')),
-				);
-				console.log(
-					`Path: ${currentPath} [${parts.join(', ')}][${parentNode?.path}]`,
 				);
 
 				if (!parentNode) {
 					nodes.push({
 						type: isDir ? 'directory' : 'file',
 						path: currentPath,
-						content: '',
+						content: content || '',
 						items: [],
 					});
 				}
@@ -84,8 +80,6 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			}
 		}
 
-		console.log({ nodes });
-
 		set({
 			isReady: true,
 			nodes,
@@ -93,12 +87,13 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 	},
 	findNode: (path) => {
 		const { nodes } = get();
-		return findNode(nodes, path);
+		console.log(`Finding node for path: ${path}`);
+		return findNodeInTree(nodes, path);
 	},
 	setNodes: (nodes) => set({ nodes }),
 	addNode: (parent, node) => {
 		const { nodes } = get();
-		const parentNode = findNode(nodes, parent);
+		const parentNode = findNodeInTree(nodes, parent);
 		const path = formatPath(`${parent}/${node.name}`);
 		if (!parentNode) {
 			set((state) => ({
@@ -110,10 +105,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		if (parentNode.type === 'directory') {
 			const updatedChildren: NodeProps[] = [
 				...(parentNode.items || []),
-				{
-					...node,
-					path,
-				},
+				{ ...node, path },
 			];
 			set((state) => ({
 				nodes: state.nodes.map((n) =>
@@ -138,11 +130,29 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		}));
 	},
 	updateContent: (path, content, isDirty) => {
-		set((state) => ({
-			nodes: state.nodes.map((node) =>
-				node.path === path ? { ...node, content, isDirty } : node,
-			),
-		}));
+		const { nodes } = get();
+		const node = findNodeInTree(nodes, path);
+		if (!node) {
+			console.error(`Node not found for path: ${path}`);
+			return;
+		}
+
+		// Recursively update content in the node tree
+		const updateNodeContent = (nodes: NodeProps[]): NodeProps[] => {
+			return nodes.map((node) => {
+				if (node.path === path) {
+					return { ...node, content, isDirty };
+				}
+				if (node.type === 'directory' && node.items) {
+					return { ...node, items: updateNodeContent(node.items) };
+				}
+				return node;
+			});
+		};
+
+		set({
+			nodes: updateNodeContent(nodes),
+		});
 	},
 	setNodeDirty: (path, isDirty) => {
 		set((state) => ({
@@ -153,11 +163,14 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 	},
 }));
 
-function findNode(nodes: NodeProps[], path: string): NodeProps | undefined {
+export function findNodeInTree(
+	nodes: NodeProps[],
+	path: string,
+): NodeProps | undefined {
 	for (const node of nodes) {
 		if (node.path === path) return node;
 		if (node.type === 'directory' && node.items) {
-			const found = findNode(node.items, path);
+			const found = findNodeInTree(node.items, path);
 			if (found) return found;
 		}
 	}

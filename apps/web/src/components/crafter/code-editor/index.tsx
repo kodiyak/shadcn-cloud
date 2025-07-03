@@ -4,13 +4,14 @@ import {
 	type BeforeMount,
 	Editor,
 	type Monaco,
+	type OnChange,
 	type OnMount,
 } from '@monaco-editor/react';
 import { shikiToMonaco } from '@shikijs/monaco';
 import { Badge } from '@workspace/ui/components/badge';
 import { ErrorBoundary } from '@workspace/ui/components/error-boundary';
 import { FileCodeIcon } from '@workspace/ui/components/icons';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { BundledLanguage } from 'shiki';
 import { appConfig, shikiLangMapper } from '@/app.config';
 import { useHighlighter } from '../lib/hooks/use-highlighter';
@@ -19,12 +20,14 @@ import { useProjectStore } from '../lib/store/use-project-store';
 
 export default function CodeEditor() {
 	const path = useEditorStore((state) => state.activePath);
-	const findNode = useProjectStore((state) => state.findNode);
-	const node = findNode(path || '');
-	const content = node?.content || '';
+	const searchNodes = useProjectStore((state) => state.searchNodes);
+	// Node is not reactive, but should be fine for now
+	const node = searchNodes((n) => n.path === path)[0];
 	const updateContent = useProjectStore((state) => state.updateContent);
-	const [language, setLanguage] = useState<BundledLanguage>('tsx');
 	const highlighter = useHighlighter();
+
+	const [content, setContent] = useState<string>(() => node?.content || '');
+	const [language, setLanguage] = useState<BundledLanguage>('tsx');
 
 	const monacoRef = useRef<Monaco | null>(null);
 	const onMount = useCallback<OnMount>((editor, monaco) => {
@@ -37,6 +40,11 @@ export default function CodeEditor() {
 			},
 		});
 	}, []);
+
+	const onChange = useCallback<OnChange>(
+		(v) => setContent(v || ''),
+		[setContent],
+	);
 
 	const beforeMount = useCallback<BeforeMount>(
 		(monaco) => {
@@ -62,6 +70,20 @@ export default function CodeEditor() {
 		},
 		[path, highlighter],
 	);
+
+	// Initial content setup
+	useEffect(() => {
+		if (node?.content !== content) {
+			setContent(() => node?.content || '');
+		}
+	}, [path]);
+
+	// Update content in the store when content changes
+	useEffect(() => {
+		if (content !== node?.content) {
+			updateContent(path || '', content, true);
+		}
+	}, [content]);
 
 	if (!highlighter.isReady) return null;
 	if (path === null) {
@@ -92,9 +114,7 @@ export default function CodeEditor() {
 							className={'size-full !font-code'}
 							key={path}
 							language={language}
-							onChange={(value) => {
-								updateContent(path, value ?? '', true);
-							}}
+							onChange={onChange}
 							onMount={onMount}
 							options={appConfig.editorOptions}
 							path={path}

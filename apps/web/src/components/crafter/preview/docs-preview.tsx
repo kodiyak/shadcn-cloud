@@ -1,34 +1,47 @@
 import { compile, run } from '@mdx-js/mdx';
 import { SelectField } from '@workspace/ui/components/fields';
 import { FileCodeIcon } from '@workspace/ui/components/icons';
+import { cn } from '@workspace/ui/lib/utils';
 import {
 	Fragment,
-	type HTMLProps,
+	type HTMLAttributes,
 	type ReactNode,
 	useEffect,
 	useMemo,
 	useState,
 } from 'react';
 import * as runtime from 'react/jsx-runtime';
-import { useProjectStore } from '../lib/store/use-project-store';
+import {
+	findNodeInTree,
+	useProjectStore,
+} from '../lib/store/use-project-store';
 
-const components: Record<string, (props: HTMLProps<HTMLElement>) => ReactNode> =
-	{
-		h1: ({ children }) => (
-			<h1 className="text-2xl font-bold mb-4">{children}</h1>
-		),
-		code: ({ children, className }) => {
-			return (
-				<pre className="px-4 text-xs py-1 bg-muted rounded-lg">{children}</pre>
-			);
-		},
-	};
+/** @todo Improve components injection logic */
+const components: Record<
+	string,
+	(props: HTMLAttributes<HTMLElement>) => ReactNode
+> = {
+	h1: ({ className, ...rest }) => (
+		<h1 className={cn('text-2xl font-bold mb-4', className)} {...rest} />
+	),
+	h2: ({ className, ...rest }) => (
+		<h2 className={cn('text-xl font-semibold mb-3', className)} {...rest} />
+	),
+	h3: ({ className, ...rest }) => (
+		<h3 className={cn('text-lg font-semibold mb-2', className)} {...rest} />
+	),
+	code: ({ className, ...rest }) => (
+		<pre
+			className={cn('px-4 text-xs py-1 bg-muted rounded-lg', className)}
+			{...rest}
+		/>
+	),
+};
 
 export default function DocsPreview() {
 	const [path, setPath] = useState('/index.mdx');
 	const searchNodes = useProjectStore((state) => state.searchNodes);
-	const findNode = useProjectStore((state) => state.findNode);
-	const node = findNode(path);
+	const node = useProjectStore((state) => findNodeInTree(state.nodes, path));
 	const docsPaths = useMemo(() => {
 		return searchNodes((n) => n.type === 'file' && n.path.endsWith('.mdx'));
 	}, [searchNodes]);
