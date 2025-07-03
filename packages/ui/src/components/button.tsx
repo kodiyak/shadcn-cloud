@@ -57,7 +57,7 @@ const buttonVariants = cva(
 				xs: `h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5 [&_svg:not([class*='size-'])]:size-4`,
 				xxs: `h-8 text-xs rounded gap-1 p-0 h-auto [&_svg:not([class*='size-'])]:size-3`,
 				lg: `h-10 rounded-xl px-6 has-[>svg]:px-4 [&_svg:not([class*='size-'])]:size-4`,
-				icon: 'size-9 [&_svg]:size-5',
+				icon: 'size-9 rounded-lg [&_svg]:size-5',
 				'icon-sm': 'size-8 rounded [&_svg]:size-5',
 				'icon-xs': 'size-5 rounded [&_svg]:size-3.5',
 				'icon-xxs': 'size-4 rounded [&_svg]:size-3',
@@ -91,9 +91,9 @@ function Button({
 
 	return (
 		<Comp
+			className={cn(buttonVariants({ variant, size, className }))}
 			data-slot="button"
 			type={'button'}
-			className={cn(buttonVariants({ variant, size, className }))}
 			{...props}
 		/>
 	);
@@ -128,15 +128,15 @@ function ButtonsIcons({
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<Button
-										variant={item.variant ?? variant}
-										size={item.size ?? size}
+										className={cn('')}
+										disabled={item.disabled}
 										onClick={(e) => {
 											e.stopPropagation();
 											e.preventDefault();
 											item.onClick?.();
 										}}
-										disabled={item.disabled}
-										className={cn('')}
+										size={item.size ?? size}
+										variant={item.variant ?? variant}
 									>
 										{item.icon}
 									</Button>
