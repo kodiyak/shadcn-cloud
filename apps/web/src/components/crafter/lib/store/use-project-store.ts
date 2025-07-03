@@ -17,12 +17,31 @@ interface ProjectStore {
 	renameNode: (oldPath: string, newPath: string) => void;
 	updateContent: (path: string, content: string, isDirty: boolean) => void;
 	findNode: (path: string) => NodeProps | undefined;
+	searchNodes: (callback: (node: NodeProps) => boolean) => NodeProps[];
 	setNodeDirty: (path: string, isDirty: boolean) => void;
 }
 
 export const useProjectStore = create<ProjectStore>((set, get) => ({
 	isReady: false,
 	nodes: [{ type: 'directory', path: '/', content: '', items: [] }],
+	searchNodes: (callback) => {
+		const { nodes } = get();
+		const findInNode = (nodes: NodeProps[]): NodeProps[] => {
+			const newNodes: NodeProps[] = [];
+			for (const node of nodes) {
+				if (callback(node)) {
+					newNodes.push(node);
+				}
+				if (node.type === 'directory' && node.items) {
+					newNodes.push(...findInNode(node.items));
+				}
+			}
+
+			return newNodes;
+		};
+
+		return findInNode(nodes);
+	},
 	selectTemplate: (template) => {
 		const { files } = template;
 		const nodes: NodeProps[] = [{ type: 'directory', path: '/', content: '' }];

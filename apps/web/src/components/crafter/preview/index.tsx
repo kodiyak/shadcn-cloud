@@ -6,6 +6,7 @@ import {
 	TabsTrigger,
 } from '@workspace/ui/components/tabs';
 import { ExternalLinkIcon, RefreshCwIcon, ShareIcon } from 'lucide-react';
+import DocsPreview from './docs-preview';
 
 export default function Preview() {
 	return (
@@ -38,7 +39,12 @@ export default function Preview() {
 				>
 					Make changes to your account here.
 				</TabsContent>
-				<TabsContent value="password">Change your password here.</TabsContent>
+				<TabsContent
+					className="flex-1 relative border rounded-2xl bg-muted/30"
+					value="password"
+				>
+					<DocsPreview />
+				</TabsContent>
 			</Tabs>
 		</div>
 	);
