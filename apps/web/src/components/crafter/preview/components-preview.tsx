@@ -73,7 +73,7 @@ export default function ComponentsPreview() {
 		if (node) {
 			console.log(`Mounting modpack for node: ${node.path}`);
 			Object.entries(flattenNodes(nodes)).forEach(
-				([key, { path, content, type }]) => {
+				([_, { path, content, type }]) => {
 					const isValid =
 						!path.endsWith('.json') &&
 						!path.endsWith('.mdx') &&
