@@ -26,21 +26,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 	nodes: [{ type: 'directory', path: '/', content: '', items: [] }],
 	searchNodes: (callback) => {
 		const { nodes } = get();
-		const findInNode = (nodes: NodeProps[]): NodeProps[] => {
-			const newNodes: NodeProps[] = [];
-			for (const node of nodes) {
-				if (callback(node)) {
-					newNodes.push(node);
-				}
-				if (node.type === 'directory' && node.items) {
-					newNodes.push(...findInNode(node.items));
-				}
-			}
-
-			return newNodes;
-		};
-
-		return findInNode(nodes);
+		return searchNodes(callback, nodes);
 	},
 	selectTemplate: (template) => {
 		const { files } = template;
@@ -175,6 +161,33 @@ export function findNodeInTree(
 		}
 	}
 	return undefined;
+}
+
+export function flattenNodes(nodes: NodeProps[]): NodeProps[] {
+	const flatNodes: NodeProps[] = [];
+	for (const node of nodes) {
+		flatNodes.push(node);
+		if (node.type === 'directory' && node.items) {
+			flatNodes.push(...flattenNodes(node.items));
+		}
+	}
+	return flatNodes;
+}
+
+export function searchNodes(
+	callback: (node: NodeProps) => boolean,
+	nodes: NodeProps[] = useProjectStore.getState().nodes,
+): NodeProps[] {
+	const results: NodeProps[] = [];
+	for (const node of nodes) {
+		if (callback(node)) {
+			results.push(node);
+		}
+		if (node.type === 'directory' && node.items) {
+			results.push(...searchNodes(callback, node.items));
+		}
+	}
+	return results;
 }
 
 function splitPath(path: string): string[] {

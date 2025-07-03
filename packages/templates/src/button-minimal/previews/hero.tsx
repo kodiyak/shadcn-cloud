@@ -1,4 +1,4 @@
-import Button from "..";
+import Button from '/index.tsx';
 
 export default function HeroPreview() {
 	return (
