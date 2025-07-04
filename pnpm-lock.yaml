@@ -70,11 +70,11 @@ importers:
         specifier: ^3.1.0
         version: 3.1.0(@types/react@19.1.8)(react@19.1.0)
       '@modpack/core':
-        specifier: 0.1.4-canary.0
-        version: 0.1.4-canary.0
+        specifier: 0.2.0-canary.3
+        version: 0.2.0-canary.3
       '@modpack/plugins':
-        specifier: 0.1.4-canary.0
-        version: 0.1.4-canary.0
+        specifier: 0.2.0-canary.4
+        version: 0.2.0-canary.4
       '@monaco-editor/react':
         specifier: 4.7.0
         version: 4.7.0(monaco-editor@0.52.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -657,14 +657,14 @@ packages:
       '@types/react': '>=16'
       react: '>=16'
 
-  '@modpack/core@0.1.4-canary.0':
-    resolution: {integrity: sha512-jh+d3p29Vap+fgDCJdVCKZCoJOQzl7qqXMSviWVsj72wiEKa7krZW19YZUyYpXe9XP3oIX9a/FZ8AiNWtLwt4w==}
+  '@modpack/core@0.2.0-canary.3':
+    resolution: {integrity: sha512-oANjurz0RNS41oYN3I6COmHWcbQfk5BnNMkaWanTypzKrLpSPxIHZ6Do/Tw439tKcv1towLhyTC2b2I3gUEmcw==}
 
-  '@modpack/plugins@0.1.4-canary.0':
-    resolution: {integrity: sha512-tU3LLQMerPWbF+NmP6Lfpp1sYtGmVdS1TN6fpBVqUQGK0ZpBuSmaIIubcJqwg7rF6lkO1PFsxPMP2eudd/fuHA==}
+  '@modpack/plugins@0.2.0-canary.4':
+    resolution: {integrity: sha512-4/Vob9gu44LEhOZHMeaBcVbntwIgAvPHa2Vmpb2sT61+ntUB3hOkvu87xlMkF0yC2ri3bVbtLHU2HskbDJsATg==}
 
-  '@modpack/utils@0.1.4-canary.0':
-    resolution: {integrity: sha512-zfBQYUbhCMbEkAhwBgFleF+L4sWBe6O5TauleFSaOfL8ROsk4U0Viv3x+csYuD1IRP+VeTAtg8udK51QZMARJg==}
+  '@modpack/utils@0.2.0-canary.3':
+    resolution: {integrity: sha512-ngS9U+/K9MMKW9KUCsa7Tn9yvp0SlpHnZdeye2JLxCp5xdaDfxObN8/96xodsbkhdXTkHoYzGGG+j8WAauv7hg==}
 
   '@monaco-editor/loader@1.5.0':
     resolution: {integrity: sha512-hKoGSM+7aAc7eRTRjpqAZucPmoNOC4UUbknb/VNoTkEIkCPhqV8LfbsgM1webRM7S/z21eHEx9Fkwx8Z/C/+Xw==}
@@ -2748,7 +2748,7 @@ snapshots:
       '@types/react': 19.1.8
       react: 19.1.0
 
-  '@modpack/core@0.1.4-canary.0':
+  '@modpack/core@0.2.0-canary.3':
     dependencies:
       '@swc/wasm-web': 1.12.9
       debug: 4.4.1
@@ -2756,16 +2756,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@modpack/plugins@0.1.4-canary.0':
+  '@modpack/plugins@0.2.0-canary.4':
     dependencies:
-      '@modpack/utils': 0.1.4-canary.0
+      '@modpack/utils': 0.2.0-canary.3
       '@swc/wasm-web': 1.12.9
     transitivePeerDependencies:
       - supports-color
 
-  '@modpack/utils@0.1.4-canary.0':
+  '@modpack/utils@0.2.0-canary.3':
     dependencies:
-      '@modpack/core': 0.1.4-canary.0
+      '@modpack/core': 0.2.0-canary.3
     transitivePeerDependencies:
       - supports-color
 

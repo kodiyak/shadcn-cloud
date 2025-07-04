@@ -15,22 +15,29 @@ interface ProjectStore {
 	addNode: (parent: string, node: CreateNodeProps) => void;
 	deleteNode: (path: string) => void;
 	renameNode: (oldPath: string, newPath: string) => void;
-	updateContent: (path: string, content: string, isDirty: boolean) => void;
+	updateContent: (path: string, content: string) => void;
 	findNode: (path: string) => NodeProps | undefined;
 	searchNodes: (callback: (node: NodeProps) => boolean) => NodeProps[];
-	setNodeDirty: (path: string, isDirty: boolean) => void;
 }
 
 export const useProjectStore = create<ProjectStore>((set, get) => ({
 	isReady: false,
-	nodes: [{ type: 'directory', path: '/', content: '', items: [] }],
+	nodes: [],
 	searchNodes: (callback) => {
 		const { nodes } = get();
 		return searchNodes(callback, nodes);
 	},
 	selectTemplate: (template) => {
 		const { files } = template;
-		const nodes: NodeProps[] = [{ type: 'directory', path: '/', content: '' }];
+		const nodes: NodeProps[] = [
+			{
+				type: 'directory',
+				path: '/',
+				content: '',
+				draftContent: '',
+				items: [],
+			},
+		];
 
 		for (const [path, content] of Object.entries(files)) {
 			const parts = splitPath(path);
@@ -49,6 +56,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 						type: isDir ? 'directory' : 'file',
 						path: currentPath,
 						content: content || '',
+						draftContent: content || '',
 						items: [],
 					});
 				}
@@ -59,6 +67,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 							type: isDir ? 'directory' : 'file',
 							path: currentPath,
 							content: content || '',
+							draftContent: content || '',
 							items: [],
 						});
 					}
@@ -115,7 +124,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			),
 		}));
 	},
-	updateContent: (path, content, isDirty) => {
+	updateContent: (path, content) => {
 		const { nodes } = get();
 		const node = findNodeInTree(nodes, path);
 		if (!node) {
@@ -127,7 +136,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		const updateNodeContent = (nodes: NodeProps[]): NodeProps[] => {
 			return nodes.map((node) => {
 				if (node.path === path) {
-					return { ...node, content, isDirty };
+					return { ...node, draftContent: content, isDirty: true };
 				}
 				if (node.type === 'directory' && node.items) {
 					return { ...node, items: updateNodeContent(node.items) };
@@ -139,13 +148,6 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		set({
 			nodes: updateNodeContent(nodes),
 		});
-	},
-	setNodeDirty: (path, isDirty) => {
-		set((state) => ({
-			nodes: state.nodes.map((node) =>
-				node.path === path ? { ...node, isDirty } : node,
-			),
-		}));
 	},
 }));
 

@@ -73,15 +73,15 @@ export default function CodeEditor() {
 
 	// Initial content setup
 	useEffect(() => {
-		if (node?.content !== content) {
-			setContent(() => node?.content || '');
+		if (node?.draftContent !== content) {
+			setContent(() => node?.draftContent || '');
 		}
 	}, [path]);
 
 	// Update content in the store when content changes
 	useEffect(() => {
-		if (content !== node?.content) {
-			updateContent(path || '', content, true);
+		if (content !== node?.draftContent) {
+			updateContent(path || '', content);
 		}
 	}, [content]);
 

@@ -3,7 +3,7 @@ import { FileCodeIcon } from '@workspace/ui/components/icons';
 import { useEditorStore } from '../lib/store/use-editor-store';
 import type { NodeProps } from '../types';
 
-export default function FileItem({ path }: NodeProps) {
+export default function FileItem({ path, content, draftContent }: NodeProps) {
 	const filename = path.split('/').pop();
 	const activePath = useEditorStore((state) => state.activePath);
 	const openFile = useEditorStore((state) => state.openFile);
@@ -16,7 +16,10 @@ export default function FileItem({ path }: NodeProps) {
 			variant={'ghost'}
 		>
 			<FileCodeIcon className="size-4" type={filename?.split('.').pop()} />
-			<span className="">{filename}</span>
+			<span className="flex-1 text-left">{filename}</span>
+			{draftContent !== content && (
+				<div className="size-1.5 rounded-full bg-foreground"></div>
+			)}
 		</Button>
 	);
 }

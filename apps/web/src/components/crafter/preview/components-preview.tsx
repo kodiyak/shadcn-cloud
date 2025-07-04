@@ -1,12 +1,5 @@
 import { Modpack } from '@modpack/core';
-import {
-	cache,
-	external,
-	logger,
-	resolver,
-	swc,
-	virtual,
-} from '@modpack/plugins';
+import { esmSh, resolver, swc, virtual } from '@modpack/plugins';
 import { SelectField } from '@workspace/ui/components/fields';
 import { FileCodeIcon } from '@workspace/ui/components/icons';
 import { useEffect, useMemo, useState } from 'react';
@@ -33,14 +26,6 @@ export default function ComponentsPreview() {
 		const modpack = await Modpack.boot({
 			debug: true,
 			plugins: [
-				resolver({
-					extensions: ['.js', '.ts', '.tsx', '.jsx'],
-					alias: { '@/': '/src/' },
-					index: true,
-				}),
-				cache(),
-				virtual(),
-				external(),
 				swc({
 					extensions: ['.js', '.ts', '.tsx', '.jsx'],
 					jsc: {
@@ -66,7 +51,13 @@ export default function ComponentsPreview() {
 						importInterop: 'swc',
 					},
 				}),
-				logger(),
+				resolver({
+					extensions: ['.js', '.ts', '.tsx', '.jsx'],
+					alias: { '@/': '/src/' },
+					index: true,
+				}),
+				virtual(),
+				esmSh(),
 			],
 		});
 
