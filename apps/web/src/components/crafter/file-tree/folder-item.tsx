@@ -13,6 +13,9 @@ import TreeItem from './tree-item';
 export default function FolderItem({ path, items = [] }: NodeProps) {
 	const name = path.split('/').pop();
 	const createFile = useDisclosure();
+	const sortedItems = items.sort((a, b) => a.path.localeCompare(b.path));
+	const files = sortedItems.filter((item) => item.type === 'file');
+	const folders = sortedItems.filter((item) => item.type === 'directory');
 	return (
 		<>
 			<CreateFile {...createFile} parentPath={path} />
@@ -39,7 +42,10 @@ export default function FolderItem({ path, items = [] }: NodeProps) {
 				<AccordionContent>
 					<div className="pl-2 flex flex-col">
 						<div className="flex flex-col border-l pl-1">
-							{items.map((child) => (
+							{files.map((child) => (
+								<TreeItem key={child.path} {...child} />
+							))}
+							{folders.map((child) => (
 								<TreeItem key={child.path} {...child} />
 							))}
 						</div>
