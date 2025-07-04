@@ -1,6 +1,7 @@
 import type { TemplateProps } from '@workspace/core';
 import { create } from 'zustand';
 import type { NodeProps } from '../../types';
+import { useCompilationStore } from './use-compilation-store';
 import { useEditorStore } from './use-editor-store';
 
 interface CreateNodeProps extends Omit<NodeProps, 'path'> {
@@ -9,7 +10,7 @@ interface CreateNodeProps extends Omit<NodeProps, 'path'> {
 
 interface ProjectStore {
 	isReady: boolean;
-	selectTemplate: (template: TemplateProps) => void;
+	selectTemplate: (template: TemplateProps) => Promise<void>;
 	nodes: NodeProps[];
 	setNodes: (nodes: NodeProps[]) => void;
 	addNode: (parent: string, node: CreateNodeProps) => void;
@@ -27,8 +28,9 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		const { nodes } = get();
 		return searchNodes(callback, nodes);
 	},
-	selectTemplate: (template) => {
-		const { files } = template;
+	selectTemplate: async (template) => {
+		const { files: templateFiles } = template;
+		const { compile } = useCompilationStore.getState();
 		const nodes: NodeProps[] = [
 			{
 				type: 'directory',
@@ -39,7 +41,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			},
 		];
 
-		for (const [path, content] of Object.entries(files)) {
+		for (const [path, content] of Object.entries(templateFiles)) {
 			const parts = splitPath(path);
 
 			// Create directory structure
@@ -74,6 +76,34 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 				}
 			}
 		}
+
+		// Make files consistent with the expected structure
+		const modpackFiles = flattenNodes(nodes).reduce(
+			(acc, node) => {
+				if (
+					!node.content ||
+					node.type !== 'file' ||
+					node.path.endsWith('.json') ||
+					node.path.endsWith('.mdx')
+				) {
+					return acc;
+				}
+				acc[node.path] = node.content || '';
+				return acc;
+			},
+			{} as Record<string, string>,
+		);
+
+		const entrypoint = Object.keys(modpackFiles).find(
+			(path) => path.endsWith('.tsx') || path.endsWith('.jsx'),
+		);
+
+		if (!entrypoint) {
+			console.error('No valid entrypoint found in the template files.');
+			return;
+		}
+
+		await compile({ files: modpackFiles, entrypoint });
 
 		set({
 			isReady: true,
