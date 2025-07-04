@@ -1,5 +1,6 @@
 import { Modpack } from '@modpack/core';
 import { esmSh, resolver, swc, virtual } from '@modpack/plugins';
+import type { ComponentType } from 'react';
 import { create } from 'zustand';
 
 interface CompilationLog {
@@ -12,15 +13,31 @@ interface CompileProps {
 	files: Record<string, string>;
 }
 
+function getModpack() {
+	return Modpack.boot({});
+}
+type ModpackType = Awaited<ReturnType<typeof getModpack>>;
+
 interface CompilationStore {
 	isCompiling: boolean;
 	logs: CompilationLog[];
+	modpack: ModpackType | null;
+	Component: ComponentType | null;
+	previews: string[];
+	currentPreview: string | null;
+	files: Record<string, string>;
 	compile: (props: CompileProps) => Promise<void>;
+	hotReload: (path: string, content: string) => void;
 }
 
-export const useCompilationStore = create<CompilationStore>((set) => ({
+export const useCompilationStore = create<CompilationStore>((set, get) => ({
 	isCompiling: false,
 	logs: [],
+	previews: [],
+	files: {},
+	currentPreview: null,
+	Component: null,
+	modpack: null,
 	compile: async ({ files, entrypoint }) => {
 		const file = files[entrypoint];
 		if (!file) {
@@ -29,7 +46,11 @@ export const useCompilationStore = create<CompilationStore>((set) => ({
 			);
 		}
 
-		set({ isCompiling: true, logs: [] });
+		set({
+			files,
+			isCompiling: true,
+			logs: [],
+		});
 		const modpack = await Modpack.boot({
 			debug: true,
 			plugins: [
@@ -72,9 +93,13 @@ export const useCompilationStore = create<CompilationStore>((set) => ({
 			modpack.fs.writeFile(path, content || '');
 		});
 
-		await modpack.mount(entrypoint);
+		const mountedModule = await modpack.mount(entrypoint);
+
+		console.log({ modpack, mountedModule });
 
 		set((state) => ({
+			Component: mountedModule.default as ComponentType,
+			modpack,
 			isCompiling: false,
 			logs: [
 				...state.logs,
@@ -84,5 +109,19 @@ export const useCompilationStore = create<CompilationStore>((set) => ({
 				},
 			],
 		}));
+	},
+	hotReload: (path, content) => {
+		const { modpack, Component } = get();
+		set((state) => ({
+			files: {
+				...state.files,
+				[path]: content,
+			},
+		}));
+
+		console.log(`Hot reloading file: ${path}`);
+		console.log(`Content length: ${content.length}`);
+		console.log(`Modpack instance: ${modpack ? 'available' : 'not available'}`);
+		modpack?.fs.writeFile(path, content || '');
 	},
 }));

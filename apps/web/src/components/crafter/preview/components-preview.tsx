@@ -1,9 +1,12 @@
 import { SelectField } from '@workspace/ui/components/fields';
 import { FileCodeIcon } from '@workspace/ui/components/icons';
-import { useMemo, useState } from 'react';
+import { type ComponentType, useMemo, useState } from 'react';
+import { useCompilationStore } from '../lib/store/use-compilation-store';
 import { searchNodes, useProjectStore } from '../lib/store/use-project-store';
 
 export default function ComponentsPreview() {
+	// const [Component, setComponent] = useState<ComponentType | null>(null);
+	const Component = useCompilationStore((state) => state.Component);
 	const [path, setPath] = useState('/previews/hero.tsx');
 	const nodes = useProjectStore((state) => state.nodes);
 	const previewsNodes = useMemo(() => {
@@ -12,7 +15,7 @@ export default function ComponentsPreview() {
 		}, nodes);
 	}, [nodes]);
 
-	const [Component, setComponent] = useState<React.ComponentType | null>(null);
+	console.log({ Component });
 
 	return (
 		<div className="size-full flex flex-col">

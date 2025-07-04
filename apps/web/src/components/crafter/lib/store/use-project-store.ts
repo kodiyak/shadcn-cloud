@@ -19,6 +19,7 @@ interface ProjectStore {
 	updateContent: (path: string, content: string) => void;
 	findNode: (path: string) => NodeProps | undefined;
 	searchNodes: (callback: (node: NodeProps) => boolean) => NodeProps[];
+	save: (path: string, content: string) => Promise<void>;
 }
 
 export const useProjectStore = create<ProjectStore>((set, get) => ({
@@ -95,7 +96,9 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		);
 
 		const entrypoint = Object.keys(modpackFiles).find(
-			(path) => path.endsWith('.tsx') || path.endsWith('.jsx'),
+			(path) =>
+				path.startsWith('/previews/') &&
+				(path.endsWith('.tsx') || path.endsWith('.jsx')),
 		);
 
 		if (!entrypoint) {
@@ -178,6 +181,37 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		set({
 			nodes: updateNodeContent(nodes),
 		});
+	},
+	save: async (path, content) => {
+		const { nodes } = get();
+		const node = findNodeInTree(nodes, path);
+		if (!node) {
+			console.error(`Node ${path} not found.`);
+			return;
+		}
+
+		if (node.content === content) {
+			console.warn(`No changes detected for path ${path}. Skipping save...`);
+			return;
+		}
+
+		// Recursively update content in the node tree
+		const updateNodeContent = (nodes: NodeProps[]): NodeProps[] => {
+			return nodes.map((node) => {
+				if (node.path === path) {
+					return { ...node, content, isDirty: false };
+				}
+				if (node.type === 'directory' && node.items) {
+					return { ...node, items: updateNodeContent(node.items) };
+				}
+				return node;
+			});
+		};
+
+		set({
+			nodes: updateNodeContent(nodes),
+		});
+		useCompilationStore.getState().hotReload(path, content);
 	},
 }));
 

@@ -39,6 +39,16 @@ export default function CodeEditor() {
 				ed.getAction('editor.action.formatDocument')?.run();
 			},
 		});
+		editor.addAction({
+			id: 'save-code',
+			label: 'Save Code',
+			keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+			run: (ed) => {
+				const content = ed.getValue();
+				const path = useEditorStore.getState().activePath;
+				useProjectStore.getState().save(path!, content);
+			},
+		});
 	}, []);
 
 	const onChange = useCallback<OnChange>(
