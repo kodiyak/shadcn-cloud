@@ -1,6 +1,16 @@
-import { Modpack } from '@modpack/core';
-import { esmSh, resolver, swc, virtual } from '@modpack/plugins';
+import { Modpack, type Orchestrator } from '@modpack/core';
+import { esmSh, inject, resolver, swc, virtual } from '@modpack/plugins';
 import type { ComponentType } from 'react';
+import * as React from 'react';
+import * as DevJSXRuntime from 'react/jsx-dev-runtime';
+import * as ReactJSXRuntime from 'react/jsx-runtime';
+import * as ReactDOM from 'react-dom/client';
+import {
+	createSignatureFunctionForTransform,
+	injectIntoGlobalHook,
+	performReactRefresh,
+	register,
+} from 'react-refresh';
 import { create } from 'zustand';
 
 interface CompilationLog {
@@ -13,15 +23,10 @@ interface CompileProps {
 	files: Record<string, string>;
 }
 
-function getModpack() {
-	return Modpack.boot({});
-}
-type ModpackType = Awaited<ReturnType<typeof getModpack>>;
-
 interface CompilationStore {
 	isCompiling: boolean;
 	logs: CompilationLog[];
-	modpack: ModpackType | null;
+	modpack: Orchestrator | null;
 	Component: ComponentType | null;
 	previews: string[];
 	currentPreview: string | null;
@@ -53,7 +58,51 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 		});
 		const modpack = await Modpack.boot({
 			debug: true,
+			onBuildEnd: async ({ result }) => {
+				if (result && 'default' in result) {
+					const Component = result.default as ComponentType;
+					set((state) => ({
+						Component,
+						logs: [
+							...state.logs,
+							{
+								message: `Component loaded successfully: ${Component.name}`,
+								timestamp: Date.now(),
+							},
+						],
+					}));
+				}
+			},
+			onModuleUpdate: async ({ result, logger }) => {
+				if (result && 'default' in result) {
+					let update = performReactRefresh();
+
+					while (!update) {
+						update = performReactRefresh();
+						await new Promise((resolve) => setTimeout(resolve, 100));
+					}
+
+					logger.debug(`Module update detected`, { result, update });
+				}
+			},
 			plugins: [
+				{
+					name: 'fetch',
+					pipeline: {
+						fetcher: {
+							fetch: ({ url, options, next }) =>
+								url.startsWith('http') ? fetch(url) : next(),
+						},
+					},
+				},
+				inject({
+					modules: {
+						react: React,
+						'react/jsx-dev-runtime': DevJSXRuntime,
+						'react/jsx-runtime': ReactJSXRuntime,
+						'react-dom/client': ReactDOM,
+					},
+				}),
 				swc({
 					extensions: ['.js', '.ts', '.tsx', '.jsx'],
 					jsc: {
@@ -67,6 +116,7 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 							decoratorMetadata: true,
 							react: {
 								development: true,
+								refresh: true,
 								runtime: 'automatic',
 							},
 						},
@@ -85,7 +135,14 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 					index: true,
 				}),
 				virtual(),
-				esmSh(),
+				esmSh({
+					external: [
+						'react',
+						'react-dom',
+						'react/jsx-dev-runtime',
+						'react/jsx-runtime',
+					],
+				}),
 			],
 		});
 
@@ -93,12 +150,19 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 			modpack.fs.writeFile(path, content || '');
 		});
 
-		const mountedModule = await modpack.mount(entrypoint);
+		injectIntoGlobalHook(window);
+		Object.assign(window, {
+			$RefreshReg$: register,
+			$RefreshSig$: createSignatureFunctionForTransform,
+		});
 
-		console.log({ modpack, mountedModule });
+		console.log('React Refresh injected into global hook', window);
+
+		await modpack.mount(entrypoint);
+
+		// console.log({ modpack, mountedModule });
 
 		set((state) => ({
-			Component: mountedModule.default as ComponentType,
 			modpack,
 			isCompiling: false,
 			logs: [
@@ -111,17 +175,13 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 		}));
 	},
 	hotReload: (path, content) => {
-		const { modpack, Component } = get();
+		const { modpack } = get();
+		modpack?.fs.writeFile(path, content || '');
 		set((state) => ({
 			files: {
 				...state.files,
 				[path]: content,
 			},
 		}));
-
-		console.log(`Hot reloading file: ${path}`);
-		console.log(`Content length: ${content.length}`);
-		console.log(`Modpack instance: ${modpack ? 'available' : 'not available'}`);
-		modpack?.fs.writeFile(path, content || '');
 	},
 }));

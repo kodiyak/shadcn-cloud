@@ -70,11 +70,11 @@ importers:
         specifier: ^3.1.0
         version: 3.1.0(@types/react@19.1.8)(react@19.1.0)
       '@modpack/core':
-        specifier: 0.2.0-canary.3
-        version: 0.2.0-canary.3
+        specifier: 0.2.0-canary.8
+        version: 0.2.0-canary.8
       '@modpack/plugins':
-        specifier: 0.2.0-canary.4
-        version: 0.2.0-canary.4
+        specifier: 0.2.0-canary.10
+        version: 0.2.0-canary.10
       '@monaco-editor/react':
         specifier: 4.7.0
         version: 4.7.0(monaco-editor@0.52.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -102,6 +102,9 @@ importers:
       next:
         specifier: 15.3.2
         version: 15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react-refresh:
+        specifier: ^0.17.0
+        version: 0.17.0
       shiki:
         specifier: 3.7.0
         version: 3.7.0
@@ -121,6 +124,9 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.1.6(@types/react@19.1.8)
+      '@types/react-refresh':
+        specifier: ^0.14.6
+        version: 0.14.6
       '@workspace/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -271,6 +277,23 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@babel/helper-string-parser@7.27.1':
+    resolution: {integrity: sha512-qMlSxKbpRlAridDExk92nSobyDdpPijUq2DW6oDnUqd0iOGxmQjyqhMIihI9+zv4LPyZdRje2cavWPbCbWm3eA==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/helper-validator-identifier@7.27.1':
+    resolution: {integrity: sha512-D2hP9eA+Sqx1kBZgzxZh0y1trbuU+JoDkiEwqhQ36nodYqJwyEIhPSdMNd7lOm/4io72luTPWH20Yda0xOuUow==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/parser@7.28.0':
+    resolution: {integrity: sha512-jVZGvOxOuNSsuQuLRTh13nU0AogFlw32w/MT+LV6D3sP5WdbW61E77RnkbaO2dUvmPAYrBDJXGn5gGS6tH4j8g==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
+  '@babel/types@7.28.0':
+    resolution: {integrity: sha512-jYnje+JyZG5YThjHiF28oT4SIZLnYOcSBb6+SDaFIyzDVSkXQmQQYclJ2R+YxcdmK0AX6x1E5OQNtuh3jHDrUg==}
+    engines: {node: '>=6.9.0'}
 
   '@better-auth/utils@0.2.5':
     resolution: {integrity: sha512-uI2+/8h/zVsH8RrYdG8eUErbuGBk16rZKQfz8CjxQOyCE6v7BqFYEbFwvOkvl1KbUdxhqOnXp78+uE5h8qVEgQ==}
@@ -657,14 +680,14 @@ packages:
       '@types/react': '>=16'
       react: '>=16'
 
-  '@modpack/core@0.2.0-canary.3':
-    resolution: {integrity: sha512-oANjurz0RNS41oYN3I6COmHWcbQfk5BnNMkaWanTypzKrLpSPxIHZ6Do/Tw439tKcv1towLhyTC2b2I3gUEmcw==}
+  '@modpack/core@0.2.0-canary.8':
+    resolution: {integrity: sha512-WsmSws3avZM/2S6lGKsKQSc2DOxHcZHtHeWpKh2vyE3ItdU5Tv/JLIKlprsUIYTpo8jhyGd2rzZCnOx8IYAHZA==}
 
-  '@modpack/plugins@0.2.0-canary.4':
-    resolution: {integrity: sha512-4/Vob9gu44LEhOZHMeaBcVbntwIgAvPHa2Vmpb2sT61+ntUB3hOkvu87xlMkF0yC2ri3bVbtLHU2HskbDJsATg==}
+  '@modpack/plugins@0.2.0-canary.10':
+    resolution: {integrity: sha512-oedIJC3tXBoXGbAVlrewSXvAHbxP/3A5ArVu3YXdN4h6w0z1wpSkPDYuoinMJn7rEVpd+7I8lejCjZzyf7KT9A==}
 
-  '@modpack/utils@0.2.0-canary.3':
-    resolution: {integrity: sha512-ngS9U+/K9MMKW9KUCsa7Tn9yvp0SlpHnZdeye2JLxCp5xdaDfxObN8/96xodsbkhdXTkHoYzGGG+j8WAauv7hg==}
+  '@modpack/utils@0.2.0-canary.8':
+    resolution: {integrity: sha512-qq/BwtTMwTq/7uI6zDHohptD2hgrXy7Ljs/c8mhlb4R2Em5SCtLvCUPmri38yJP+uqr8tCDSJMLEdMeuE9X3gw==}
 
   '@monaco-editor/loader@1.5.0':
     resolution: {integrity: sha512-hKoGSM+7aAc7eRTRjpqAZucPmoNOC4UUbknb/VNoTkEIkCPhqV8LfbsgM1webRM7S/z21eHEx9Fkwx8Z/C/+Xw==}
@@ -1446,6 +1469,18 @@ packages:
     peerDependencies:
       react: ^18 || ^19
 
+  '@types/babel__core@7.20.5':
+    resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
+
+  '@types/babel__generator@7.27.0':
+    resolution: {integrity: sha512-ufFd2Xi92OAVPYsy+P4n7/U7e68fex0+Ee8gSG9KX7eo084CWiQ4sdxktvdl0bOPupXtVJPY19zk6EwWqUQ8lg==}
+
+  '@types/babel__template@7.4.4':
+    resolution: {integrity: sha512-h/NUaSyG5EyxBIp8YRxo4RMe2/qQgvyowRwVMzhYhBCONbW8PUsg4lkFMrhgZhUe5z3L3MiLDuvyJ/CaPa2A8A==}
+
+  '@types/babel__traverse@7.20.7':
+    resolution: {integrity: sha512-dkO5fhS7+/oos4ciWxyEyjWe48zmG6wbCheo/G2ZnHx4fs3EU6YC6UM8rk56gAjNJ9P3MTH2jo5jb92/K6wbng==}
+
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
@@ -1477,6 +1512,9 @@ packages:
     resolution: {integrity: sha512-4hOiT/dwO8Ko0gV1m/TJZYk3y0KBnY9vzDh7W+DH17b2HFSOGgdj33dhihPeuy3l0q23+4e+hoXHV6hCC4dCXw==}
     peerDependencies:
       '@types/react': ^19.0.0
+
+  '@types/react-refresh@0.14.6':
+    resolution: {integrity: sha512-iVwjB4ge9LCpuLnPxCW9hjMX32zLLcdiB2gasCgzCMxPdDxEiqZ/5DuVGicDluLbvZRb7u1PYDmgbQmWMuxiLg==}
 
   '@types/react@19.1.8':
     resolution: {integrity: sha512-AwAfQ2Wa5bCx9WP8nZL2uMZWod7J7/JSplxbTmBQ5ms6QpqNYm672H0Vu9ZVKVngQ+ii4R/byguVEUZQyeg44g==}
@@ -2151,6 +2189,10 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
+  react-refresh@0.17.0:
+    resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
+    engines: {node: '>=0.10.0'}
+
   react-remove-scroll-bar@2.3.8:
     resolution: {integrity: sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q==}
     engines: {node: '>=10'}
@@ -2462,6 +2504,19 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
+  '@babel/helper-string-parser@7.27.1': {}
+
+  '@babel/helper-validator-identifier@7.27.1': {}
+
+  '@babel/parser@7.28.0':
+    dependencies:
+      '@babel/types': 7.28.0
+
+  '@babel/types@7.28.0':
+    dependencies:
+      '@babel/helper-string-parser': 7.27.1
+      '@babel/helper-validator-identifier': 7.27.1
+
   '@better-auth/utils@0.2.5':
     dependencies:
       typescript: 5.8.3
@@ -2748,7 +2803,7 @@ snapshots:
       '@types/react': 19.1.8
       react: 19.1.0
 
-  '@modpack/core@0.2.0-canary.3':
+  '@modpack/core@0.2.0-canary.8':
     dependencies:
       '@swc/wasm-web': 1.12.9
       debug: 4.4.1
@@ -2756,16 +2811,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@modpack/plugins@0.2.0-canary.4':
+  '@modpack/plugins@0.2.0-canary.10':
     dependencies:
-      '@modpack/utils': 0.2.0-canary.3
+      '@modpack/utils': 0.2.0-canary.8
       '@swc/wasm-web': 1.12.9
     transitivePeerDependencies:
       - supports-color
 
-  '@modpack/utils@0.2.0-canary.3':
+  '@modpack/utils@0.2.0-canary.8':
     dependencies:
-      '@modpack/core': 0.2.0-canary.3
+      '@modpack/core': 0.2.0-canary.8
     transitivePeerDependencies:
       - supports-color
 
@@ -3565,6 +3620,27 @@ snapshots:
       '@tanstack/query-core': 5.81.2
       react: 19.1.0
 
+  '@types/babel__core@7.20.5':
+    dependencies:
+      '@babel/parser': 7.28.0
+      '@babel/types': 7.28.0
+      '@types/babel__generator': 7.27.0
+      '@types/babel__template': 7.4.4
+      '@types/babel__traverse': 7.20.7
+
+  '@types/babel__generator@7.27.0':
+    dependencies:
+      '@babel/types': 7.28.0
+
+  '@types/babel__template@7.4.4':
+    dependencies:
+      '@babel/parser': 7.28.0
+      '@babel/types': 7.28.0
+
+  '@types/babel__traverse@7.20.7':
+    dependencies:
+      '@babel/types': 7.28.0
+
   '@types/debug@4.1.12':
     dependencies:
       '@types/ms': 2.1.0
@@ -3598,6 +3674,11 @@ snapshots:
   '@types/react-dom@19.1.6(@types/react@19.1.8)':
     dependencies:
       '@types/react': 19.1.8
+
+  '@types/react-refresh@0.14.6':
+    dependencies:
+      '@types/babel__core': 7.20.5
+      csstype: 3.1.3
 
   '@types/react@19.1.8':
     dependencies:
@@ -4507,6 +4588,8 @@ snapshots:
       react: 19.1.0
 
   react-is@16.13.1: {}
+
+  react-refresh@0.17.0: {}
 
   react-remove-scroll-bar@2.3.8(@types/react@19.1.8)(react@19.1.0):
     dependencies:

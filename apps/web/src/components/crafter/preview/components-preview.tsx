@@ -1,11 +1,12 @@
+'use client';
+
 import { SelectField } from '@workspace/ui/components/fields';
 import { FileCodeIcon } from '@workspace/ui/components/icons';
-import { type ComponentType, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useCompilationStore } from '../lib/store/use-compilation-store';
 import { searchNodes, useProjectStore } from '../lib/store/use-project-store';
 
 export default function ComponentsPreview() {
-	// const [Component, setComponent] = useState<ComponentType | null>(null);
 	const Component = useCompilationStore((state) => state.Component);
 	const [path, setPath] = useState('/previews/hero.tsx');
 	const nodes = useProjectStore((state) => state.nodes);
@@ -14,8 +15,6 @@ export default function ComponentsPreview() {
 			return n.path.startsWith('/previews') && n.type === 'file';
 		}, nodes);
 	}, [nodes]);
-
-	console.log({ Component });
 
 	return (
 		<div className="size-full flex flex-col">
