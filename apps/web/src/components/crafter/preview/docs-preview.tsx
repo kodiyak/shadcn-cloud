@@ -11,6 +11,7 @@ import {
 	useState,
 } from 'react';
 import * as runtime from 'react/jsx-runtime';
+import DocHeader from '@/components/docs/doc-header';
 import {
 	findNodeInTree,
 	useProjectStore,
@@ -87,6 +88,9 @@ export default function DocsPreview() {
 			</div>
 			<div className="flex-1 p-4 pt-0">
 				<div className="size-full rounded-2xl bg-background border border-border overflow-y-auto">
+					<div className="p-4 bg-gradient-to-b from-muted to-background rounded-t-xl">
+						<DocHeader />
+					</div>
 					<Content components={components} />
 				</div>
 			</div>

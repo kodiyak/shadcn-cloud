@@ -1,4 +1,53 @@
 {
-  "title": "Minimal Button",
-  "description": "Native HTML Button"
+  "title": "Button",
+  "description": "Used to trigger an action or event, such as submitting a form, displaying a dialog or sending a request.",
+  "features": [
+    "A wrapper around native HTML <button>, supports all HTMLButtonElement properties, methods and events",
+    "Different variants, sizes and border radiuses",
+    "Pending state animation",
+    "Respects reduce motion settings",
+    "Supports icons, loading spinner and custom content"
+  ],
+  "references": [
+    {
+      "title": "llms.txt",
+      "href": "https://llms.ai/docs/components/button"
+    },
+    {
+      "title": "MDN Reference",
+      "href": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button"
+    }
+  ],
+  "tools": [
+    {
+      "title": "React",
+      "icon": "react",
+      "href": "https://react.dev"
+    },
+    {
+      "title": "TypeScript",
+      "icon": "typescript",
+      "href": "https://www.typescriptlang.org"
+    },
+    {
+      "title": "Radix UI",
+      "icon": "radix-ui",
+      "href": "https://www.radix-ui.com"
+    },
+    {
+      "title": "Tailwind CSS",
+      "icon": "tailwindcss",
+      "href": "https://tailwindcss.com"
+    },
+    {
+      "title": "Motion One",
+      "icon": "motion-one",
+      "href": "https://motion.dev/one"
+    },
+    {
+      "title": "@cva-ui/core",
+      "icon": "cva-ui",
+      "href": "https://cva-ui.com"
+    }
+  ]
 }

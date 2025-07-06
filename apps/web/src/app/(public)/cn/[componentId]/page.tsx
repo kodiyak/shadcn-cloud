@@ -1,7 +1,7 @@
 'use client';
 
+import DocHeader from '@/components/docs/doc-header';
 import DocContent from './_doc-content';
-import DocHeader from './_doc-header';
 
 export default function Page() {
 	return (
