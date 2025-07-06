@@ -1,16 +1,12 @@
 import { Modpack, type Orchestrator } from '@modpack/core';
-import { esmSh, inject, resolver, swc, virtual } from '@modpack/plugins';
+import { esmSh, inject, resolver, virtual } from '@modpack/plugins';
+import { react } from '@modpack/react';
+import { swc } from '@modpack/swc';
 import type { ComponentType } from 'react';
 import * as React from 'react';
 import * as DevJSXRuntime from 'react/jsx-dev-runtime';
 import * as ReactJSXRuntime from 'react/jsx-runtime';
 import * as ReactDOM from 'react-dom/client';
-import {
-	createSignatureFunctionForTransform,
-	injectIntoGlobalHook,
-	performReactRefresh,
-	register,
-} from 'react-refresh';
 import { create } from 'zustand';
 
 interface CompilationLog {
@@ -61,28 +57,7 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 			onBuildEnd: async ({ result }) => {
 				if (result && 'default' in result) {
 					const Component = result.default as ComponentType;
-					set((state) => ({
-						Component,
-						logs: [
-							...state.logs,
-							{
-								message: `Component loaded successfully: ${Component.name}`,
-								timestamp: Date.now(),
-							},
-						],
-					}));
-				}
-			},
-			onModuleUpdate: async ({ result, logger }) => {
-				if (result && 'default' in result) {
-					let update = performReactRefresh();
-
-					while (!update) {
-						update = performReactRefresh();
-						await new Promise((resolve) => setTimeout(resolve, 100));
-					}
-
-					logger.debug(`Module update detected`, { result, update });
+					set(() => ({ Component }));
 				}
 			},
 			plugins: [
@@ -90,19 +65,13 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 					name: 'fetch',
 					pipeline: {
 						fetcher: {
-							fetch: ({ url, options, next }) =>
-								url.startsWith('http') ? fetch(url) : next(),
+							fetch: ({ url, options, next }) => {
+								console.log(`OPTIONS`, options);
+								return url.startsWith('http') ? fetch(url) : next();
+							},
 						},
 					},
 				},
-				inject({
-					modules: {
-						react: React,
-						'react/jsx-dev-runtime': DevJSXRuntime,
-						'react/jsx-runtime': ReactJSXRuntime,
-						'react-dom/client': ReactDOM,
-					},
-				}),
 				swc({
 					extensions: ['.js', '.ts', '.tsx', '.jsx'],
 					jsc: {
@@ -143,6 +112,15 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 						'react/jsx-runtime',
 					],
 				}),
+				inject({
+					modules: {
+						react: React,
+						'react/jsx-dev-runtime': DevJSXRuntime,
+						'react/jsx-runtime': ReactJSXRuntime,
+						'react-dom/client': ReactDOM,
+					},
+				}),
+				react({ self: window, extensions: ['.tsx', '.jsx'] }),
 			],
 		});
 
@@ -150,29 +128,9 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 			modpack.fs.writeFile(path, content || '');
 		});
 
-		injectIntoGlobalHook(window);
-		Object.assign(window, {
-			$RefreshReg$: register,
-			$RefreshSig$: createSignatureFunctionForTransform,
-		});
-
-		console.log('React Refresh injected into global hook', window);
-
 		await modpack.mount(entrypoint);
 
-		// console.log({ modpack, mountedModule });
-
-		set((state) => ({
-			modpack,
-			isCompiling: false,
-			logs: [
-				...state.logs,
-				{
-					message: `Compilation successful for entrypoint: ${entrypoint}`,
-					timestamp: Date.now(),
-				},
-			],
-		}));
+		set(() => ({ modpack, isCompiling: false }));
 	},
 	hotReload: (path, content) => {
 		const { modpack } = get();

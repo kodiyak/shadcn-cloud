@@ -12,18 +12,19 @@
   "dependencies": {
     "@mdx-js/mdx": "^3.1.0",
     "@mdx-js/react": "^3.1.0",
-    "@modpack/core": "0.2.0-canary.8",
-    "@modpack/plugins": "0.2.0-canary.10",
+    "@modpack/core": "0.2.1-canary.14",
+    "@modpack/plugins": "0.2.1-canary.14",
+    "@modpack/react": "0.2.1-canary.14",
+    "@modpack/swc": "0.2.1-canary.14",
     "@monaco-editor/react": "4.7.0",
     "@tanstack/react-query": "^5.81.2",
     "@workspace/auth": "workspace:*",
     "@workspace/db": "workspace:*",
     "@workspace/templates": "workspace:*",
     "@workspace/ui": "workspace:*",
-    "add": "^2.0.6",
+    "motion": "12.23.0",
     "axios": "^1.10.0",
     "next": "15.3.2",
-    "react-refresh": "^0.17.0",
     "shiki": "3.7.0"
   },
   "devDependencies": {
@@ -32,7 +33,6 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/react-refresh": "^0.14.6",
     "@workspace/core": "workspace:*",
     "monaco-editor": "0.52.2"
   }

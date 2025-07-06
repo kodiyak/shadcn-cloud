@@ -7,6 +7,7 @@ import {
 	ScrollAreaShadow,
 	ScrollBar,
 } from '@workspace/ui/components/scroll-area';
+import { Spinner } from '@workspace/ui/components/spinner';
 import {
 	Tabs,
 	TabsContent,
@@ -14,8 +15,12 @@ import {
 	TabsTrigger,
 } from '@workspace/ui/components/tabs';
 import { ImageOffIcon } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useMemo } from 'react';
 import { CodeBlock } from '@/components/code-block';
+import { useCompilationStore } from '../lib/store/use-compilation-store';
+
+const MotionSpinner = motion(Spinner);
 
 interface TemplatePreviewProps {
 	template: TemplateProps;
@@ -26,6 +31,7 @@ export default function TemplatePreview({
 	template,
 	onSelect,
 }: TemplatePreviewProps) {
+	const isCompiling = useCompilationStore((state) => state.isCompiling);
 	const files = useMemo(() => {
 		return Object.entries(template.files).map(([path, content]) => {
 			const parts = path.split(/(\/|\\)/g);
@@ -61,12 +67,32 @@ export default function TemplatePreview({
 			<div className="flex-1 p-4 pt-0 relative">
 				<Button
 					className="bottom-6 right-6 z-30 absolute"
+					disabled={isCompiling}
 					onClick={() => {
 						onSelect?.(template);
 					}}
 					variant={'outline'}
 				>
-					Use Template
+					{isCompiling && (
+						<MotionSpinner
+							animate={{
+								opacity: 1,
+							}}
+							className="absolute left-1/2 top-0 translate-y-1/2 -translate-x-1/2"
+							initial={{ opacity: 0 }}
+							size={20}
+							transition={{ duration: 0.7 }}
+						/>
+					)}
+					<motion.span
+						animate={{
+							opacity: isCompiling ? 0 : 1,
+							scale: isCompiling ? 0.8 : 1,
+							transition: { duration: 0.2 },
+						}}
+					>
+						Use Template
+					</motion.span>
 				</Button>
 				<TabsContent className="size-full" value="preview">
 					<EmptyState
