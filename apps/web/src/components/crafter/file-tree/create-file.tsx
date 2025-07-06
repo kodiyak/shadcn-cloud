@@ -1,6 +1,6 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Badge } from "@workspace/ui/components/badge";
-import { Button } from "@workspace/ui/components/button";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Badge } from '@workspace/ui/components/badge';
+import { Button } from '@workspace/ui/components/button';
 import {
 	Dialog,
 	DialogContent,
@@ -8,44 +8,47 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@workspace/ui/components/dialog";
-import { FieldWrap, InputField } from "@workspace/ui/components/fields";
-import { Form, FormField } from "@workspace/ui/components/form";
-import type { UseDisclosure } from "@workspace/ui/hooks/use-disclosure";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useProjectStore } from "../lib/store/use-project-store";
+} from '@workspace/ui/components/dialog';
+import { FieldWrap, InputField } from '@workspace/ui/components/fields';
+import { Form, FormField } from '@workspace/ui/components/form';
+import type { UseDisclosure } from '@workspace/ui/hooks/use-disclosure';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { useProjectStore } from '../lib/store/use-project-store';
 
 interface CreateFileProps extends UseDisclosure {
 	parentPath: string;
 }
 
 const formData = z.object({
-	name: z.string().min(1, "File name is required"),
+	name: z.string().min(1, 'File name is required'),
 });
 
 export default function CreateFile({
 	parentPath,
 	isOpen,
 	onOpenChange,
+	onClose,
 }: CreateFileProps) {
 	const form = useForm({
 		resolver: zodResolver(formData),
 		defaultValues: {
-			name: "index.tsx",
+			name: 'index.tsx',
 		},
 	});
 	const addNode = useProjectStore((state) => state.addNode);
 
 	const onSubmit = ({ name }: z.infer<typeof formData>) => {
 		addNode(parentPath, {
-			type: "file",
+			type: 'file',
 			name,
-			content: "",
+			content: '',
+			draftContent: '',
 			isDirty: true,
 			isReadOnly: false,
 		});
+		onClose();
 	};
 
 	useEffect(() => {
@@ -56,7 +59,7 @@ export default function CreateFile({
 
 	return (
 		<Form {...form}>
-			<Dialog open={isOpen} onOpenChange={onOpenChange}>
+			<Dialog onOpenChange={onOpenChange} open={isOpen}>
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Create File</DialogTitle>
@@ -70,10 +73,10 @@ export default function CreateFile({
 					>
 						<div className="flex flex-col">
 							<FormField
-								name={"name"}
+								name={'name'}
 								render={({ field }) => (
-									<FieldWrap label={"File Name"}>
-										<InputField placeholder={"index.tsx"} {...field} />
+									<FieldWrap label={'File Name'}>
+										<InputField placeholder={'index.tsx'} {...field} />
 									</FieldWrap>
 								)}
 							/>
@@ -83,10 +86,10 @@ export default function CreateFile({
 								<span className="text-xs font-mono text-muted-foreground">
 									Parent Path
 								</span>
-								<Badge variant={"muted"}>{parentPath}</Badge>
+								<Badge variant={'muted'}>{parentPath}</Badge>
 							</div>
 
-							<Button variant={"outline"} type={"submit"}>
+							<Button type={'submit'} variant={'outline'}>
 								<span>Create File</span>
 							</Button>
 						</DialogFooter>

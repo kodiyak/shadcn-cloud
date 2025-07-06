@@ -16,27 +16,30 @@ export default function FolderItem({ path, items = [] }: NodeProps) {
 	const sortedItems = items.sort((a, b) => a.path.localeCompare(b.path));
 	const files = sortedItems.filter((item) => item.type === 'file');
 	const folders = sortedItems.filter((item) => item.type === 'directory');
+
 	return (
 		<>
 			<CreateFile {...createFile} parentPath={path} />
 			<AccordionItem className="mt-0.5" value={path}>
 				<AccordionTrigger removeArrow>
-					<div className="flex flex-1 overflow-hidden pr-5 items-center text-left gap-2 relative">
-						<FolderIcon className="size-4 shrink-0 text-muted-foreground" />
-						<span className="truncate">{name || '/'}</span>
-					</div>
-					<div className="absolute right-2 top-1.5 z-20">
-						<ButtonsIcons
-							items={[
-								{
-									label: 'Create File',
-									icon: <PlusIcon />,
-									onClick: () => createFile.onOpen(),
-								},
-							]}
-							size={'icon-xs'}
-							variant={'ghost'}
-						/>
+					<div>
+						<div className="flex flex-1 overflow-hidden pr-5 items-center text-left gap-2 relative">
+							<FolderIcon className="size-4 shrink-0 text-muted-foreground" />
+							<span className="truncate">{name || '/'}</span>
+						</div>
+						<div className="absolute right-2 top-1.5 z-20">
+							<ButtonsIcons
+								items={[
+									{
+										label: 'Create File',
+										icon: <PlusIcon />,
+										onClick: () => createFile.onOpen(),
+									},
+								]}
+								size={'icon-xs'}
+								variant={'ghost'}
+							/>
+						</div>
 					</div>
 				</AccordionTrigger>
 				<AccordionContent>

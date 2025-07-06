@@ -23,33 +23,36 @@ export default function CodeEditor() {
 	const searchNodes = useProjectStore((state) => state.searchNodes);
 	// Node is not reactive, but should be fine for now
 	const node = searchNodes((n) => n.path === path)[0];
-	const updateContent = useProjectStore((state) => state.updateContent);
+	const updateDraft = useProjectStore((state) => state.updateDraft);
 	const highlighter = useHighlighter();
 
 	const [content, setContent] = useState<string>(() => node?.content || '');
 	const [language, setLanguage] = useState<BundledLanguage>('tsx');
 
 	const monacoRef = useRef<Monaco | null>(null);
-	const onMount = useCallback<OnMount>((editor, monaco) => {
-		editor.addAction({
-			id: 'format-code',
-			label: 'Format Code',
-			keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyF],
-			run: (ed) => {
-				ed.getAction('editor.action.formatDocument')?.run();
-			},
-		});
-		editor.addAction({
-			id: 'save-code',
-			label: 'Save Code',
-			keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
-			run: (ed) => {
-				const content = ed.getValue();
-				const path = useEditorStore.getState().activePath;
-				useProjectStore.getState().save(path!, content);
-			},
-		});
-	}, []);
+	const onMount = useCallback<OnMount>(
+		(editor, monaco) => {
+			editor.addAction({
+				id: 'format-code',
+				label: 'Format Code',
+				keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyF],
+				run: (ed) => {
+					ed.getAction('editor.action.formatDocument')?.run();
+				},
+			});
+			editor.addAction({
+				id: 'save-code',
+				label: 'Save Code',
+				keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+				run: (ed) => {
+					const content = ed.getValue();
+					const path = useEditorStore.getState().activePath;
+					useProjectStore.getState().save(path!, content);
+				},
+			});
+		},
+		[path],
+	);
 
 	const onChange = useCallback<OnChange>(
 		(v) => setContent(v || ''),
@@ -90,8 +93,8 @@ export default function CodeEditor() {
 
 	// Update content in the store when content changes
 	useEffect(() => {
-		if (content !== node?.draftContent) {
-			updateContent(path || '', content);
+		if (content !== node?.draftContent && path) {
+			updateDraft(path, content);
 		}
 	}, [content]);
 

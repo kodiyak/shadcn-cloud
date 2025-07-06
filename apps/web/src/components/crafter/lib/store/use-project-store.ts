@@ -2,7 +2,6 @@ import type { TemplateProps } from '@workspace/core';
 import { create } from 'zustand';
 import type { NodeProps } from '../../types';
 import { useCompilationStore } from './use-compilation-store';
-import { useEditorStore } from './use-editor-store';
 
 interface CreateNodeProps extends Omit<NodeProps, 'path'> {
 	name: string;
@@ -15,8 +14,8 @@ interface ProjectStore {
 	setNodes: (nodes: NodeProps[]) => void;
 	addNode: (parent: string, node: CreateNodeProps) => void;
 	deleteNode: (path: string) => void;
-	renameNode: (oldPath: string, newPath: string) => void;
-	updateContent: (path: string, content: string) => void;
+	renameNode: (oldPath: string, filename: string) => void;
+	updateDraft: (path: string, draftContent: string) => void;
 	findNode: (path: string) => NodeProps | undefined;
 	searchNodes: (callback: (node: NodeProps) => boolean) => NodeProps[];
 	save: (path: string, content: string) => Promise<void>;
@@ -124,40 +123,45 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		const parentNode = findNodeInTree(nodes, parent);
 		const path = formatPath(`${parent}/${node.name}`);
 		if (!parentNode) {
-			set((state) => ({
-				nodes: [...state.nodes, { ...node, path }],
-			}));
+			console.warn(`Parent node not found for path: ${parent}`);
+			console.warn(`Available nodes:`, nodes);
 			return;
 		}
 
-		if (parentNode.type === 'directory') {
-			const updatedChildren: NodeProps[] = [
-				...(parentNode.items || []),
-				{ ...node, path },
-			];
-			set((state) => ({
-				nodes: state.nodes.map((n) =>
-					n.path === parent ? { ...n, items: updatedChildren } : n,
-				),
-			}));
-			useEditorStore.getState().openFile(path);
-		} else {
-			console.error('Cannot add a node to a file.');
+		if (parentNode.type !== 'directory') {
+			console.error(`Parent node is not a directory: ${parent}`);
+			return;
 		}
+
+		// Ensure parentNode.items is initialized
+		if (!parentNode.items) parentNode.items = [];
+
+		// Check if the node already exists
+		if (parentNode.items.some((item) => item.path === path)) {
+			console.warn(`Node already exists at path: ${path}`);
+			return;
+		}
+
+		const newNode: NodeProps = {
+			...node,
+			path,
+			content: node.content || '',
+			draftContent: node.draftContent || '',
+			isDirty: true,
+		};
+
+		parentNode.items.push(newNode);
+
+		set({
+			nodes: updateNodeInTree(parent, { items: parentNode.items }, nodes),
+		});
 	},
 	deleteNode: (path) => {
 		set((state) => ({
 			nodes: state.nodes.filter((node) => node.path !== path),
 		}));
 	},
-	renameNode: (oldPath, newPath) => {
-		set((state) => ({
-			nodes: state.nodes.map((node) =>
-				node.path === oldPath ? { ...node, path: newPath } : node,
-			),
-		}));
-	},
-	updateContent: (path, content) => {
+	updateDraft: (path, draftContent) => {
 		const { nodes } = get();
 		const node = findNodeInTree(nodes, path);
 		if (!node) {
@@ -165,21 +169,55 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			return;
 		}
 
-		// Recursively update content in the node tree
-		const updateNodeContent = (nodes: NodeProps[]): NodeProps[] => {
-			return nodes.map((node) => {
-				if (node.path === path) {
-					return { ...node, draftContent: content, isDirty: true };
-				}
-				if (node.type === 'directory' && node.items) {
-					return { ...node, items: updateNodeContent(node.items) };
-				}
-				return node;
-			});
-		};
+		if (node.content === draftContent) {
+			console.warn(`No changes detected for path ${path}. Skipping update...`);
+			return;
+		}
 
 		set({
-			nodes: updateNodeContent(nodes),
+			nodes: updateNodeInTree(
+				path,
+				{ draftContent: draftContent, isDirty: true },
+				nodes,
+			),
+		});
+	},
+	renameNode: (oldPath, filename) => {
+		const { nodes } = get();
+		const { modpack } = useCompilationStore.getState();
+		const node = findNodeInTree(nodes, oldPath);
+		if (!node) {
+			console.error(`Node not found for path: ${oldPath}`);
+			return;
+		}
+		const parentNode = findNodeInTree(nodes, oldPath.replace(/\/[^/]+$/, ''));
+		if (!parentNode || parentNode.type !== 'directory') {
+			console.error(
+				`Parent node not found or is not a directory for path: ${oldPath}`,
+			);
+			return;
+		}
+
+		if (parentNode.items) {
+			const existingNode = parentNode.items.find(
+				(item) => item.path === filename,
+			);
+			if (existingNode) {
+				console.warn(`Node already exists at path: ${filename}`);
+				return;
+			}
+		}
+
+		const newPath = formatPath(parentNode.path, filename);
+		const updatedNode: NodeProps = {
+			...node,
+			path: newPath,
+		};
+		modpack?.fs.rm(oldPath);
+		modpack?.fs.writeFile(newPath, updatedNode.content || '');
+
+		set({
+			nodes: updateNodeInTree(oldPath, updatedNode, nodes),
 		});
 	},
 	save: async (path, content) => {
@@ -195,21 +233,12 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			return;
 		}
 
-		// Recursively update content in the node tree
-		const updateNodeContent = (nodes: NodeProps[]): NodeProps[] => {
-			return nodes.map((node) => {
-				if (node.path === path) {
-					return { ...node, content, isDirty: false };
-				}
-				if (node.type === 'directory' && node.items) {
-					return { ...node, items: updateNodeContent(node.items) };
-				}
-				return node;
-			});
-		};
-
 		set({
-			nodes: updateNodeContent(nodes),
+			nodes: updateNodeInTree(
+				path,
+				{ content, draftContent: content, isDirty: false },
+				nodes,
+			),
 		});
 		useCompilationStore.getState().hotReload(path, content);
 	},
@@ -260,6 +289,23 @@ function splitPath(path: string): string[] {
 	return path.split(/[\\/]/).filter(Boolean);
 }
 
-function formatPath(path: string) {
-	return `/${splitPath(path).join('/')}`;
+function formatPath(...paths: string[]) {
+	return `/${splitPath(paths.join('/')).join('/')}`;
+}
+
+export function updateNodeInTree(
+	path: string,
+	props: Partial<NodeProps>,
+	nodes: NodeProps[],
+): NodeProps[] {
+	const updatedNodes = nodes.map((node) => {
+		if (node.path === path) {
+			return { ...node, ...props };
+		}
+		if (node.type === 'directory' && node.items) {
+			return { ...node, items: updateNodeInTree(path, props, node.items) };
+		}
+		return node;
+	});
+	return updatedNodes;
 }
