@@ -1,4 +1,4 @@
-import Card from "..";
+import Card from '/index.tsx';
 
 export default function HeroPreview() {
 	return (

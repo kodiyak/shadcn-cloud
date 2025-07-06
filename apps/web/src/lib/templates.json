@@ -60,13 +60,43 @@
     }
   },
   {
-    "title": "Minimal Card",
-    "description": "Basic Card Component",
+    "title": "Card",
+    "description": "Displays a card with header, content, and footer.",
+    "features": [
+      "Forms, buttons, links and more..."
+    ],
+    "references": [
+      {
+        "title": "llms.txt",
+        "href": "https://llms.ai/docs/components/card"
+      },
+      {
+        "title": "MDN Reference",
+        "href": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/card"
+      }
+    ],
+    "tools": [
+      {
+        "title": "React",
+        "icon": "react",
+        "href": "https://react.dev"
+      },
+      {
+        "title": "TypeScript",
+        "icon": "typescript",
+        "href": "https://www.typescriptlang.org"
+      },
+      {
+        "title": "Tailwind CSS",
+        "icon": "tailwindcss",
+        "href": "https://tailwindcss.com"
+      }
+    ],
     "files": {
       "index.mdx": "import HeroPreview from \"./previews/hero\";\r\n\r\n# Card\r\n\r\nThis is a minimal card component documentation.\r\n\r\n## Usage\r\n\r\n```tsx\r\nimport Card from \"@workspace/ui/components/card\";\r\n```\r\n\r\n```tsx\r\n<Card>\r\n  <h1>Title</h1>\r\n  <p>Description</p>\r\n</Card>\r\n```\r\n",
       "index.tsx": "import type { PropsWithChildren } from \"react\";\r\n\r\nexport default function Card({ children }: PropsWithChildren) {\r\n\treturn <div className=\"card\">{children}</div>;\r\n}\r\n",
-      "metadata.json": "{\r\n  \"title\": \"Minimal Card\",\r\n  \"description\": \"Basic Card Component\"\r\n}",
-      "previews\\hero.tsx": "import Card from \"..\";\r\n\r\nexport default function HeroPreview() {\r\n\treturn (\r\n\t\t<Card>\r\n\t\t\t<h1>Title</h1>\r\n\t\t\t<p>Description</p>\r\n\t\t</Card>\r\n\t);\r\n}\r\n"
+      "metadata.json": "{\r\n  \"title\": \"Card\",\r\n  \"description\": \"Displays a card with header, content, and footer.\",\r\n  \"features\": [\r\n    \"Forms, buttons, links and more...\"\r\n  ],\r\n  \"references\": [\r\n    {\r\n      \"title\": \"llms.txt\",\r\n      \"href\": \"https://llms.ai/docs/components/card\"\r\n    },\r\n    {\r\n      \"title\": \"MDN Reference\",\r\n      \"href\": \"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/card\"\r\n    }\r\n  ],\r\n  \"tools\": [\r\n    {\r\n      \"title\": \"React\",\r\n      \"icon\": \"react\",\r\n      \"href\": \"https://react.dev\"\r\n    },\r\n    {\r\n      \"title\": \"TypeScript\",\r\n      \"icon\": \"typescript\",\r\n      \"href\": \"https://www.typescriptlang.org\"\r\n    },\r\n    {\r\n      \"title\": \"Tailwind CSS\",\r\n      \"icon\": \"tailwindcss\",\r\n      \"href\": \"https://tailwindcss.com\"\r\n    }\r\n  ]\r\n}",
+      "previews\\hero.tsx": "import Card from '/index.tsx';\r\n\r\nexport default function HeroPreview() {\r\n\treturn (\r\n\t\t<Card>\r\n\t\t\t<h1>Title</h1>\r\n\t\t\t<p>Description</p>\r\n\t\t</Card>\r\n\t);\r\n}\r\n"
     }
   },
   {
