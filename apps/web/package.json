@@ -23,7 +23,6 @@
     "@workspace/templates": "workspace:*",
     "@workspace/ui": "workspace:*",
     "motion": "12.23.0",
-    "axios": "^1.10.0",
     "next": "15.3.2",
     "shiki": "3.7.0"
   },

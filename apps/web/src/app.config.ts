@@ -4,7 +4,7 @@ import type {
 	BundledLanguage,
 	BundledTheme,
 } from 'shiki';
-import githubDark from 'shiki/themes/github-dark-dimmed.mjs';
+import shikiTheme from 'shiki/themes/vitesse-dark.mjs';
 
 interface AppConfig {
 	name: string;
@@ -15,9 +15,19 @@ interface AppConfig {
 export const appConfig: AppConfig = {
 	name: 'shadcn-cloud',
 	shikiOptions: {
-		themes: [{ ...githubDark, name: 'default' }],
-		langs: ['typescript', 'tsx', 'json', 'markdown', 'mdx'],
-		langAlias: { typescript: 'tsx' },
+		themes: [{ ...shikiTheme, name: 'default' }],
+		langs: [
+			'typescript',
+			'tsx',
+			'json',
+			'markdown',
+			'mdx',
+			'jsx',
+			'js',
+			'javascript',
+			'html',
+		],
+		langAlias: {},
 	},
 	editorOptions: {
 		fontFamily: 'var(--font-mono)',

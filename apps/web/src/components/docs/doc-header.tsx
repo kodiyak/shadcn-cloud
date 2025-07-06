@@ -21,7 +21,7 @@ export default function DocHeader({
 }: DocHeaderProps) {
 	return (
 		<div className="flex flex-col container max-w-4xl mx-auto">
-			<div className="flex items-end border-b border-dashed pb-6 gap-16">
+			<div className="flex flex-col md:flex-row md:items-end border-b border-dashed pb-6 gap-16">
 				<div className="flex flex-col flex-1 gap-6">
 					<div className="flex flex-col gap-4">
 						<h2 className="text-3xl font-bold font-mono">{title}</h2>

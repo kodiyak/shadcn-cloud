@@ -10,8 +10,8 @@ function Tabs({
 }: React.ComponentProps<typeof TabsPrimitive.Root>) {
 	return (
 		<TabsPrimitive.Root
-			data-slot="tabs"
 			className={cn('flex flex-col gap-2', className)}
+			data-slot="tabs"
 			{...props}
 		/>
 	);
@@ -23,11 +23,11 @@ function TabsList({
 }: React.ComponentProps<typeof TabsPrimitive.List>) {
 	return (
 		<TabsPrimitive.List
-			data-slot="tabs-list"
 			className={cn(
 				'text-muted-foreground flex items-center justify-start p-[3px]',
 				className,
 			)}
+			data-slot="tabs-list"
 			{...props}
 		/>
 	);
@@ -39,7 +39,6 @@ function TabsTrigger({
 }: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
 	return (
 		<TabsPrimitive.Trigger
-			data-slot="tabs-trigger"
 			className={cn(
 				'data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 ',
 				'focus-visible:outline-ring dark:data-[state=active]:border-input/35 dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground ',
@@ -48,6 +47,7 @@ function TabsTrigger({
 				"data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 				className,
 			)}
+			data-slot="tabs-trigger"
 			{...props}
 		/>
 	);
@@ -59,8 +59,8 @@ function TabsContent({
 }: React.ComponentProps<typeof TabsPrimitive.Content>) {
 	return (
 		<TabsPrimitive.Content
-			data-slot="tabs-content"
 			className={cn('flex-1 flex flex-col outline-none', className)}
+			data-slot="tabs-content"
 			{...props}
 		/>
 	);
