@@ -2,6 +2,7 @@ import { compile, run } from '@mdx-js/mdx';
 import { ErrorBoundary } from '@workspace/ui/components/error-boundary';
 import { SelectField } from '@workspace/ui/components/fields';
 import { FileCodeIcon } from '@workspace/ui/components/icons';
+import { ScrollArea } from '@workspace/ui/components/scroll-area';
 import { cn } from '@workspace/ui/lib/utils';
 import {
 	Fragment,
@@ -86,38 +87,18 @@ export default function DocsPreview() {
 
 	return (
 		<div className="size-full flex flex-col">
-			<div className="h-12 flex items-center px-4">
-				<SelectField
-					_content={{ align: 'end' }}
-					onChange={(v) => setPath(() => v ?? '/')}
-					options={docsNodes.map((node) => ({
-						value: node.path,
-						label: node.path.split('/').pop() || 'Untitled',
-						icon: (
-							<FileCodeIcon
-								className="size-4"
-								type={node.path.split('.').pop()}
-							/>
-						),
-					}))}
-					size={'xs'}
-					value={path}
-				/>
-			</div>
-			<div className="flex-1 p-4 pt-0">
-				<div className="size-full relative">
-					<div className="size-full rounded-2xl bg-background absolute inset-0 border border-border overflow-y-scroll">
-						<div className="p-4 bg-gradient-to-b from-muted to-background rounded-t-xl">
-							<DocHeader {...metadata} />
-						</div>
-						{content.length}
-						<ErrorBoundary
-							fallback={<div>Error loading documentation</div>}
-							key={`error.${content}`}
-						>
-							<Content components={components} key={`content.${content}`} />
-						</ErrorBoundary>
+			<div className="size-full relative overflow-hidden">
+				<div className="size-full rounded-2xl bg-background absolute inset-0 overflow-y-scroll">
+					<div className="p-4 bg-gradient-to-b from-muted to-background rounded-t-xl">
+						<DocHeader {...metadata} />
 					</div>
+					{content.length}
+					<ErrorBoundary
+						fallback={<div>Error loading documentation</div>}
+						key={`error.${content}`}
+					>
+						<Content components={components} key={`content.${content}`} />
+					</ErrorBoundary>
 				</div>
 			</div>
 		</div>
