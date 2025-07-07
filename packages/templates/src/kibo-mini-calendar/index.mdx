@@ -1,0 +1,39 @@
+# Usage
+
+```tsx
+import Button from "@workspace/ui/components/button";
+
+<Button>Click me</Button>
+```
+
+
+# Previews
+
+## Minimal
+<Preview path={'/previews/minimal.tsx'} />
+
+# Props
+
+<TypeTable
+  type={{
+    variant: {
+      description: 'Button variants',
+      type: '"default" | "primary" | "secondary" | "destructive" | "outline" | "ghost" | "link"',
+      default: 'default',
+    },
+    size: {
+      description: 'Button sizes',
+      type: '"default" | "sm" | "lg"',
+      default: 'default',
+    },
+    disabled: {
+      description: 'Disable the button',
+      type: 'boolean',
+      default: 'false',
+    },
+    className: {
+      description: 'Additional CSS classes',
+      type: 'string',
+    },
+  }}
+/>

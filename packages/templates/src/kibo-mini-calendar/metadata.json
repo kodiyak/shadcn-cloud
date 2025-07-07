@@ -1,21 +1,22 @@
 {
-  "title": "Button",
-  "description": "Used to trigger an action or event, such as submitting a form, displaying a dialog or sending a request.",
+  "title": "Kibo Mini Calendar",
+  "description": "Customizable mini calendar component for React, built with Radix UI and Tailwind CSS.",
   "features": [
-    "A wrapper around native HTML <button>, supports all HTMLButtonElement properties, methods and events",
-    "Different variants, sizes and border radiuses",
-    "Pending state animation",
-    "Respects reduce motion settings",
-    "Supports icons, loading spinner and custom content"
+    "Customizable date selection",
+    "Supports range selection",
+    "Keyboard navigation",
+    "Accessible with ARIA attributes",
+    "Responsive design with Tailwind CSS",
+    "Animations with Motion One"
   ],
   "references": [
     {
       "title": "llms.txt",
-      "href": "https://llms.ai/docs/components/button"
+      "href": "https://llms.ai/docs/components/calendar"
     },
     {
       "title": "MDN Reference",
-      "href": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button"
+      "href": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/calendar"
     }
   ],
   "tools": [

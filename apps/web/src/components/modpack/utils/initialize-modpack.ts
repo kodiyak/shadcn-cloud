@@ -11,7 +11,8 @@ import * as MotionReactMini from 'motion/react-mini';
 import * as React from 'react';
 import * as DevJSXRuntime from 'react/jsx-dev-runtime';
 import * as ReactJSXRuntime from 'react/jsx-runtime';
-import * as ReactDOM from 'react-dom/client';
+import * as ReactDOM from 'react-dom';
+import * as ReactDOMClient from 'react-dom/client';
 
 export async function initializeModpack(options?: ModpackBootOptions) {
 	const modpack = await Modpack.boot({
@@ -79,13 +80,14 @@ export async function initializeModpack(options?: ModpackBootOptions) {
 				modules: {
 					react: React,
 					motion: Motion,
+					'react-dom': ReactDOM,
 					'motion/react': MotionReact,
 					'motion/react-client': MotionReactClient,
 					'motion/react-m': MotionReactM,
 					'motion/react-mini': MotionReactMini,
 					'react/jsx-dev-runtime': DevJSXRuntime,
 					'react/jsx-runtime': ReactJSXRuntime,
-					'react-dom/client': ReactDOM,
+					'react-dom/client': ReactDOMClient,
 					...modpackUi,
 				},
 			}),
