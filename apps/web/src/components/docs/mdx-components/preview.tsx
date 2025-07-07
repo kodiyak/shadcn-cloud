@@ -21,8 +21,8 @@ import {
 	useProjectStore,
 } from '@/components/crafter/lib/store/use-project-store';
 import type { NodeProps } from '@/components/crafter/types';
-import { useModpack } from '@/components/modbox/hooks/use-modpack';
-import ModpackRender from '@/components/modbox/modpack-render';
+import { useModpack } from '@/components/modpack/hooks/use-modpack';
+import ModpackRender from '@/components/modpack/modpack-render';
 import useCopy from '@/lib/hooks/use-copy';
 
 interface PreviewProps {
