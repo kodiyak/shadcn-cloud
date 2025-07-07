@@ -26,7 +26,6 @@ export default function FileItem({ path, content, draftContent }: NodeProps) {
 	const onSaveEdit = () => {
 		openEdit.onToggle();
 		if (updatedValue && updatedValue !== filename) {
-			// useEditorStore.getState().renameFile(path, updatedValue);
 			useProjectStore.getState().renameNode(path, updatedValue);
 		}
 	};

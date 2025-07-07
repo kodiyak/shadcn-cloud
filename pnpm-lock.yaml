@@ -112,6 +112,9 @@ importers:
       '@shikijs/monaco':
         specifier: 3.7.0
         version: 3.7.0
+      '@shikijs/transformers':
+        specifier: 3.7.0
+        version: 3.7.0
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.1.10
@@ -1339,6 +1342,9 @@ packages:
 
   '@shikijs/themes@3.7.0':
     resolution: {integrity: sha512-VJx8497iZPy5zLiiCTSIaOChIcKQwR0FebwE9S3rcN0+J/GTWwQ1v/bqhTbpbY3zybPKeO8wdammqkpXc4NVjQ==}
+
+  '@shikijs/transformers@3.7.0':
+    resolution: {integrity: sha512-VplaqIMRNsNOorCXJHkbF5S0pT6xm8Z/s7w7OPZLohf8tR93XH0krvUafpNy/ozEylrWuShJF0+ftEB+wFRwGA==}
 
   '@shikijs/types@3.7.0':
     resolution: {integrity: sha512-MGaLeaRlSWpnP0XSAum3kP3a8vtcTsITqoEPYdt3lQG3YCdQH4DnEhodkYcNMcU0uW0RffhoD1O3e0vG5eSBBg==}
@@ -3427,6 +3433,11 @@ snapshots:
 
   '@shikijs/themes@3.7.0':
     dependencies:
+      '@shikijs/types': 3.7.0
+
+  '@shikijs/transformers@3.7.0':
+    dependencies:
+      '@shikijs/core': 3.7.0
       '@shikijs/types': 3.7.0
 
   '@shikijs/types@3.7.0':

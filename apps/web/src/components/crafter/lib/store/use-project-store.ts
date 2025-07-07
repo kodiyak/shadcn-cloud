@@ -1,7 +1,6 @@
 import type { TemplateProps } from '@workspace/core';
 import { create } from 'zustand';
 import type { NodeProps } from '../../types';
-import { useCompilationStore } from './use-compilation-store';
 
 interface CreateNodeProps extends Omit<NodeProps, 'path'> {
 	name: string;
@@ -30,7 +29,6 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 	},
 	selectTemplate: async (template) => {
 		const { files: templateFiles } = template;
-		const { compile } = useCompilationStore.getState();
 		const nodes: NodeProps[] = [
 			{
 				type: 'directory',
@@ -104,8 +102,6 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			console.error('No valid entrypoint found in the template files.');
 			return;
 		}
-
-		await compile({ files: modpackFiles, entrypoint });
 
 		set({
 			isReady: true,
@@ -184,7 +180,6 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 	},
 	renameNode: (oldPath, filename) => {
 		const { nodes } = get();
-		const { modpack } = useCompilationStore.getState();
 		const node = findNodeInTree(nodes, oldPath);
 		if (!node) {
 			console.error(`Node not found for path: ${oldPath}`);
@@ -213,8 +208,8 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			...node,
 			path: newPath,
 		};
-		modpack?.fs.rm(oldPath);
-		modpack?.fs.writeFile(newPath, updatedNode.content || '');
+		// modpack?.fs.rm(oldPath);
+		// modpack?.fs.writeFile(newPath, updatedNode.content || '');
 
 		set({
 			nodes: updateNodeInTree(oldPath, updatedNode, nodes),
@@ -240,7 +235,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 				nodes,
 			),
 		});
-		useCompilationStore.getState().hotReload(path, content);
+		// useCompilationStore.getState().hotReload(path, content);
 	},
 }));
 

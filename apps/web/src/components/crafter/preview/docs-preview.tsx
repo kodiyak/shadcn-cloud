@@ -97,10 +97,10 @@ export default function DocsPreview() {
 			<div className="size-full relative overflow-hidden">
 				<div className="size-full rounded-2xl bg-background absolute inset-0 overflow-hidden">
 					<ScrollArea className="size-full absolute inset-0">
-						<div className="p-4 bg-gradient-to-b from-muted/15 to-background rounded-t-xl">
+						<div className="pt-12 bg-gradient-to-b from-muted/15 to-background rounded-t-xl">
 							<DocHeader {...metadata} />
 						</div>
-						<div className="max-w-xl mx-auto min-h-screen flex flex-col gap-2">
+						<div className="max-w-4xl mx-auto min-h-screen flex flex-col gap-2">
 							<ErrorBoundary
 								fallback={(err) => (
 									<div>Error loading documentation {err?.stack}</div>
