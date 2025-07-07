@@ -1,18 +1,7 @@
-import { Modpack, type Orchestrator } from '@modpack/core';
-import { esmSh, inject, resolver, virtual } from '@modpack/plugins';
-import { react } from '@modpack/react';
-import { swc } from '@modpack/swc';
-import type { ComponentType } from 'react';
-import * as React from 'react';
-import * as DevJSXRuntime from 'react/jsx-dev-runtime';
-import * as ReactJSXRuntime from 'react/jsx-runtime';
-import * as ReactDOM from 'react-dom/client';
+import type { Orchestrator } from '@modpack/core';
 import { create } from 'zustand';
-
-interface CompilationLog {
-	timestamp: number;
-	message: string;
-}
+import type { ModpackLog } from '@/components/modpack/types';
+import { initializeModpack } from '@/components/modpack/utils/initialize-modpack';
 
 interface CompileProps {
 	entrypoint: string;
@@ -20,26 +9,27 @@ interface CompileProps {
 }
 
 interface CompilationStore {
-	isCompiling: boolean;
-	logs: CompilationLog[];
+	isReady: boolean;
+	logs: ModpackLog[];
 	modpack: Orchestrator | null;
-	Component: ComponentType | null;
-	previews: string[];
-	currentPreview: string | null;
+	results: Record<string, any>;
+	compiling: Record<string, boolean>;
+	errors: Record<string, Error>;
 	files: Record<string, string>;
 	compile: (props: CompileProps) => Promise<void>;
 	hotReload: (path: string, content: string) => void;
 }
 
 export const useCompilationStore = create<CompilationStore>((set, get) => ({
-	isCompiling: false,
+	isReady: false,
 	logs: [],
-	previews: [],
 	files: {},
-	currentPreview: null,
-	Component: null,
+	results: {},
+	errors: {},
+	compiling: {},
 	modpack: null,
 	compile: async ({ files, entrypoint }) => {
+		const { modpack } = get();
 		const file = files[entrypoint];
 		if (!file) {
 			throw new Error(
@@ -47,82 +37,14 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 			);
 		}
 
-		set({
+		if (!modpack) {
+			throw new Error('Modpack is not initialized.');
+		}
+
+		set((s) => ({
 			files,
-			isCompiling: true,
-			logs: [],
-		});
-		const modpack = await Modpack.boot({
-			debug: true,
-			onBuildEnd: async ({ result }) => {
-				if (result && 'default' in result) {
-					const Component = result.default as ComponentType;
-					set(() => ({ Component }));
-				}
-			},
-			plugins: [
-				{
-					name: 'fetch',
-					pipeline: {
-						fetcher: {
-							fetch: ({ url, options, next }) => {
-								console.log(`OPTIONS`, options);
-								return url.startsWith('http') ? fetch(url) : next();
-							},
-						},
-					},
-				},
-				swc({
-					extensions: ['.js', '.ts', '.tsx', '.jsx'],
-					jsc: {
-						target: 'es2022',
-						parser: {
-							syntax: 'typescript',
-							tsx: true,
-						},
-						transform: {
-							legacyDecorator: true,
-							decoratorMetadata: true,
-							react: {
-								development: true,
-								refresh: true,
-								runtime: 'automatic',
-							},
-						},
-					},
-					sourceMaps: true,
-					module: {
-						type: 'es6',
-						strict: false,
-						ignoreDynamic: true,
-						importInterop: 'swc',
-					},
-				}),
-				resolver({
-					extensions: ['.js', '.ts', '.tsx', '.jsx'],
-					alias: { '@/': '/src/' },
-					index: true,
-				}),
-				virtual(),
-				esmSh({
-					external: [
-						'react',
-						'react-dom',
-						'react/jsx-dev-runtime',
-						'react/jsx-runtime',
-					],
-				}),
-				inject({
-					modules: {
-						react: React,
-						'react/jsx-dev-runtime': DevJSXRuntime,
-						'react/jsx-runtime': ReactJSXRuntime,
-						'react-dom/client': ReactDOM,
-					},
-				}),
-				react({ self: window, extensions: ['.tsx', '.jsx'] }),
-			],
-		});
+			compiling: { ...s.compiling, [entrypoint]: true },
+		}));
 
 		Object.entries(files).forEach(([path, content]) => {
 			modpack.fs.writeFile(path, content || '');
@@ -130,7 +52,7 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 
 		await modpack.mount(entrypoint);
 
-		set(() => ({ modpack, isCompiling: false }));
+		set(() => ({ modpack, isReady: false }));
 	},
 	hotReload: (path, content) => {
 		const { modpack } = get();
@@ -143,3 +65,118 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 		}));
 	},
 }));
+
+async function main() {
+	if (useCompilationStore.getState().isReady) {
+		console.warn('Modpack is already initialized');
+		return;
+	}
+	const modpack = await initializeModpack({
+		onBoot: ({ reporter }) => {
+			reporter.log('info', 'Modpack booting...');
+		},
+		onBuildStart: ({ reporter }) => {
+			reporter.log('info', 'Modpack build starting...');
+		},
+		onBuildEnd: async ({ result, error, options, entrypoint, reporter }) => {
+			if (result) {
+				useCompilationStore.setState((s) => ({
+					results: { ...s.results, [entrypoint]: result },
+				}));
+			}
+
+			if (error) {
+				useCompilationStore.setState((prev) => ({
+					errors: { ...prev.errors, [entrypoint]: error },
+				}));
+			}
+
+			useCompilationStore.setState((prev) => ({
+				compiling: { ...prev.compiling, [entrypoint]: false },
+			}));
+
+			if (result) {
+				reporter.log('info', 'Build completed successfully');
+
+				console.log('Modpack build completed:', {
+					result,
+					options,
+					entrypoint,
+				});
+			} else {
+				console.error('Build failed:', error);
+				reporter.log(
+					'error',
+					`Build failed: ${error ? error.message : 'Unknown error'}`,
+				);
+			}
+		},
+		onLog: (log) => {
+			console.log('Modpack log:', log);
+			useCompilationStore.setState((state) => ({
+				logs: [...state.logs, { level: log.level, message: log.message }],
+			}));
+		},
+		onSourceStart: ({ url, options, reporter, parent }) => {
+			reporter.log(
+				'info',
+				[
+					`Starting source: ${url}`,
+					`Options:`,
+					JSON.stringify({ options, parent }, null, 2),
+				].join('\n'),
+			);
+		},
+		onSourceEnd: ({ url, options, reporter, parent, result, error }) => {
+			reporter.log(
+				error ? 'error' : 'info',
+				[
+					`Finished source: ${url}`,
+					`Options:`,
+					JSON.stringify({ error, options, parent, result }, null, 2),
+				].join('\n'),
+			);
+		},
+
+		onFetchStart: ({ url, options, reporter }) => {
+			reporter.log(
+				'info',
+				`Fetching URL: ${url} with options: ${JSON.stringify(options)}`,
+			);
+		},
+		onFetchEnd: ({ url, options, reporter, response, error }) => {
+			reporter.log(
+				error ? 'error' : 'info',
+				[
+					`Fetch completed for URL: ${url}`,
+					`Options: ${JSON.stringify(options)}`,
+					`Response: ${response ? response.status : 'No response'}`,
+					error ? `Error: ${error.message}` : '',
+				].join('\n'),
+			);
+		},
+		onModuleUpdate: ({ reporter, path, content, updated, result, error }) => {
+			reporter.log(
+				error ? 'error' : 'info',
+				[
+					`Module update for path: ${path}`,
+					`Content: ${content ? content.slice(0, 100) + '...' : 'No content'}`,
+					`Updated: ${updated}`,
+					result ? `Result: ${JSON.stringify(result)}` : '',
+					error ? `Error: ${error.message}` : '',
+				].join('\n'),
+			);
+
+			useCompilationStore.setState((prev) => ({
+				compiling: { ...prev.compiling, [path]: false },
+			}));
+		},
+	});
+
+	useCompilationStore.setState({
+		modpack,
+		isReady: true,
+	});
+}
+
+main();

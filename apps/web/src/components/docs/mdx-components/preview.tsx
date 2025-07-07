@@ -12,15 +12,14 @@ import {
 import { cn } from '@workspace/ui/lib/utils';
 import { RefreshCwIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { CodeBlock } from '@/components/code-block';
+import { useCompilationStore } from '@/components/crafter/lib/store/use-compilation-store';
 import {
 	findNodeInTree,
 	getNodeFiles,
 	useProjectStore,
 } from '@/components/crafter/lib/store/use-project-store';
-import ModpackLogs from '@/components/modpack/modpack-logs';
-import { useModpackProvider } from '@/components/providers/modpack-provider';
 import useCopy from '@/lib/hooks/use-copy';
 
 interface PreviewProps {
@@ -29,21 +28,14 @@ interface PreviewProps {
 
 function Preview({ path }: PreviewProps) {
 	const node = useProjectStore((state) => findNodeInTree(state.nodes, path));
-	const modpack = useModpackProvider();
-	const module = useMemo(() => modpack.results[path], [path, modpack.results]);
-	const error = useMemo(() => modpack.errors[path], [path, modpack.errors]);
-	const compiling = useMemo(
-		() => modpack.compiling[path],
-		[path, modpack.compiling],
-	);
+	const compile = useCompilationStore((state) => state.compile);
+	const module = useCompilationStore((state) => state.results)[path];
+	const error = useCompilationStore((state) => state.errors)[path];
+	const compiling = useCompilationStore((state) => state.compiling)[path];
 
 	const [copied, onCopy] = useCopy(2.5);
 
-	const status = modpack.compiling[path]
-		? 'compiling'
-		: modpack.errors[path]
-			? 'error'
-			: 'ready';
+	const status = compiling ? 'compiling' : error ? 'error' : 'ready';
 	const compilationStatus = {
 		compiling: {
 			label: 'Compiling...',
@@ -65,33 +57,39 @@ function Preview({ path }: PreviewProps) {
 	const Component = useMemo(() => {
 		if (!module) return null;
 		return module.default || module.Component || null;
-	}, [module]);
+	}, [module, path, compiling]);
 
 	const load = async (entrypoint: string) => {
 		const { nodes } = useProjectStore.getState();
 		const files = getNodeFiles(nodes);
 		console.log('Compiling modpack with files:', { files, nodes });
-		await modpack.compile({
+		await compile({
 			entrypoint,
 			files,
 		});
 	};
 
+	console.log({
+		compiling,
+		error,
+		module,
+		node,
+		Component,
+	});
+
 	return (
 		<Tabs
 			className={cn(
 				'flex flex-col rounded-xl gap-0 border bg-muted/30',
-				// modpack.isError && 'border-destructive',
-				// modpack.isCompiling && 'animate-pulse',
+				// isError && 'border-destructive',
+				// isCompiling && 'animate-pulse',
 			)}
 			defaultValue="preview"
 		>
 			<div className="flex px-4 py-2 items-center">
 				<div className="flex flex-col flex-1">
 					<span className="text-lg font-medium tracking-wider">Button.tsx</span>
-					<span className="text-xs text-muted-foreground">
-						Minimal Button Preview
-					</span>
+					<span className="text-xs text-muted-foreground">{path}</span>
 				</div>
 				<TabsList>
 					<TabsTrigger value="preview">Preview</TabsTrigger>
@@ -102,7 +100,7 @@ function Preview({ path }: PreviewProps) {
 					items={[
 						{
 							label: 'Reload',
-							icon: modpack.compiling[path] ? (
+							icon: compiling ? (
 								<Spinner size={16} />
 							) : (
 								<RefreshCwIcon className="size-4" />
@@ -146,7 +144,6 @@ function Preview({ path }: PreviewProps) {
 							</motion.div>
 						</AnimatePresence>
 					)}
-					<ModpackLogs logs={modpack.logs} />
 				</TabsContent>
 				<TabsContent className="relative" value="code">
 					<CodeBlock

@@ -1,6 +1,7 @@
 import type { TemplateProps } from '@workspace/core';
 import { create } from 'zustand';
 import type { NodeProps } from '../../types';
+import { useCompilationStore } from './use-compilation-store';
 
 interface CreateNodeProps extends Omit<NodeProps, 'path'> {
 	name: string;
@@ -235,7 +236,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 				nodes,
 			),
 		});
-		// useCompilationStore.getState().hotReload(path, content);
+		useCompilationStore.getState().hotReload(path, content);
 	},
 }));
 
