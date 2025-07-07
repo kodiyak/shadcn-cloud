@@ -11,11 +11,13 @@ import {
 } from '@workspace/ui/components/tabs';
 import { cn } from '@workspace/ui/lib/utils';
 import { RefreshCwIcon } from 'lucide-react';
-import { useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useState } from 'react';
 import { CodeBlock } from '@/components/code-block';
 import {
 	findNodeInTree,
 	flattenNodes,
+	getNodeFiles,
 	useProjectStore,
 } from '@/components/crafter/lib/store/use-project-store';
 import type { NodeProps } from '@/components/crafter/types';
@@ -31,38 +33,68 @@ function Preview({ path }: PreviewProps) {
 	const node = useProjectStore((state) => findNodeInTree(state.nodes, path));
 	const modpack = useModpack();
 	const [copied, onCopy] = useCopy(2.5);
+	const nodes = useProjectStore((state) => state.nodes);
+	const [files, setFiles] = useState(() => getNodeFiles(nodes));
 
 	const [{ isReady }, set] = useState({
 		isReady: false,
 	});
 
+	const status = modpack.isCompiling
+		? 'compiling'
+		: modpack.isError
+			? 'error'
+			: 'ready';
+	const compilationStatus = {
+		compiling: {
+			label: 'Compiling...',
+			icon: <Spinner className="mr-1" size={12} />,
+			variant: 'muted' as const,
+		},
+		error: {
+			label: 'Error',
+			icon: <CheckIcon className="mr-1" size={12} />,
+			variant: 'destructive' as const,
+		},
+		ready: {
+			label: 'Ready',
+			icon: <CheckIcon className="mr-1" size={12} />,
+			variant: 'success' as const,
+		},
+	}[status];
+
 	const load = async (node: NodeProps) => {
-		const files = flattenNodes(useProjectStore.getState().nodes).reduce(
-			(acc, curr) => {
-				if (curr.type === 'file') {
-					acc[curr.path] = curr.content;
-				}
-				return acc;
-			},
-			{} as Record<string, string>,
-		);
-		console.log('Loading files for modpack:', { entrypoint: node.path, files });
-		await modpack.compile({
-			entrypoint: node.path,
-			files,
-		});
+		set({ isReady: false });
+		if (!modpack.Component) {
+			await modpack.compile({
+				entrypoint: node.path,
+				files,
+			});
+		} else {
+			modpack.update({ files, entrypoint: node.path });
+		}
+		set({ isReady: true });
 	};
+
+	useEffect(() => {
+		setFiles(() => getNodeFiles(nodes));
+	}, [nodes]);
 
 	return (
 		<Tabs
-			className="flex flex-col rounded-xl gap-0 border bg-muted/30"
+			className={cn(
+				'flex flex-col rounded-xl gap-0 border bg-muted/30',
+				modpack.isError && 'border-destructive',
+				modpack.isCompiling && 'animate-pulse',
+			)}
 			defaultValue="preview"
 		>
 			<div className="flex px-4 py-2 items-center">
 				<div className="flex flex-col flex-1">
 					<span className="text-lg font-medium tracking-wider">Button.tsx</span>
 					<span className="text-xs text-muted-foreground">
-						Minimal Button Preview
+						Minimal Button Preview -{' '}
+						{modpack.isCompleted ? 'Completed' : 'Compiling...'}
 					</span>
 				</div>
 				<TabsList>
@@ -79,10 +111,9 @@ function Preview({ path }: PreviewProps) {
 							) : (
 								<RefreshCwIcon className="size-4" />
 							),
-							onClick: () => {
+							onClick: async () => {
 								if (node) {
-									set({ isReady: false });
-									load(node);
+									await load(node);
 								}
 							},
 						},
@@ -98,16 +129,29 @@ function Preview({ path }: PreviewProps) {
 						)}
 					</div>
 
-					<div className="flex flex-row justify-end p-4 border-t border-dashed border-border bg-background/20 rounded-b-xl">
-						<Badge variant={modpack.isCompiling ? 'muted' : 'success'}>
-							{modpack.isCompiling ? (
-								<Spinner className="mr-1" size={12} />
-							) : (
-								<CheckIcon />
-							)}
-							<span>{modpack.isCompiling ? 'Compiling...' : 'Ready'}</span>
+					<div className="flex flex-row justify-end p-4 border-t border-dashed border-border">
+						<Badge variant={compilationStatus.variant}>
+							{compilationStatus.icon}
+							<span>{compilationStatus.label}</span>
 						</Badge>
 					</div>
+					{modpack.error && modpack.isError && (
+						<AnimatePresence>
+							<motion.div
+								animate={{ opacity: 1, scale: 1, height: 'auto' }}
+								className="p-4"
+								exit={{ opacity: 0, scale: 0.95, height: 0 }}
+								initial={{ opacity: 0, scale: 0.95, height: 0 }}
+								layout
+							>
+								<div className="p-4 border bg-background border-destructive rounded-xl">
+									<p className="text-destructive text-xs font-medium font-mono">
+										{modpack.error ? String(modpack.error) : 'N/A'}
+									</p>
+								</div>
+							</motion.div>
+						</AnimatePresence>
+					)}
 				</TabsContent>
 				<TabsContent className="relative" value="code">
 					<CodeBlock

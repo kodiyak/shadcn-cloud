@@ -264,6 +264,18 @@ export function flattenNodes(nodes: NodeProps[]): NodeProps[] {
 	return flatNodes;
 }
 
+export function getNodeFiles(nodes: NodeProps[]): Record<string, string> {
+	return flattenNodes(nodes).reduce(
+		(acc, curr) => {
+			if (curr.type === 'file') {
+				acc[curr.path] = curr.content;
+			}
+			return acc;
+		},
+		{} as Record<string, string>,
+	);
+}
+
 export function searchNodes(
 	callback: (node: NodeProps) => boolean,
 	nodes: NodeProps[] = useProjectStore.getState().nodes,
