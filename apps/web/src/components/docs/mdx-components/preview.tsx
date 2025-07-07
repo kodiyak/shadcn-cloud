@@ -12,16 +12,15 @@ import {
 import { cn } from '@workspace/ui/lib/utils';
 import { RefreshCwIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { CodeBlock } from '@/components/code-block';
 import {
 	findNodeInTree,
 	getNodeFiles,
 	useProjectStore,
 } from '@/components/crafter/lib/store/use-project-store';
-import { useModpack } from '@/components/modpack/hooks/use-modpack';
 import ModpackLogs from '@/components/modpack/modpack-logs';
-import ModpackRender from '@/components/modpack/modpack-render';
+import { useModpackProvider } from '@/components/providers/modpack-provider';
 import useCopy from '@/lib/hooks/use-copy';
 
 interface PreviewProps {
@@ -30,15 +29,19 @@ interface PreviewProps {
 
 function Preview({ path }: PreviewProps) {
 	const node = useProjectStore((state) => findNodeInTree(state.nodes, path));
-	const modpack = useModpack();
-	const [copied, onCopy] = useCopy(2.5);
-	const [{ isReady }, set] = useState({
-		isReady: false,
-	});
+	const modpack = useModpackProvider();
+	const module = useMemo(() => modpack.results[path], [path, modpack.results]);
+	const error = useMemo(() => modpack.errors[path], [path, modpack.errors]);
+	const compiling = useMemo(
+		() => modpack.compiling[path],
+		[path, modpack.compiling],
+	);
 
-	const status = modpack.isCompiling
+	const [copied, onCopy] = useCopy(2.5);
+
+	const status = modpack.compiling[path]
 		? 'compiling'
-		: modpack.isError
+		: modpack.errors[path]
 			? 'error'
 			: 'ready';
 	const compilationStatus = {
@@ -59,8 +62,12 @@ function Preview({ path }: PreviewProps) {
 		},
 	}[status];
 
+	const Component = useMemo(() => {
+		if (!module) return null;
+		return module.default || module.Component || null;
+	}, [module]);
+
 	const load = async (entrypoint: string) => {
-		set({ isReady: false });
 		const { nodes } = useProjectStore.getState();
 		const files = getNodeFiles(nodes);
 		console.log('Compiling modpack with files:', { files, nodes });
@@ -68,15 +75,14 @@ function Preview({ path }: PreviewProps) {
 			entrypoint,
 			files,
 		});
-		set({ isReady: true });
 	};
 
 	return (
 		<Tabs
 			className={cn(
 				'flex flex-col rounded-xl gap-0 border bg-muted/30',
-				modpack.isError && 'border-destructive',
-				modpack.isCompiling && 'animate-pulse',
+				// modpack.isError && 'border-destructive',
+				// modpack.isCompiling && 'animate-pulse',
 			)}
 			defaultValue="preview"
 		>
@@ -84,8 +90,7 @@ function Preview({ path }: PreviewProps) {
 				<div className="flex flex-col flex-1">
 					<span className="text-lg font-medium tracking-wider">Button.tsx</span>
 					<span className="text-xs text-muted-foreground">
-						Minimal Button Preview -{' '}
-						{modpack.isCompleted ? 'Completed' : 'Compiling...'}
+						Minimal Button Preview
 					</span>
 				</div>
 				<TabsList>
@@ -97,7 +102,7 @@ function Preview({ path }: PreviewProps) {
 					items={[
 						{
 							label: 'Reload',
-							icon: modpack.isCompiling ? (
+							icon: modpack.compiling[path] ? (
 								<Spinner size={16} />
 							) : (
 								<RefreshCwIcon className="size-4" />
@@ -115,9 +120,7 @@ function Preview({ path }: PreviewProps) {
 			<div className="bg-muted/30 border-t border-border rounded-xl flex flex-col">
 				<TabsContent value="preview">
 					<div className="p-4">
-						{!modpack.isCompiling && modpack.Component && (
-							<ModpackRender {...modpack} />
-						)}
+						{Component ? <Component /> : 'No component found.'}
 					</div>
 
 					<div className="flex flex-row justify-end p-4 border-t border-dashed border-border">
@@ -126,7 +129,7 @@ function Preview({ path }: PreviewProps) {
 							<span>{compilationStatus.label}</span>
 						</Badge>
 					</div>
-					{modpack.error && modpack.isError && (
+					{error && (
 						<AnimatePresence>
 							<motion.div
 								animate={{ opacity: 1, scale: 1, height: 'auto' }}
@@ -137,7 +140,7 @@ function Preview({ path }: PreviewProps) {
 							>
 								<div className="p-4 border bg-background border-destructive rounded-xl">
 									<p className="text-destructive text-xs font-medium font-mono">
-										{modpack.error ? String(modpack.error) : 'N/A'}
+										{error ? String(error) : 'N/A'}
 									</p>
 								</div>
 							</motion.div>
