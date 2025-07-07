@@ -7,6 +7,7 @@ import * as React from 'react';
 import * as DevJSXRuntime from 'react/jsx-dev-runtime';
 import * as ReactJSXRuntime from 'react/jsx-runtime';
 import * as ReactDOM from 'react-dom/client';
+import type { ModpackLog } from '../types';
 
 interface CompileProps {
 	entrypoint: string;
@@ -17,6 +18,7 @@ export type UseModpackReturn = ReturnType<typeof useModpack>;
 
 export function useModpack() {
 	const modpackRef = React.useRef<Orchestrator | null>(null);
+	const [logs, setLogs] = React.useState<ModpackLog[]>([]);
 	const [{ Component, files, isCompiling, isError, isCompleted, error }, set] =
 		React.useState({
 			files: {} as Record<string, string>,
@@ -30,7 +32,7 @@ export function useModpack() {
 	const initializeModpack = async () => {
 		const modpack = await Modpack.boot({
 			debug: true,
-			onBuildEnd: async ({ result, error }) => {
+			onBuildEnd: async ({ result, error, reporter }) => {
 				if (result && 'default' in result) {
 					const Component = result.default as ComponentType;
 					set((s) => ({
@@ -40,6 +42,9 @@ export function useModpack() {
 						isCompleted: true,
 						isError: false,
 					}));
+
+					reporter.log('info', 'Build completed successfully');
+					console.log('Modpack build completed:', result);
 				} else {
 					console.error('Build failed:', error);
 					set((s) => ({
@@ -49,7 +54,73 @@ export function useModpack() {
 						isError: true,
 						error,
 					}));
+					reporter.log(
+						'error',
+						`Build failed: ${error ? error.message : 'Unknown error'}`,
+					);
 				}
+			},
+			onLog: (log) => {
+				console.log('Modpack log:', log);
+				setLogs((prevLogs) => [
+					...prevLogs,
+					{ level: log.level, message: log.message },
+				]);
+			},
+			onSourceStart: ({ url, options, reporter, parent }) => {
+				reporter.log(
+					'info',
+					[
+						`Starting source: ${url}`,
+						`Options:`,
+						JSON.stringify({ options, parent }, null, 2),
+					].join('\n'),
+				);
+			},
+			onSourceEnd: ({ url, options, reporter, parent, result, error }) => {
+				reporter.log(
+					error ? 'error' : 'info',
+					[
+						`Finished source: ${url}`,
+						`Options:`,
+						JSON.stringify({ error, options, parent, result }, null, 2),
+					].join('\n'),
+				);
+			},
+			onBoot: ({ reporter }) => {
+				reporter.log('info', 'Modpack booting...');
+			},
+			onBuildStart: ({ reporter }) => {
+				reporter.log('info', 'Modpack build starting...');
+			},
+			onFetchStart: ({ url, options, reporter }) => {
+				reporter.log(
+					'info',
+					`Fetching URL: ${url} with options: ${JSON.stringify(options)}`,
+				);
+			},
+			onFetchEnd: ({ url, options, reporter, response, error }) => {
+				reporter.log(
+					error ? 'error' : 'info',
+					[
+						`Fetch completed for URL: ${url}`,
+						`Options: ${JSON.stringify(options)}`,
+						`Response: ${response ? response.status : 'No response'}`,
+						error ? `Error: ${error.message}` : '',
+					].join('\n'),
+				);
+			},
+			onModuleUpdate: ({ reporter, path, content, updated, result, error }) => {
+				reporter.log(
+					error ? 'error' : 'info',
+					[
+						`Module update for path: ${path}`,
+						`Content: ${content ? content.slice(0, 100) + '...' : 'No content'}`,
+						`Updated: ${updated}`,
+						result ? `Result: ${JSON.stringify(result)}` : '',
+						error ? `Error: ${error.message}` : '',
+					].join('\n'),
+				);
 			},
 			plugins: [
 				{
@@ -131,9 +202,7 @@ export function useModpack() {
 			isCompiling: true,
 			Component: null,
 		}));
-		if (!modpackRef.current) {
-			await initializeModpack();
-		}
+		await initializeModpack();
 
 		Object.entries(files).forEach(([path, content]) => {
 			modpackRef.current?.fs.writeFile(path, content || '');
@@ -168,5 +237,6 @@ export function useModpack() {
 		isError,
 		isCompleted,
 		error,
+		logs,
 	};
 }

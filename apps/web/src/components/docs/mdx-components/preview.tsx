@@ -12,16 +12,15 @@ import {
 import { cn } from '@workspace/ui/lib/utils';
 import { RefreshCwIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CodeBlock } from '@/components/code-block';
 import {
 	findNodeInTree,
-	flattenNodes,
 	getNodeFiles,
 	useProjectStore,
 } from '@/components/crafter/lib/store/use-project-store';
-import type { NodeProps } from '@/components/crafter/types';
 import { useModpack } from '@/components/modpack/hooks/use-modpack';
+import ModpackLogs from '@/components/modpack/modpack-logs';
 import ModpackRender from '@/components/modpack/modpack-render';
 import useCopy from '@/lib/hooks/use-copy';
 
@@ -33,9 +32,6 @@ function Preview({ path }: PreviewProps) {
 	const node = useProjectStore((state) => findNodeInTree(state.nodes, path));
 	const modpack = useModpack();
 	const [copied, onCopy] = useCopy(2.5);
-	const nodes = useProjectStore((state) => state.nodes);
-	const [files, setFiles] = useState(() => getNodeFiles(nodes));
-
 	const [{ isReady }, set] = useState({
 		isReady: false,
 	});
@@ -63,22 +59,17 @@ function Preview({ path }: PreviewProps) {
 		},
 	}[status];
 
-	const load = async (node: NodeProps) => {
+	const load = async (entrypoint: string) => {
 		set({ isReady: false });
-		if (!modpack.Component) {
-			await modpack.compile({
-				entrypoint: node.path,
-				files,
-			});
-		} else {
-			modpack.update({ files, entrypoint: node.path });
-		}
+		const { nodes } = useProjectStore.getState();
+		const files = getNodeFiles(nodes);
+		console.log('Compiling modpack with files:', { files, nodes });
+		await modpack.compile({
+			entrypoint,
+			files,
+		});
 		set({ isReady: true });
 	};
-
-	useEffect(() => {
-		setFiles(() => getNodeFiles(nodes));
-	}, [nodes]);
 
 	return (
 		<Tabs
@@ -113,7 +104,7 @@ function Preview({ path }: PreviewProps) {
 							),
 							onClick: async () => {
 								if (node) {
-									await load(node);
+									await load(node.path);
 								}
 							},
 						},
@@ -152,6 +143,7 @@ function Preview({ path }: PreviewProps) {
 							</motion.div>
 						</AnimatePresence>
 					)}
+					<ModpackLogs logs={modpack.logs} />
 				</TabsContent>
 				<TabsContent className="relative" value="code">
 					<CodeBlock
