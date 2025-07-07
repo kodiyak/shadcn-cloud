@@ -13,10 +13,10 @@ export default function FileTree() {
 	return (
 		<>
 			<CreateFile {...createFile} parentPath="/" />
-			<div className="size-full pr-1 pl-3 flex flex-col overflow-y-auto">
-				<div className="flex items-center py-2 justify-between">
+			<div className="size-full pr-1 pl-3 flex flex-col overflow-y-auto overflow-x-hidden">
+				<div className="flex items-center py-2 justify-between min-w-[180]">
 					<span className="text-xs">Workspace</span>
-					<div className="flex items-center gap-0.5">
+					<div className="flex items-center gap-0.5 pr-12">
 						<ButtonsIcons
 							items={[
 								{
@@ -34,7 +34,7 @@ export default function FileTree() {
 						/>
 					</div>
 				</div>
-				<Accordion className="flex flex-col" type="multiple">
+				<Accordion className="flex flex-col min-w-[180]" type="multiple">
 					<TreeItem {...nodes[0]} />
 				</Accordion>
 			</div>
