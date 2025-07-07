@@ -1,6 +1,7 @@
 import { CheckIcon, CopyIcon } from '@phosphor-icons/react';
 import { Badge } from '@workspace/ui/components/badge';
 import { ButtonsIcons } from '@workspace/ui/components/button';
+import { ErrorBoundary } from '@workspace/ui/components/error-boundary';
 import { Separator } from '@workspace/ui/components/separator';
 import { Spinner } from '@workspace/ui/components/spinner';
 import {
@@ -21,6 +22,7 @@ import {
 	useProjectStore,
 } from '@/components/crafter/lib/store/use-project-store';
 import useCopy from '@/lib/hooks/use-copy';
+import { standardTransition } from '@/lib/transitions';
 
 interface PreviewProps {
 	path: string;
@@ -62,28 +64,15 @@ function Preview({ path }: PreviewProps) {
 	const load = async (entrypoint: string) => {
 		const { nodes } = useProjectStore.getState();
 		const files = getNodeFiles(nodes);
-		console.log('Compiling modpack with files:', { files, nodes });
 		await compile({
 			entrypoint,
 			files,
 		});
 	};
 
-	console.log({
-		compiling,
-		error,
-		module,
-		node,
-		Component,
-	});
-
 	return (
 		<Tabs
-			className={cn(
-				'flex flex-col rounded-xl gap-0 border bg-muted/30',
-				// isError && 'border-destructive',
-				// isCompiling && 'animate-pulse',
-			)}
+			className={cn('flex flex-col rounded-xl gap-0 border bg-muted/30')}
 			defaultValue="preview"
 		>
 			<div className="flex px-4 py-2 items-center">
@@ -118,7 +107,27 @@ function Preview({ path }: PreviewProps) {
 			<div className="bg-muted/30 border-t border-border rounded-xl flex flex-col">
 				<TabsContent value="preview">
 					<div className="p-4">
-						{Component ? <Component /> : 'No component found.'}
+						<ErrorBoundary
+							fallback={(err) => (
+								<div className="p-4 border bg-background border-destructive rounded-xl overflow-auto">
+									<p className="text-destructive text-xs font-medium font-mono">
+										{String(err.message)}
+									</p>
+									<div className="flex flex-col">
+										{(err.stack as string)?.split('\n').map((line) => (
+											<pre
+												className="text-destructive text-xs font-mono"
+												key={line}
+											>
+												{line}
+											</pre>
+										))}
+									</div>
+								</div>
+							)}
+						>
+							{Component ? <Component /> : 'No component found.'}
+						</ErrorBoundary>
 					</div>
 
 					<div className="flex flex-row justify-end p-4 border-t border-dashed border-border">
@@ -128,18 +137,20 @@ function Preview({ path }: PreviewProps) {
 						</Badge>
 					</div>
 					{error && (
-						<AnimatePresence>
+						<AnimatePresence mode={'wait'}>
 							<motion.div
 								animate={{ opacity: 1, scale: 1, height: 'auto' }}
-								className="p-4"
 								exit={{ opacity: 0, scale: 0.95, height: 0 }}
 								initial={{ opacity: 0, scale: 0.95, height: 0 }}
 								layout
+								transition={standardTransition}
 							>
-								<div className="p-4 border bg-background border-destructive rounded-xl">
-									<p className="text-destructive text-xs font-medium font-mono">
-										{error ? String(error) : 'N/A'}
-									</p>
+								<div className="p-4">
+									<div className="p-8 border bg-background border-destructive rounded-xl">
+										<p className="text-destructive text-xs font-medium font-mono">
+											{error ? String(error) : 'N/A'}
+										</p>
+									</div>
 								</div>
 							</motion.div>
 						</AnimatePresence>

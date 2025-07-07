@@ -2,6 +2,12 @@ import { Modpack, type ModpackBootOptions } from '@modpack/core';
 import { esmSh, inject, resolver, virtual } from '@modpack/plugins';
 import { react } from '@modpack/react';
 import { swc } from '@modpack/swc';
+import { modpackUi } from '@workspace/ui/lib/modpack';
+import * as Motion from 'motion';
+import * as MotionReact from 'motion/react';
+import * as MotionReactClient from 'motion/react-client';
+import * as MotionReactM from 'motion/react-m';
+import * as MotionReactMini from 'motion/react-mini';
 import * as React from 'react';
 import * as DevJSXRuntime from 'react/jsx-dev-runtime';
 import * as ReactJSXRuntime from 'react/jsx-runtime';
@@ -60,15 +66,27 @@ export async function initializeModpack(options?: ModpackBootOptions) {
 					'react-dom',
 					'react/jsx-dev-runtime',
 					'react/jsx-runtime',
+					'motion',
+					'motion/react',
+					'motion/react-client',
+					'motion/react-m',
+					'motion/react-mini',
+					...Object.keys(modpackUi),
 				],
 			}),
 			virtual(),
 			inject({
 				modules: {
 					react: React,
+					motion: Motion,
+					'motion/react': MotionReact,
+					'motion/react-client': MotionReactClient,
+					'motion/react-m': MotionReactM,
+					'motion/react-mini': MotionReactMini,
 					'react/jsx-dev-runtime': DevJSXRuntime,
 					'react/jsx-runtime': ReactJSXRuntime,
 					'react-dom/client': ReactDOM,
+					...modpackUi,
 				},
 			}),
 			react({ self: window, extensions: ['.tsx', '.jsx'] }),

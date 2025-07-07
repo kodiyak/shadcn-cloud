@@ -179,4 +179,6 @@ async function main() {
 	});
 }
 
-main();
+if (typeof window !== 'undefined') {
+	main();
+}
