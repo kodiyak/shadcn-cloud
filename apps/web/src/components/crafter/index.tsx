@@ -6,7 +6,6 @@ import {
 	ResizablePanelGroup,
 } from '@workspace/ui/components/resizable';
 import CodeEditor from '@/components/crafter/code-editor';
-import FileTree from '@/components/crafter/file-tree';
 import Preview from '@/components/crafter/preview';
 import CodeSidebar from './code-sidebar';
 import { useProjectStore } from './lib/store/use-project-store';

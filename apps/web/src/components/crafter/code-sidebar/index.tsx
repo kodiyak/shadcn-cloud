@@ -1,13 +1,10 @@
-import { XIcon } from '@phosphor-icons/react';
-import { Button, ButtonsIcons } from '@workspace/ui/components/button';
+import { Button } from '@workspace/ui/components/button';
 import { ReactIcon } from '@workspace/ui/components/icons';
 import {
 	ResizableHandle,
 	ResizablePanel,
 } from '@workspace/ui/components/resizable';
 import { useDisclosure } from '@workspace/ui/hooks/use-disclosure';
-import { cn } from '@workspace/ui/lib/utils';
-import { SidebarCloseIcon, SidebarOpenIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import FileTree from '../file-tree';
 
