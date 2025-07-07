@@ -38,8 +38,10 @@ const buttonVariants = cva(
 					'text-muted-foreground hover:bg-accent hover:text-destructive dark:hover:bg-accent/30',
 				'success-ghost':
 					'text-muted-foreground hover:bg-accent hover:text-success dark:hover:bg-accent/30',
-				'success-outline':
-					'border border-success/20 bg-background/50 text-success hover:bg-success/10 hover:text-success-foreground',
+				'success-outline': cn(
+					'border border-success/20 bg-background/50 text-success',
+					'hover:bg-success/10 hover:text-success',
+				),
 				link: 'text-muted-foreground underline-offset-4 hover:underline hover:text-foreground',
 				command: cn(
 					'border-input data-[placeholder]:text-muted-foreground',
@@ -108,6 +110,7 @@ export interface ButtonsIconsProps {
 		onClick?: () => void;
 		disabled?: boolean;
 		variant?: ButtonProps['variant'];
+		className?: string;
 		size?: ButtonProps['size'];
 		description?: React.ReactNode;
 		hidden?: boolean;
@@ -128,7 +131,7 @@ function ButtonsIcons({
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<Button
-										className={cn('')}
+										className={cn('', item.className)}
 										disabled={item.disabled}
 										onClick={(e) => {
 											e.stopPropagation();

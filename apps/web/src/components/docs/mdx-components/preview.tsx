@@ -1,4 +1,4 @@
-import { CheckCircleIcon } from '@phosphor-icons/react';
+import { CheckIcon, CopyIcon } from '@phosphor-icons/react';
 import { Badge } from '@workspace/ui/components/badge';
 import { ButtonsIcons } from '@workspace/ui/components/button';
 import { Separator } from '@workspace/ui/components/separator';
@@ -21,6 +21,7 @@ import {
 import type { NodeProps } from '@/components/crafter/types';
 import { useModpack } from '@/components/modbox/hooks/use-modpack';
 import ModpackRender from '@/components/modbox/modpack-render';
+import useCopy from '@/lib/hooks/use-copy';
 
 interface PreviewProps {
 	path: string;
@@ -29,6 +30,7 @@ interface PreviewProps {
 function Preview({ path }: PreviewProps) {
 	const node = useProjectStore((state) => findNodeInTree(state.nodes, path));
 	const modpack = useModpack();
+	const [copied, onCopy] = useCopy(2.5);
 
 	const [{ isReady }, set] = useState({
 		isReady: false,
@@ -54,7 +56,7 @@ function Preview({ path }: PreviewProps) {
 	return (
 		<Tabs
 			className="flex flex-col rounded-xl gap-0 border bg-muted/30"
-			defaultValue="account"
+			defaultValue="preview"
 		>
 			<div className="flex px-4 py-2 items-center">
 				<div className="flex flex-col flex-1">
@@ -64,8 +66,8 @@ function Preview({ path }: PreviewProps) {
 					</span>
 				</div>
 				<TabsList>
-					<TabsTrigger value="account">Preview</TabsTrigger>
-					<TabsTrigger value="password">Code</TabsTrigger>
+					<TabsTrigger value="preview">Preview</TabsTrigger>
+					<TabsTrigger value="code">Code</TabsTrigger>
 				</TabsList>
 				<Separator className="mx-6" orientation="vertical" />
 				<ButtonsIcons
@@ -89,7 +91,7 @@ function Preview({ path }: PreviewProps) {
 			</div>
 
 			<div className="bg-muted/30 border-t border-border rounded-xl flex flex-col">
-				<TabsContent value="account">
+				<TabsContent value="preview">
 					<div className="p-4">
 						{!modpack.isCompiling && modpack.Component && (
 							<ModpackRender {...modpack} />
@@ -101,13 +103,13 @@ function Preview({ path }: PreviewProps) {
 							{modpack.isCompiling ? (
 								<Spinner className="mr-1" size={12} />
 							) : (
-								<CheckCircleIcon weight="fill" />
+								<CheckIcon />
 							)}
 							<span>{modpack.isCompiling ? 'Compiling...' : 'Ready'}</span>
 						</Badge>
 					</div>
 				</TabsContent>
-				<TabsContent value="password">
+				<TabsContent className="relative" value="code">
 					<CodeBlock
 						className={cn(
 							'[&_.line-number]:px-4!',
@@ -116,6 +118,23 @@ function Preview({ path }: PreviewProps) {
 						code={node?.content || ''}
 						lang={(node?.path.split('.').pop() as any) || 'js'}
 					/>
+					<div className="absolute right-4 bottom-4 z-30">
+						<ButtonsIcons
+							items={[
+								{
+									variant: copied ? 'success-outline' : 'outline',
+									className: copied ? 'text-success' : '',
+									label: copied ? 'Copied!' : 'Copy',
+									icon: copied ? <CheckIcon /> : <CopyIcon />,
+									onClick: async () => {
+										if (node?.content) {
+											await onCopy(node.content);
+										}
+									},
+								},
+							]}
+						/>
+					</div>
 				</TabsContent>
 			</div>
 		</Tabs>

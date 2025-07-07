@@ -16,34 +16,37 @@ function CodeBlock({ code, lang, className }: SourceCodeBlockProps) {
 
 	useLayoutEffect(() => {
 		if (hightlighter) {
-			const html = hightlighter.codeToHtml(code ?? '', {
-				lang: lang ?? 'typescript',
-				theme,
-				tabindex: 0,
-				transformers: [
-					{
-						pre(node) {
-							this.addClassToHast(node, 'has-line-numbers');
-						},
-						line(node, line) {
-							// Cria um span para o número da linha
-							const lineNumberNode: any = {
-								type: 'element',
-								tagName: 'span',
-								properties: {
-									className: 'line-number',
-								},
-								children: [{ type: 'text', value: String(line) }],
-							};
+			const html = hightlighter.codeToHtml(
+				code?.replace(/\t/gm, '  ').replace(/[\r\n]+$/, '') ?? '',
+				{
+					lang: lang ?? 'typescript',
+					theme,
+					tabindex: 0,
+					transformers: [
+						{
+							pre(node) {
+								this.addClassToHast(node, 'has-line-numbers');
+							},
+							line(node, line) {
+								// Cria um span para o número da linha
+								const lineNumberNode: any = {
+									type: 'element',
+									tagName: 'span',
+									properties: {
+										className: 'line-number',
+									},
+									children: [{ type: 'text', value: String(line) }],
+								};
 
-							node.children.unshift(lineNumberNode);
+								node.children.unshift(lineNumberNode);
 
-							this.addClassToHast(node, 'code-line');
+								this.addClassToHast(node, 'code-line');
+							},
 						},
-					},
-					transformerRenderWhitespace({ position: 'all' }),
-				],
-			});
+						transformerRenderWhitespace(),
+					],
+				},
+			);
 			setHtml(html);
 		}
 	}, [code, lang, hightlighter]);

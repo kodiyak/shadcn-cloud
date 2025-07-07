@@ -1,9 +1,10 @@
-import { Badge } from '@workspace/ui/components/badge';
+import { CheckIcon } from '@phosphor-icons/react';
 import { ButtonsIcons } from '@workspace/ui/components/button';
 import { FileCodeIcon } from '@workspace/ui/components/icons';
 import { cn } from '@workspace/ui/lib/utils';
 import { CopyIcon } from 'lucide-react';
 import { CodeBlock } from '@/components/code-block';
+import useCopy from '@/lib/hooks/use-copy';
 
 interface CodeBlockProps {
 	className?: string;
@@ -12,6 +13,7 @@ interface CodeBlockProps {
 
 function MDXCodeBlock({ children, className }: CodeBlockProps) {
 	const lang = className?.match(/language-(\w+)/)?.[1] || 'text';
+	const [copied, onCopy] = useCopy(2.5);
 
 	const label = {
 		ts: 'TypeScript',
@@ -35,9 +37,13 @@ function MDXCodeBlock({ children, className }: CodeBlockProps) {
 				<ButtonsIcons
 					items={[
 						{
-							label: 'Copy',
-							icon: <CopyIcon />,
-							onClick: () => {},
+							label: copied ? 'Copied!' : 'Copy',
+							variant: copied ? 'success-ghost' : 'ghost',
+							className: copied ? 'text-success' : '',
+							icon: copied ? <CheckIcon /> : <CopyIcon />,
+							onClick: () => {
+								onCopy(children);
+							},
 						},
 					]}
 					size={'icon-xs'}
