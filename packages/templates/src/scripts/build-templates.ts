@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import type { TemplateProps } from '@workspace/core';
 
 const __dirname = fileURLToPath(import.meta.url);
-const templatesDir = resolve(__dirname, './../..');
+const templatesDir = resolve(__dirname, './../../base');
 const ignoreDirs = ['scripts'];
 const outputDir = resolve(
 	__dirname,

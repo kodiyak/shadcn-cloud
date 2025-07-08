@@ -1,9 +1,9 @@
-import Checkbox from "..";
+import Input from '../index.js';
 
 export default function HeroPreview() {
 	return (
 		<div className="flex flex-col">
-			<Checkbox>Accept terms</Checkbox>
+			<Input placeholder="Type here" />
 		</div>
 	);
 }
