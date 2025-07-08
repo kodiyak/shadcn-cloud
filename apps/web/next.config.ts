@@ -6,9 +6,6 @@ const nextConfig: NextConfig = {
 		'@workspace/core',
 		'@workspace/db',
 		'@workspace/auth',
-		'@modbox/core',
-		'@modbox/plugins',
-		'@modbox/utils',
 	],
 	images: {
 		remotePatterns: [new URL('https://s3.us-east-005.backblazeb2.com/**')],

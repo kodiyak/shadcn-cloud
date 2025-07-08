@@ -1,7 +1,7 @@
 import type { TemplateProps } from '@workspace/core';
 import { Button } from '@workspace/ui/components/button';
 import { EmptyIcon, EmptyState } from '@workspace/ui/components/empty';
-import { FileCodeIcon, ReactIcon } from '@workspace/ui/components/icons';
+import { FileCodeIcon } from '@workspace/ui/components/icons';
 import {
 	ScrollArea,
 	ScrollAreaShadow,
@@ -15,7 +15,7 @@ import {
 	TabsTrigger,
 } from '@workspace/ui/components/tabs';
 import { ImageOffIcon } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 import { useMemo } from 'react';
 import { CodeBlock } from '@/components/code-block';
 import { useCompilationStore } from '../lib/store/use-compilation-store';
