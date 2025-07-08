@@ -13,6 +13,7 @@ import {
 	searchNodes,
 	useProjectStore,
 } from '../lib/store/use-project-store';
+import MdxContent from './mdx-content';
 
 /** @todo Improve components injection logic */
 const components: Record<string, (props: any) => ReactNode> = {
@@ -57,22 +58,6 @@ export default function DocsPreview() {
 	}, [nodes]);
 	const node = docsNodes.find((n) => n.path === path) || null;
 	const [content, setContent] = useState('');
-
-	const [mdxModule, setMdxModule] = useState<any>(null);
-	const Content = mdxModule ? mdxModule.default : Fragment;
-
-	const loadMdx = async (code: string) => {
-		const compiled = await compile(code, {
-			format: 'mdx',
-			outputFormat: 'function-body',
-		});
-		const mdx = await run(compiled, {
-			...runtime,
-			baseUrl: import.meta.url,
-		});
-		setMdxModule(mdx);
-	};
-
 	const metadata = useMemo(() => {
 		try {
 			return JSON.parse(
@@ -83,10 +68,6 @@ export default function DocsPreview() {
 			return {};
 		}
 	}, [nodes]);
-
-	useEffect(() => {
-		loadMdx(content);
-	}, [content]);
 
 	useEffect(() => {
 		setContent(node?.content || '');
@@ -101,14 +82,7 @@ export default function DocsPreview() {
 							<DocHeader {...metadata} />
 						</div>
 						<div className="max-w-4xl mx-auto min-h-screen flex flex-col gap-2">
-							<ErrorBoundary
-								fallback={(err) => (
-									<div>Error loading documentation {err?.stack}</div>
-								)}
-								key={`error.${content}`}
-							>
-								<Content components={components} key={`content.${content}`} />
-							</ErrorBoundary>
+							<MdxContent content={content} />
 						</div>
 					</ScrollArea>
 				</div>
