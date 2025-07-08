@@ -24,7 +24,6 @@ export async function initializeModpack(options?: ModpackBootOptions) {
 				pipeline: {
 					fetcher: {
 						fetch: ({ url, options, next }) => {
-							console.log(`OPTIONS`, options);
 							return url.startsWith('http') ? fetch(url) : next();
 						},
 					},

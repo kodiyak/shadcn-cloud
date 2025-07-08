@@ -97,12 +97,6 @@ async function main() {
 
 			if (result) {
 				reporter.log('info', 'Build completed successfully');
-
-				console.log('Modpack build completed:', {
-					result,
-					options,
-					entrypoint,
-				});
 			} else {
 				console.error('Build failed:', error);
 				reporter.log(
@@ -112,7 +106,6 @@ async function main() {
 			}
 		},
 		onLog: (log) => {
-			console.log('Modpack log:', log);
 			useCompilationStore.setState((state) => ({
 				logs: [...state.logs, { level: log.level, message: log.message }],
 			}));

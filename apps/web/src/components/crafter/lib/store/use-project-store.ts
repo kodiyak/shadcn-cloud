@@ -86,7 +86,6 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 	},
 	findNode: (path) => {
 		const { nodes } = get();
-		console.log(`Finding node for path: ${path}`);
 		return findNodeInTree(nodes, path);
 	},
 	setNodes: (nodes) => set({ nodes }),
