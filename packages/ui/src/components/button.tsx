@@ -1,4 +1,5 @@
 import { Slot } from '@radix-ui/react-slot';
+import type { TooltipContentProps } from '@radix-ui/react-tooltip';
 import { cn } from '@workspace/ui/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
 import type * as React from 'react';
@@ -106,6 +107,7 @@ function Button({
 export interface ButtonsIconsProps {
 	variant?: ButtonProps['variant'];
 	size?: ButtonProps['size'];
+	contentProps?: Partial<TooltipContentProps>;
 	items: {
 		label: string;
 		icon: React.ReactNode;
@@ -122,6 +124,7 @@ function ButtonsIcons({
 	items,
 	variant = 'ghost',
 	size = 'icon',
+	contentProps,
 }: ButtonsIconsProps) {
 	return (
 		<>
@@ -146,7 +149,7 @@ function ButtonsIcons({
 										{item.icon}
 									</Button>
 								</TooltipTrigger>
-								<TooltipContent>
+								<TooltipContent {...contentProps}>
 									<p>{item.label}</p>
 								</TooltipContent>
 							</Tooltip>

@@ -26,7 +26,7 @@ export default function Crafter() {
 					<ResizableHandle id={'resizable-code-editor-handle'} />
 					<ResizablePanel
 						className={'relative'}
-						defaultSize={30}
+						defaultSize={50}
 						id={'resizable-preview-panel'}
 						maxSize={60}
 						minSize={30}

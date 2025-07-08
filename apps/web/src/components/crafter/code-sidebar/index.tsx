@@ -1,5 +1,3 @@
-import { Button } from '@workspace/ui/components/button';
-import { ReactIcon } from '@workspace/ui/components/icons';
 import {
 	ResizableHandle,
 	ResizablePanel,
@@ -20,7 +18,7 @@ export default function CodeSidebar() {
 				className={'relative'}
 				collapsedSize={4}
 				collapsible
-				defaultSize={15}
+				defaultSize={4}
 				id={'resizable-code-sidebar'}
 				maxSize={30}
 				minSize={15}
