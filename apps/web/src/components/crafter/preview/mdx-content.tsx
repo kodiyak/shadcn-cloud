@@ -43,9 +43,10 @@ const components: Record<string, (props: any) => ReactNode> = {
 
 interface MdxContentProps {
 	content: string;
+	className?: string;
 }
 
-export default function MdxContent({ content }: MdxContentProps) {
+export default function MdxContent({ content, className }: MdxContentProps) {
 	const [mdxModule, setMdxModule] = useState<any>(null);
 	const Content = mdxModule ? mdxModule.default : Fragment;
 
@@ -70,7 +71,11 @@ export default function MdxContent({ content }: MdxContentProps) {
 			fallback={(err) => <div>Error loading documentation {err?.stack}</div>}
 			key={`error.${content}`}
 		>
-			<Content components={components} key={`content.${content}`} />
+			<Content
+				className={className}
+				components={components}
+				key={`content.${content}`}
+			/>
 		</ErrorBoundary>
 	);
 }
