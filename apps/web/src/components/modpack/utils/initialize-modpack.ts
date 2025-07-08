@@ -16,7 +16,7 @@ import * as ReactDOMClient from 'react-dom/client';
 
 export async function initializeModpack(options?: ModpackBootOptions) {
 	const modpack = await Modpack.boot({
-		debug: true,
+		debug: false,
 		...options,
 		plugins: [
 			{
