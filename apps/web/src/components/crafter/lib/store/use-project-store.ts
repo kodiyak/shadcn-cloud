@@ -2,6 +2,7 @@ import type { TemplateProps } from '@workspace/core';
 import { create } from 'zustand';
 import type { NodeProps } from '../../types';
 import { useCompilationStore } from './use-compilation-store';
+import { useEditorStore } from './use-editor-store';
 
 interface CreateNodeProps extends Omit<NodeProps, 'path'> {
 	name: string;
@@ -76,33 +77,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			}
 		}
 
-		// Make files consistent with the expected structure
-		const modpackFiles = flattenNodes(nodes).reduce(
-			(acc, node) => {
-				if (
-					!node.content ||
-					node.type !== 'file' ||
-					node.path.endsWith('.json') ||
-					node.path.endsWith('.mdx')
-				) {
-					return acc;
-				}
-				acc[node.path] = node.content || '';
-				return acc;
-			},
-			{} as Record<string, string>,
-		);
-
-		const entrypoint = Object.keys(modpackFiles).find(
-			(path) =>
-				path.startsWith('/previews/') &&
-				(path.endsWith('.tsx') || path.endsWith('.jsx')),
-		);
-
-		if (!entrypoint) {
-			console.error('No valid entrypoint found in the template files.');
-			return;
-		}
+		useEditorStore.getState().setActivePath('/index.mdx');
 
 		set({
 			isReady: true,

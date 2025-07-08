@@ -50,13 +50,12 @@ export default function FileItem({ path, content, draftContent }: NodeProps) {
 		>
 			<FileCodeIcon className="size-4" type={filename?.split('.').pop()} />
 			{openEdit.isOpen ? (
-				<div className="flex-1">
+				<div className="flex-1 pr-12">
 					<input
 						className={cn(
 							'w-full h-6 bg-background px-1.5 font-medium rounded-md border-none outline-none transition-all',
 							'focus-visible:ring-2 focus-visible:ring-ring',
 						)}
-						defaultValue={filename}
 						onBlur={(e) => {
 							onCancelEdit();
 						}}
@@ -83,7 +82,9 @@ export default function FileItem({ path, content, draftContent }: NodeProps) {
 					/>
 				</div>
 			) : (
-				<span className="flex-1 text-left">{filename}</span>
+				<span className="flex-1 text-left overflow-hidden truncate group-hover:pr-10">
+					{filename}
+				</span>
 			)}
 			{draftContent !== content && (
 				<div className="size-1.5 rounded-full bg-foreground"></div>

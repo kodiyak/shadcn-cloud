@@ -18,7 +18,9 @@ const CardMotion = motion(Card);
 export default function SelectTemplate() {
 	const [currentTemplate, setCurrentTemplate] = useState(templates[0]);
 	const selectTemplate = useProjectStore((state) => state.selectTemplate);
-	const isCompiling = useCompilationStore((state) => state.isCompiling);
+	const isCompiling = Object.values(
+		useCompilationStore((state) => state.compiling),
+	).some(Boolean);
 
 	return (
 		<div className="w-screen h-screen flex items-center justify-center fixed inset-0 bg-muted/30 backdrop-blur-xs z-50">

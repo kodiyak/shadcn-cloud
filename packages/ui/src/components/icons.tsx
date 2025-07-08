@@ -1,4 +1,4 @@
-import type { SVGProps } from 'react';
+import type { ReactNode, SVGProps } from 'react';
 
 function DiscordIcon(props: SVGProps<SVGSVGElement>) {
 	return (
@@ -237,8 +237,9 @@ export function RadixIcon(props: SVGProps<SVGSVGElement>) {
 
 function FileCodeIcon({
 	type = '',
+	fallback = null,
 	...props
-}: { type?: string } & SVGProps<SVGSVGElement>) {
+}: { type?: string; fallback?: ReactNode } & SVGProps<SVGSVGElement>) {
 	const Icon = {
 		tsx: ReactIcon,
 		jsx: JsxIcon,
@@ -251,7 +252,7 @@ function FileCodeIcon({
 		markdown: MarkdownIcon,
 	}[type];
 
-	if (!Icon) return null;
+	if (!Icon) return fallback;
 
 	return <Icon {...props} />;
 }

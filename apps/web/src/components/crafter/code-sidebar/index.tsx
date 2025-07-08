@@ -7,6 +7,7 @@ import {
 import { useDisclosure } from '@workspace/ui/hooks/use-disclosure';
 import { AnimatePresence, motion } from 'motion/react';
 import FileTree from '../file-tree';
+import SidebarIcon from './sidebar-icon';
 
 const FileTreeMotion = motion.create(FileTree);
 
@@ -17,7 +18,7 @@ export default function CodeSidebar() {
 		<>
 			<ResizablePanel
 				className={'relative'}
-				collapsedSize={5}
+				collapsedSize={4}
 				collapsible
 				defaultSize={15}
 				id={'resizable-code-sidebar'}
@@ -47,14 +48,11 @@ export default function CodeSidebar() {
 						<motion.div
 							animate={{ scale: 1, opacity: 1 }}
 							className="flex flex-col w-full"
-							exit={{ scale: 0.95, opacity: 0 }}
 							initial={{ scale: 0.95, opacity: 0 }}
 							key={'collapsed'}
 						>
 							<div className="flex flex-col w-full items-center py-4">
-								<Button size={'icon-lg'} variant={'ghost'}>
-									<ReactIcon />
-								</Button>
+								<SidebarIcon />
 							</div>
 						</motion.div>
 					)}

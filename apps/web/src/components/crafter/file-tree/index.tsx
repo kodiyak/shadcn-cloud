@@ -34,7 +34,11 @@ export default function FileTree() {
 						/>
 					</div>
 				</div>
-				<Accordion className="flex flex-col min-w-[180]" type="multiple">
+				<Accordion
+					className="flex flex-col min-w-[180]"
+					defaultValue={['/', '/previews']}
+					type="multiple"
+				>
 					<TreeItem {...nodes[0]} />
 				</Accordion>
 			</div>
