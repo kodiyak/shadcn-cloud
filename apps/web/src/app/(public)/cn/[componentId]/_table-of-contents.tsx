@@ -1,4 +1,5 @@
 import { Button } from '@workspace/ui/components/button';
+import kebabCase from 'lodash.kebabcase';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
@@ -35,9 +36,7 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
 							size={'xs'}
 							variant={'link'}
 						>
-							<Link href={`#${item.text.toLowerCase().replace(/\s+/g, '-')}`}>
-								{item.text}
-							</Link>
+							<a href={`#${kebabCase(item.text)}`}>{item.text}</a>
 						</Button>
 					</li>
 				))}

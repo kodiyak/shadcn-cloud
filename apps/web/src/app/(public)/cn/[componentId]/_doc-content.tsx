@@ -53,10 +53,6 @@ export default function DocContent({ component }: DocContentProps) {
 				<div className="w-1/5 flex flex-col shrink-0">
 					<div className="sticky top-4">
 						<TableOfContents content={component.files['/index.mdx'] || ''} />
-						{/* <span className="text-xs text-muted-foreground font-mono">
-							Table of Contents
-						</span> */}
-						{/* List of Sections */}
 					</div>
 				</div>
 			</div>
