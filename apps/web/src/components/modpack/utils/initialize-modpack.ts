@@ -13,6 +13,7 @@ import * as DevJSXRuntime from 'react/jsx-dev-runtime';
 import * as ReactJSXRuntime from 'react/jsx-runtime';
 import * as ReactDOM from 'react-dom';
 import * as ReactDOMClient from 'react-dom/client';
+import defaultVirtualFiles from '@/lib/cn.json';
 
 export async function initializeModpack(options?: ModpackBootOptions) {
 	const modpack = await Modpack.boot({
@@ -57,7 +58,7 @@ export async function initializeModpack(options?: ModpackBootOptions) {
 			}),
 			resolver({
 				extensions: ['.js', '.ts', '.tsx', '.jsx'],
-				alias: { '@/': '/src/' },
+				alias: { '@/': '/' },
 				index: true,
 			}),
 			esmSh({
@@ -93,5 +94,10 @@ export async function initializeModpack(options?: ModpackBootOptions) {
 			react({ self: window, extensions: ['.tsx', '.jsx'] }),
 		],
 	});
+
+	for (const [key, value] of Object.entries(defaultVirtualFiles)) {
+		modpack.fs.writeFile(key, value);
+	}
+
 	return modpack;
 }
