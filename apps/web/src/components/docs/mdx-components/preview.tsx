@@ -13,7 +13,7 @@ import {
 import { cn } from '@workspace/ui/lib/utils';
 import { RefreshCwIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useMemo } from 'react';
+import { type CSSProperties, useMemo } from 'react';
 import { CodeBlock } from '@/components/code-block';
 import { useCompilationStore } from '@/components/crafter/lib/store/use-compilation-store';
 import {
@@ -26,9 +26,10 @@ import { standardTransition } from '@/lib/transitions';
 
 interface PreviewProps {
 	path: string;
+	style?: CSSProperties;
 }
 
-function Preview({ path }: PreviewProps) {
+function Preview({ path, style }: PreviewProps) {
 	const node = useProjectStore((state) => findNodeInTree(state.nodes, path));
 	const compile = useCompilationStore((state) => state.compile);
 	const module = useCompilationStore((state) => state.results)[path];
@@ -106,7 +107,7 @@ function Preview({ path }: PreviewProps) {
 
 			<div className="bg-muted/30 border-t border-border rounded-xl flex flex-col">
 				<TabsContent value="preview">
-					<div className="p-4">
+					<div className="p-4" style={style}>
 						<ErrorBoundary
 							fallback={(err) => (
 								<div className="p-4 border bg-background border-destructive rounded-xl overflow-auto">
