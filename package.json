@@ -11,7 +11,8 @@
     "db:seed": "pnpm --filter backend db:seed",
     "db:studio": "pnpm --filter @workspace/db db:studio",
     "auth:generate": "pnpm --filter @workspace/auth auth:generate",
-    "templates:generate": "pnpm --filter @workspace/templates build"
+    "templates:generate": "pnpm --filter @workspace/templates build",
+    "cn:generate": "pnpm --filter @workspace/templates build:cn"
   },
   "dependencies": {
     "turbo": "^2.5.3",

@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsx ./src/scripts/build-templates.ts"
+    "build": "tsx ./src/scripts/build-templates.ts",
+    "build:cn": "tsx ./src/scripts/build-cn.ts"
   },
   "dependencies": {
     "tsx": "4.20.3",
