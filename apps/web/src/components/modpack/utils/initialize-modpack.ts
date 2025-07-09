@@ -1,5 +1,5 @@
 import { Modpack, type ModpackBootOptions } from '@modpack/core';
-import { esmSh, inject, resolver, virtual } from '@modpack/plugins';
+import { esmSh, http, inject, resolver, virtual } from '@modpack/plugins';
 import { react } from '@modpack/react';
 import { swc } from '@modpack/swc';
 import { modpackUi } from '@workspace/ui/lib/modpack';
@@ -20,16 +20,7 @@ export async function initializeModpack(options?: ModpackBootOptions) {
 		debug: false,
 		...options,
 		plugins: [
-			{
-				name: 'fetch',
-				pipeline: {
-					fetcher: {
-						fetch: ({ url, options, next }) => {
-							return url.startsWith('http') ? fetch(url) : next();
-						},
-					},
-				},
-			},
+			http(),
 			swc({
 				extensions: ['.js', '.ts', '.tsx', '.jsx'],
 				jsc: {
@@ -61,6 +52,7 @@ export async function initializeModpack(options?: ModpackBootOptions) {
 				alias: { '@/': '/' },
 				index: true,
 			}),
+			virtual(),
 			esmSh({
 				external: [
 					'react',
@@ -75,7 +67,6 @@ export async function initializeModpack(options?: ModpackBootOptions) {
 					...Object.keys(modpackUi),
 				],
 			}),
-			virtual(),
 			inject({
 				modules: {
 					react: React,

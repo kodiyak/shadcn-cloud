@@ -70,17 +70,17 @@ importers:
         specifier: ^3.1.0
         version: 3.1.0(@types/react@19.1.8)(react@19.1.0)
       '@modpack/core':
-        specifier: 0.2.1-canary.14
-        version: 0.2.1-canary.14
+        specifier: 0.2.1-canary.23
+        version: 0.2.1-canary.23
       '@modpack/plugins':
-        specifier: 0.2.1-canary.14
-        version: 0.2.1-canary.14
+        specifier: 0.2.1-canary.23
+        version: 0.2.1-canary.23
       '@modpack/react':
-        specifier: 0.2.1-canary.14
-        version: 0.2.1-canary.14(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 0.2.1-canary.23
+        version: 0.2.1-canary.23(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@modpack/swc':
-        specifier: 0.2.1-canary.14
-        version: 0.2.1-canary.14
+        specifier: 0.2.1-canary.23
+        version: 0.2.1-canary.23
       '@monaco-editor/react':
         specifier: 4.7.0
         version: 4.7.0(monaco-editor@0.52.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -672,23 +672,23 @@ packages:
       '@types/react': '>=16'
       react: '>=16'
 
-  '@modpack/core@0.2.1-canary.14':
-    resolution: {integrity: sha512-MaavZSgeISbdIY2/OhLXHncyV5Ub7n58kqKIrgJ8E1tHH1NE/PWVORInnV99jmd7ZLpXZI6MP8BIDnUUqQNVZQ==}
+  '@modpack/core@0.2.1-canary.23':
+    resolution: {integrity: sha512-n3AAbXxyUdROzmNdldggDsKQRBYznOILZy1a8hXA2NKdpNiqG2ZDth0iJS7HDJ/EJPwVhxNMcuwJ9K2rfT+Qsw==}
 
-  '@modpack/plugins@0.2.1-canary.14':
-    resolution: {integrity: sha512-MD06JfU4/sm4y5Z41G0FI6+fEcTtzAh1k/d4daCYnRSW/sZ9mWab+6pqlFef/Y6Xf5EQ3tPZ9t+p/yLeZcBfGg==}
+  '@modpack/plugins@0.2.1-canary.23':
+    resolution: {integrity: sha512-eP4tmnszsh8p81fSzI+DcMhwHk9AGpwCf8nlyKLruc9YnRMm6HOQqfZ2GjR85bG21XGctPGN7Zmw+NpY3RRjRQ==}
 
-  '@modpack/react@0.2.1-canary.14':
-    resolution: {integrity: sha512-gtUBWmwN/iYcu+dzuf6N9SETcrWDYG4GP8NWIUY0FqCTnZ1l3+wDR6vfRVGaTAGTkl9hoFvZM6RClUqkw2/NXA==}
+  '@modpack/react@0.2.1-canary.23':
+    resolution: {integrity: sha512-G6P2KlrmKcCZ3YyO6MHgR2cIXnoI+BIDWBaDKtTYLrnkmIUg7GZ0aplYCtsPuj4IuAI6npvzsz4twQSJMP98fA==}
     peerDependencies:
       react: '>=19'
       react-dom: '>=19'
 
-  '@modpack/swc@0.2.1-canary.14':
-    resolution: {integrity: sha512-JOE1BNLKzsC5SxyK2BoOOkuqAnkKsEx79/b9cT/3ElKoeamJC9xhl2DofZWi781sUFUuA/URq0pCWDyDJNZOQw==}
+  '@modpack/swc@0.2.1-canary.23':
+    resolution: {integrity: sha512-q1iH+OYMuVyh5HvurzPIAXr6bLhctONcAErOx2bJDpcKKwV2f3iGlDnZlwMXcK6umz8NZortZv8/layVYk+PQA==}
 
-  '@modpack/utils@0.2.1-canary.14':
-    resolution: {integrity: sha512-tzEcvA28OgpK/Dnn6y89L5ZRtZL0M89DrBXryFc1myQV6T2Mm7lPPvoieQQNlMeEoaQExu6aBzEit3AbGpyH8w==}
+  '@modpack/utils@0.2.1-canary.23':
+    resolution: {integrity: sha512-pJ7MRS3gDvO0Dgh8oJVI+2aKSF6548Ijgowh4wbem0YtVqjxizWZ9XuPMtb4XWWqSSzmqwF0qrWbzbghmia2DA==}
 
   '@monaco-editor/loader@1.5.0':
     resolution: {integrity: sha512-hKoGSM+7aAc7eRTRjpqAZucPmoNOC4UUbknb/VNoTkEIkCPhqV8LfbsgM1webRM7S/z21eHEx9Fkwx8Z/C/+Xw==}
@@ -2726,7 +2726,7 @@ snapshots:
       '@types/react': 19.1.8
       react: 19.1.0
 
-  '@modpack/core@0.2.1-canary.14':
+  '@modpack/core@0.2.1-canary.23':
     dependencies:
       '@swc/wasm-web': 1.12.9
       debug: 4.4.1
@@ -2734,31 +2734,31 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@modpack/plugins@0.2.1-canary.14':
+  '@modpack/plugins@0.2.1-canary.23':
     dependencies:
-      '@modpack/utils': 0.2.1-canary.14
+      '@modpack/utils': 0.2.1-canary.23
     transitivePeerDependencies:
       - supports-color
 
-  '@modpack/react@0.2.1-canary.14(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@modpack/react@0.2.1-canary.23(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@modpack/utils': 0.2.1-canary.14
+      '@modpack/utils': 0.2.1-canary.23
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
       react-refresh: 0.17.0
     transitivePeerDependencies:
       - supports-color
 
-  '@modpack/swc@0.2.1-canary.14':
+  '@modpack/swc@0.2.1-canary.23':
     dependencies:
-      '@modpack/utils': 0.2.1-canary.14
+      '@modpack/utils': 0.2.1-canary.23
       '@swc/wasm-web': 1.12.9
     transitivePeerDependencies:
       - supports-color
 
-  '@modpack/utils@0.2.1-canary.14':
+  '@modpack/utils@0.2.1-canary.23':
     dependencies:
-      '@modpack/core': 0.2.1-canary.14
+      '@modpack/core': 0.2.1-canary.23
     transitivePeerDependencies:
       - supports-color
 
