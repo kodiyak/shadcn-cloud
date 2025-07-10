@@ -1,4 +1,4 @@
-import { CheckIcon, CopyIcon } from '@phosphor-icons/react';
+import { CheckIcon } from '@phosphor-icons/react';
 import { Badge } from '@workspace/ui/components/badge';
 import { ButtonsIcons } from '@workspace/ui/components/button';
 import { ErrorBoundary } from '@workspace/ui/components/error-boundary';
@@ -15,13 +15,13 @@ import { RefreshCwIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { type CSSProperties, useMemo } from 'react';
 import { CodeBlock } from '@/components/code-block';
+import CopyButton from '@/components/copy-button';
 import { useCompilationStore } from '@/components/crafter/lib/store/use-compilation-store';
 import {
 	findNodeInTree,
 	getNodeFiles,
 	useProjectStore,
 } from '@/components/crafter/lib/store/use-project-store';
-import useCopy from '@/lib/hooks/use-copy';
 import { standardTransition } from '@/lib/transitions';
 
 interface PreviewProps {
@@ -36,8 +36,6 @@ function Preview({ path, style }: PreviewProps) {
 	const module = useCompilationStore((state) => state.results)[path];
 	const error = useCompilationStore((state) => state.errors)[path];
 	const compiling = useCompilationStore((state) => state.compiling)[path];
-
-	const [copied, onCopy] = useCopy(2.5);
 
 	const status = compiling ? 'compiling' : error ? 'error' : 'ready';
 	const compilationStatus = {
@@ -167,23 +165,10 @@ function Preview({ path, style }: PreviewProps) {
 						code={node?.content || ''}
 						lang={(node?.path.split('.').pop() as any) || 'js'}
 					/>
-					<div className="absolute right-4 bottom-4 z-30">
-						<ButtonsIcons
-							items={[
-								{
-									variant: copied ? 'success-outline' : 'outline',
-									className: copied ? 'text-success' : '',
-									label: copied ? 'Copied!' : 'Copy',
-									icon: copied ? <CheckIcon /> : <CopyIcon />,
-									onClick: async () => {
-										if (node?.content) {
-											await onCopy(node.content);
-										}
-									},
-								},
-							]}
-						/>
-					</div>
+					<CopyButton
+						className="absolute right-4 bottom-4 z-30"
+						content={node?.content}
+					/>
 				</TabsContent>
 			</div>
 		</Tabs>

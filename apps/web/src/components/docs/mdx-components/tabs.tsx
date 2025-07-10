@@ -7,7 +7,11 @@ import {
 import { cn } from '@workspace/ui/lib/utils';
 import type { PropsWithChildren } from 'react';
 
-function Tabs({ items, children }: PropsWithChildren<{ items: string[] }>) {
+function Tabs({
+	items,
+	children,
+	className,
+}: PropsWithChildren<{ items: string[]; className?: string }>) {
 	return (
 		<MainTabs
 			className="rounded-xl gap-0 bg-muted/30 border"
@@ -27,7 +31,12 @@ function Tabs({ items, children }: PropsWithChildren<{ items: string[] }>) {
 					</TabsTrigger>
 				))}
 			</TabsList>
-			<div className="rounded-xl bg-background p-4 border-t border-border">
+			<div
+				className={cn(
+					'rounded-xl bg-background p-4 border-t border-border',
+					className,
+				)}
+			>
 				{children}
 			</div>
 		</MainTabs>

@@ -25,18 +25,18 @@ interface DocInstallProps {
 export default function DocInstall({ component }: DocInstallProps) {
 	return (
 		<div className="flex flex-col container max-w-4xl mx-auto">
-			<Tabs className="py-6" defaultValue="account">
+			<Tabs className="py-6" defaultValue="cli">
 				<TabsList>
-					<TabsTrigger value="account">
+					<TabsTrigger value="cli">
 						<TerminalIcon />
 						<span>CLI</span>
 					</TabsTrigger>
-					<TabsTrigger value="password">
+					<TabsTrigger value="manual">
 						<PanelBottomCloseIcon />
 						<span>Manual</span>
 					</TabsTrigger>
 				</TabsList>
-				<TabsContent value="account">
+				<TabsContent value="cli">
 					<Card>
 						<CardHeader>
 							<CardTitle>Install via CLI</CardTitle>
@@ -55,7 +55,7 @@ export default function DocInstall({ component }: DocInstallProps) {
 						</CardContent>
 					</Card>
 				</TabsContent>
-				<TabsContent value="password">
+				<TabsContent value="manual">
 					<Card className="bg-transparent dark:bg-transparent border-transparent">
 						<CardHeader>
 							<CardTitle>Manual Installation</CardTitle>
@@ -63,7 +63,7 @@ export default function DocInstall({ component }: DocInstallProps) {
 								Follow these steps to manually install the component:
 							</CardDescription>
 						</CardHeader>
-						<CardContent>
+						<CardContent className="px-0">
 							<DocManualInstall component={component} />
 						</CardContent>
 					</Card>
