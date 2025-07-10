@@ -1,8 +1,6 @@
-import { useMutation } from '@tanstack/react-query';
-import { Button, ButtonsIcons } from '@workspace/ui/components/button';
+import { ButtonsIcons } from '@workspace/ui/components/button';
 import { FileCodeIcon } from '@workspace/ui/components/icons';
 import { cn } from '@workspace/ui/lib/utils';
-import { SaveIcon } from 'lucide-react';
 import { useEditorStore } from '../lib/store/use-editor-store';
 import { flattenNodes, useProjectStore } from '../lib/store/use-project-store';
 
@@ -11,13 +9,6 @@ export default function SidebarIcon() {
 		(n) => n.type === 'file',
 	);
 	const activePath = useEditorStore((state) => state.activePath);
-	const publish = useProjectStore((state) => state.publish);
-
-	const onPublish = useMutation({
-		mutationFn: async () => {
-			await publish();
-		},
-	});
 
 	return (
 		<div className="h-full w-full flex flex-col px-4 items-center gap-2">
@@ -58,15 +49,6 @@ export default function SidebarIcon() {
 					onClick: () => useEditorStore.getState().openFile(node.path),
 				}))}
 			/>
-			<div className="flex-1"></div>
-			<Button
-				className="mx-auto"
-				disabled={onPublish.isPending}
-				onClick={() => onPublish.mutate()}
-				size={'icon-lg'}
-			>
-				<SaveIcon />
-			</Button>
 		</div>
 	);
 }
