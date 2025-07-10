@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { buildRegistry } from './build-registry';
 
 describe('buildRegistry', () => {
@@ -94,10 +94,10 @@ describe('buildRegistry', () => {
 			],
 		]);
 		const files = new Map([
-			['file:///index.tsx', 'export const ComponentA = () => {};'],
-			['file:///utils.ts', 'export const cn = () => {};'],
-			['file:///utils/helpers.ts', 'export const helper = () => {};'],
-			['file:///utils/alias.ts', 'export const aliastFn = () => {};'],
+			['/index.tsx', 'export const ComponentA = () => {};'],
+			['/utils.ts', 'export const cn = () => {};'],
+			['/utils/helpers.ts', 'export const helper = () => {};'],
+			['/utils/alias.ts', 'export const aliastFn = () => {};'],
 		]);
 
 		const result = buildRegistry({

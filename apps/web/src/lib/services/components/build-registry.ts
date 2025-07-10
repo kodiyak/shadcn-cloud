@@ -39,12 +39,10 @@ export function buildRegistry({
 
 	const registryFiles = new Map(
 		(result?.files || []).map((file) => {
-			const content = files.get(file);
+			const content = files.get(new URL(file).pathname);
 			return [file, content];
 		}),
 	);
-
-	console.log(`Result`, { result, registryFiles });
 
 	const registryItem: RegistryItem = {
 		name: kebabCase(metadata.title),
