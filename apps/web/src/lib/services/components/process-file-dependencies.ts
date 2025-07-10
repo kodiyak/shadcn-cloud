@@ -1,4 +1,4 @@
-import type { Exports, Imports } from '@/lib/domain';
+import type { ExportsMap, ImportsMap } from '@/lib/domain';
 
 interface ProcessDependencyContext {
 	files: string[];
@@ -6,8 +6,8 @@ interface ProcessDependencyContext {
 }
 export interface ProcessFileDependenciesProps {
 	path: string;
-	exports: Exports;
-	imports: Imports;
+	exports: ExportsMap;
+	imports: ImportsMap;
 	urls: string[];
 	context: ProcessDependencyContext;
 }
