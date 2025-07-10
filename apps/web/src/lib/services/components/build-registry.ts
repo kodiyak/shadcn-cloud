@@ -4,13 +4,13 @@ import {
 	registryItemSchema,
 } from '@uipub/registry';
 import kebabCase from 'lodash.kebabcase';
-import type { Exports, Imports, Metadata } from '@/lib/domain';
+import type { ExportsMap, ImportsMap, Metadata } from '@/lib/domain';
 import { processFileDependencies } from './process-file-dependencies';
 
 interface BuildRegistryProps {
 	entrypoint: string;
-	exports: Exports;
-	imports: Imports;
+	exports: ExportsMap;
+	imports: ImportsMap;
 	metadata: Metadata;
 	files: Map<string, string>;
 }
