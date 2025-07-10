@@ -15,8 +15,14 @@ import {
 } from '@workspace/ui/components/tabs';
 import { PanelBottomCloseIcon, TerminalIcon } from 'lucide-react';
 import { CodeBlock } from '@/components/code-block';
+import type { Component } from '@/lib/domain';
+import DocManualInstall from './_doc-manual-install';
 
-export default function DocInstall() {
+interface DocInstallProps {
+	component: Component;
+}
+
+export default function DocInstall({ component }: DocInstallProps) {
 	return (
 		<div className="flex flex-col container max-w-4xl mx-auto">
 			<Tabs className="py-6" defaultValue="account">
@@ -57,7 +63,9 @@ export default function DocInstall() {
 								Follow these steps to manually install the component:
 							</CardDescription>
 						</CardHeader>
-						<CardContent></CardContent>
+						<CardContent>
+							<DocManualInstall component={component} />
+						</CardContent>
 					</Card>
 				</TabsContent>
 			</Tabs>

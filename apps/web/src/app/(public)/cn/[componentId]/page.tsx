@@ -19,9 +19,9 @@ export default async function Page({ params }: Props) {
 	return (
 		<div className="flex flex-col">
 			<div className="border-b pt-12 bg-gradient-to-b border-border border-dashed from-black to-background">
-				<DocHeader {...(component.metadata as any)} />
+				<DocHeader {...component.metadata} />
 			</div>
-			<DocInstall />
+			<DocInstall component={component} />
 			<DocContent component={component} />
 		</div>
 	);

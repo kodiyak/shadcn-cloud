@@ -5,14 +5,11 @@ import { useEffect } from 'react';
 import { useCompilationStore } from '@/components/crafter/lib/store/use-compilation-store';
 import { useProjectStore } from '@/components/crafter/lib/store/use-project-store';
 import MdxContent from '@/components/crafter/preview/mdx-content';
+import type { Component } from '@/lib/domain';
 import TableOfContents from './_table-of-contents';
 
 interface DocContentProps {
-	component: {
-		id: string;
-		metadata: any;
-		files: Record<string, string>;
-	};
+	component: Component;
 }
 
 export default function DocContent({ component }: DocContentProps) {
@@ -24,7 +21,7 @@ export default function DocContent({ component }: DocContentProps) {
 		const { compile } = useCompilationStore.getState();
 		await selectTemplate({
 			title: component.metadata.title,
-			description: component.metadata.description,
+			description: component.metadata.description || '',
 			files: component.files,
 		});
 

@@ -3,14 +3,7 @@ import { Button } from '@workspace/ui/components/button';
 import { ToolIcon } from '@workspace/ui/components/icons';
 import { ArrowRightIcon, CheckIcon } from 'lucide-react';
 import Link from 'next/link';
-
-interface DocHeaderProps {
-	title: string;
-	description?: string;
-	features: string[];
-	references: { title: string; href: string }[];
-	tools: { title: string; icon: string; href: string }[];
-}
+import type { Metadata } from '@/lib/domain';
 
 export default function DocHeader({
 	title,
@@ -18,7 +11,7 @@ export default function DocHeader({
 	features = [],
 	references = [],
 	tools = [],
-}: DocHeaderProps) {
+}: Metadata) {
 	return (
 		<div className="flex flex-col container max-w-4xl mx-auto">
 			<div className="flex flex-col md:flex-row md:items-end border-b border-dashed pb-6 gap-16">
