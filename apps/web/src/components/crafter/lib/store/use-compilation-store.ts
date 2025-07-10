@@ -2,6 +2,7 @@ import type { Orchestrator } from '@modpack/core';
 import { create } from 'zustand';
 import type { ModpackLog } from '@/components/modpack/types';
 import { initializeModpack } from '@/components/modpack/utils/initialize-modpack';
+import { saveLogsToStorage, loadLogsFromStorage } from '@/lib/utils/log-persistence';
 
 interface CompileProps {
 	entrypoint: string;
@@ -21,6 +22,8 @@ interface CompilationStore {
 	imports: Map<string, Map<string, string[]>>;
 	compile: (props: CompileProps) => Promise<void>;
 	hotReload: (path: string, content: string) => void;
+	addLog: (level: ModpackLog['level'], message: string, category: string, metadata?: Record<string, any>) => void;
+	clearLogs: () => void;
 }
 
 export const useCompilationStore = create<CompilationStore>((set, get) => ({
@@ -28,7 +31,7 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 	isLoading: false,
 	exports: new Map(),
 	imports: new Map(),
-	logs: [],
+	logs: typeof window !== 'undefined' ? loadLogsFromStorage() : [],
 	files: {},
 	results: {},
 	errors: {},
@@ -69,6 +72,33 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 				[path]: content,
 			},
 		}));
+	},
+	addLog: (level, message, category, metadata = {}) => {
+		set((state) => {
+			const newLogs = [...state.logs, {
+				level,
+				message,
+				timestamp: new Date().toISOString(),
+				source: 'modpack',
+				category,
+				metadata
+			}];
+			
+			// Save to localStorage
+			if (typeof window !== 'undefined') {
+				saveLogsToStorage(newLogs);
+			}
+			
+			return {
+				logs: newLogs,
+			};
+		});
+	},
+	clearLogs: () => {
+		set({ logs: [] });
+		if (typeof window !== 'undefined') {
+			saveLogsToStorage([]);
+		}
 	},
 }));
 
@@ -178,9 +208,12 @@ async function main() {
 			}));
 		},
 		onBuildStart: ({ reporter }) => {
-			reporter.log('info', 'Modpack build starting...');
+			const { addLog } = useCompilationStore.getState();
+			addLog('info', 'Modpack build starting...', 'build');
 		},
 		onBuildEnd: async ({ result, error, entrypoint, reporter }) => {
+			const { addLog } = useCompilationStore.getState();
+			
 			if (result) {
 				useCompilationStore.setState((s) => ({
 					results: { ...s.results, [entrypoint]: result },
@@ -198,13 +231,10 @@ async function main() {
 			}));
 
 			if (result) {
-				reporter.log('info', 'Build completed successfully');
+				addLog('info', 'Build completed successfully', 'build', { entrypoint });
 			} else {
 				console.error('Build failed:', error);
-				reporter.log(
-					'error',
-					`Build failed: ${error ? error.message : 'Unknown error'}`,
-				);
+				addLog('error', `Build failed: ${error ? error.message : 'Unknown error'}`, 'build', { entrypoint, error: error?.message });
 			}
 
 			const { exports, imports } = useCompilationStore.getState();
@@ -212,57 +242,50 @@ async function main() {
 		},
 		onLog: (log) => {
 			useCompilationStore.setState((state) => ({
-				logs: [...state.logs, { level: log.level, message: log.message }],
+				logs: [...state.logs, { 
+					level: log.level, 
+					message: log.message,
+					timestamp: new Date().toISOString(),
+					source: 'modpack',
+					category: 'compilation',
+					metadata: log.metadata || {}
+				}],
 			}));
 		},
 		onSourceStart: ({ url, options, reporter, parent }) => {
-			reporter.log(
-				'info',
-				[
-					`Starting source: ${url}`,
-					`Options:`,
-					JSON.stringify({ options, parent }, null, 2),
-				].join('\n'),
-			);
+			const { addLog } = useCompilationStore.getState();
+			addLog('info', `Starting source: ${url}`, 'source', { url, options, parent });
 		},
 		onSourceEnd: ({ url, options, reporter, parent, result, error }) => {
-			reporter.log(
+			const { addLog } = useCompilationStore.getState();
+			addLog(
 				error ? 'error' : 'info',
-				[
-					`Finished source: ${url}`,
-					`Options:`,
-					JSON.stringify({ error, options, parent, result }, null, 2),
-				].join('\n'),
+				`Finished source: ${url}`,
+				'source',
+				{ url, options, parent, result, error: error?.message }
 			);
 		},
 
 		onFetchStart: ({ url, options, reporter }) => {
-			reporter.log(
-				'info',
-				`Fetching URL: ${url} with options: ${JSON.stringify(options)}`,
-			);
+			const { addLog } = useCompilationStore.getState();
+			addLog('info', `Fetching URL: ${url}`, 'fetch', { url, options });
 		},
 		onFetchEnd: ({ url, options, reporter, response, error }) => {
-			reporter.log(
+			const { addLog } = useCompilationStore.getState();
+			addLog(
 				error ? 'error' : 'info',
-				[
-					`Fetch completed for URL: ${url}`,
-					`Options: ${JSON.stringify(options)}`,
-					`Response: ${response ? response.status : 'No response'}`,
-					error ? `Error: ${error.message}` : '',
-				].join('\n'),
+				`Fetch completed for URL: ${url}`,
+				'fetch',
+				{ url, options, status: response?.status, error: error?.message }
 			);
 		},
 		onModuleUpdate: ({ reporter, path, content, updated, result, error }) => {
-			reporter.log(
+			const { addLog } = useCompilationStore.getState();
+			addLog(
 				error ? 'error' : 'info',
-				[
-					`Module update for path: ${path}`,
-					`Content: ${content ? content.slice(0, 100) + '...' : 'No content'}`,
-					`Updated: ${updated}`,
-					result ? `Result: ${JSON.stringify(result)}` : '',
-					error ? `Error: ${error.message}` : '',
-				].join('\n'),
+				`Module update for path: ${path}`,
+				'module',
+				{ path, contentLength: content?.length, updated, result, error: error?.message }
 			);
 
 			useCompilationStore.setState((prev) => ({
