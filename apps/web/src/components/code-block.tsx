@@ -1,18 +1,48 @@
 import { transformerRenderWhitespace } from '@shikijs/transformers';
 import { cn } from '@workspace/ui/lib/utils';
-import { useLayoutEffect, useState } from 'react';
-import type { BundledLanguage } from 'shiki';
+import { useLayoutEffect, useMemo, useState } from 'react';
+import type { BundledLanguage, ShikiTransformer } from 'shiki';
 import { useHighlighter } from './crafter/lib/hooks/use-highlighter';
 
 interface SourceCodeBlockProps {
 	code: string;
 	lang?: BundledLanguage;
 	className?: string;
+	lineCount?: boolean;
 }
 
-function CodeBlock({ code, lang, className }: SourceCodeBlockProps) {
+const transformLineNumbers: ShikiTransformer = {
+	pre(node) {
+		this.addClassToHast(node, 'has-line-numbers');
+	},
+	line(node, line) {
+		// Cria um span para o número da linha
+		const lineNumberNode: any = {
+			type: 'element',
+			tagName: 'span',
+			properties: {
+				className: 'line-number',
+			},
+			children: [{ type: 'text', value: String(line) }],
+		};
+
+		node.children.unshift(lineNumberNode);
+
+		this.addClassToHast(node, 'code-line');
+	},
+};
+
+function CodeBlock({ code, lang, className, lineCount }: SourceCodeBlockProps) {
 	const [html, setHtml] = useState('');
 	const { hightlighter, theme } = useHighlighter();
+
+	const transformers = useMemo(() => {
+		const transformers = [transformerRenderWhitespace()];
+		if (lineCount) {
+			transformers.push(transformLineNumbers);
+		}
+		return transformers;
+	}, [lineCount]);
 
 	useLayoutEffect(() => {
 		if (hightlighter) {
@@ -22,34 +52,12 @@ function CodeBlock({ code, lang, className }: SourceCodeBlockProps) {
 					lang: lang ?? 'typescript',
 					theme,
 					tabindex: 0,
-					transformers: [
-						{
-							pre(node) {
-								this.addClassToHast(node, 'has-line-numbers');
-							},
-							line(node, line) {
-								// Cria um span para o número da linha
-								const lineNumberNode: any = {
-									type: 'element',
-									tagName: 'span',
-									properties: {
-										className: 'line-number',
-									},
-									children: [{ type: 'text', value: String(line) }],
-								};
-
-								node.children.unshift(lineNumberNode);
-
-								this.addClassToHast(node, 'code-line');
-							},
-						},
-						transformerRenderWhitespace(),
-					],
+					transformers,
 				},
 			);
 			setHtml(html);
 		}
-	}, [code, lang, hightlighter]);
+	}, [code, lang, transformers, hightlighter]);
 
 	return (
 		<div

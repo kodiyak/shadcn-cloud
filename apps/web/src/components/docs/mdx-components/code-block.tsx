@@ -57,6 +57,7 @@ function MDXCodeBlock({ children, className }: CodeBlockProps) {
 					)}
 					code={children}
 					lang={lang as any}
+					lineCount
 				/>
 			</div>
 		</div>

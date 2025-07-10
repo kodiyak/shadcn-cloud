@@ -30,7 +30,8 @@ interface PreviewProps {
 }
 
 function Preview({ path, style }: PreviewProps) {
-	const node = useProjectStore((state) => findNodeInTree(state.nodes, path));
+	const nodes = useProjectStore((state) => state.nodes);
+	const node = findNodeInTree(nodes, path);
 	const compile = useCompilationStore((state) => state.compile);
 	const module = useCompilationStore((state) => state.results)[path];
 	const error = useCompilationStore((state) => state.errors)[path];

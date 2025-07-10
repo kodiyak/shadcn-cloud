@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import DocHeader from '@/components/docs/doc-header';
 import { findComponent } from '@/lib/services';
 import DocContent from './_doc-content';
+import DocInstall from './_doc-install';
 
 interface Props {
 	params: Promise<{ componentId: string }>;
@@ -20,6 +21,7 @@ export default async function Page({ params }: Props) {
 			<div className="border-b pt-12 bg-gradient-to-b border-border border-dashed from-black to-background">
 				<DocHeader {...(component.metadata as any)} />
 			</div>
+			<DocInstall />
 			<DocContent component={component} />
 		</div>
 	);

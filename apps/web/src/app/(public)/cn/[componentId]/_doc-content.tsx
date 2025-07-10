@@ -28,7 +28,6 @@ export default function DocContent({ component }: DocContentProps) {
 			files: component.files,
 		});
 
-		console.log('Initializing component:', component);
 		for (const path of Object.keys(component.files)) {
 			if (path.startsWith('file:///previews')) {
 				await compile({
