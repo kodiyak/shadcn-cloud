@@ -5,5 +5,5 @@ export async function findComponent(componentId: string) {
 		where: { id: componentId },
 	});
 
-	return component;
+	return component as any;
 }

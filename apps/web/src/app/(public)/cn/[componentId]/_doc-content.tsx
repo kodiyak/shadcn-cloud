@@ -10,8 +10,8 @@ import TableOfContents from './_table-of-contents';
 interface DocContentProps {
 	component: {
 		id: string;
-		files: any;
 		metadata: any;
+		files: Record<string, string>;
 	};
 }
 
@@ -28,9 +28,18 @@ export default function DocContent({ component }: DocContentProps) {
 			files: component.files,
 		});
 
+		console.log('Initializing component:', component);
 		for (const path of Object.keys(component.files)) {
-			if (path.startsWith('/previews')) {
-				await compile({ entrypoint: path, files: component.files });
+			if (path.startsWith('file:///previews')) {
+				await compile({
+					entrypoint: path.replace('file://', ''),
+					files: Object.fromEntries(
+						Object.entries(component.files).map(([key, value]) => [
+							key.replace('file://', ''),
+							value,
+						]),
+					),
+				});
 			}
 		}
 	};
@@ -48,11 +57,13 @@ export default function DocContent({ component }: DocContentProps) {
 		<div className="flex flex-col">
 			<div className="flex gap-12 max-w-4xl items-stretch mx-auto w-full py-12">
 				<div className="flex-1 flex flex-col gap-2 overflow-hidden">
-					<MdxContent content={component.files['/index.mdx'] || ''} />
+					<MdxContent content={component.files['file:///index.mdx'] || ''} />
 				</div>
 				<div className="w-1/5 flex flex-col shrink-0">
 					<div className="sticky top-4">
-						<TableOfContents content={component.files['/index.mdx'] || ''} />
+						<TableOfContents
+							content={component.files['file:///index.mdx'] || ''}
+						/>
 					</div>
 				</div>
 			</div>
