@@ -231,16 +231,13 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 				return [`file://${path}`, modpack?.fs.readFile(path) || ''];
 			}),
 		);
-		const files = new Map([
-			...Object.entries(getNodeFiles(nodes)),
-			...virtualFiles.entries(),
-		]);
+		const files = new Map([...virtualFiles.entries()]);
 
 		const registry = buildRegistry({
 			imports,
 			exports,
 			files,
-			metadata: JSON.parse(files.get('/metadata.json') || '{}'),
+			metadata: JSON.parse(files.get('file:///metadata.json') || '{}'),
 			entrypoint: 'file:///index.tsx',
 		});
 		const sourceMap = {

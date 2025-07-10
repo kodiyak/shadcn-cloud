@@ -11,8 +11,8 @@ const publishSchema = z.object({
 	}),
 	files: z
 		.object({
-			'/index.mdx': z.string(),
-			'/metadata.json': z.string(),
+			'file:///index.mdx': z.string(),
+			'file:///metadata.json': z.string(),
 		})
 		.passthrough(),
 });
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 	}
 
 	const { files, registry, sourceMap } = body;
-	const metadata = JSON.parse(files['/metadata.json']);
+	const metadata = JSON.parse(files['file:///metadata.json']);
 
 	const component = await db.component.create({
 		data: {

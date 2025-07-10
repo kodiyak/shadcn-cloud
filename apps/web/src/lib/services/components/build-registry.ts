@@ -39,7 +39,7 @@ export function buildRegistry({
 
 	const registryFiles = new Map(
 		(result?.files || []).map((file) => {
-			const content = files.get(new URL(file).pathname);
+			const content = files.get(file);
 			return [file, content];
 		}),
 	);
