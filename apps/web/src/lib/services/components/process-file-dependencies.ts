@@ -55,7 +55,12 @@ export function processFileDependencies({
 function resolveImportPath(path: string, parent: string, urls: string[]) {
 	const extensions = ['.ts', '.tsx', '.js', '.jsx', '.json'];
 	const base = parent.split('/').slice(0, -1);
-	if (path.startsWith('..') || path.startsWith('./') || path.startsWith('@/')) {
+	if (
+		path.startsWith('..') ||
+		path.startsWith('./') ||
+		path.startsWith('@/') ||
+		path.startsWith('/')
+	) {
 		// Handle relative paths
 		const resolveRelative = () => {
 			const parts = path.split('/').filter(Boolean);
@@ -71,13 +76,20 @@ function resolveImportPath(path: string, parent: string, urls: string[]) {
 				].join('/');
 			} else if (path.startsWith('@/')) {
 				return [...base, ...parts.slice(1)].join('/');
+			} else if (path.startsWith('/')) {
+				console.log('Absolute path detected:', path);
+				return `/${[...parts].join('/')}`;
 			}
 			return [...base, ...parts].join('/');
 		};
 
-		const result = resolveRelative();
-		const possiblePaths = extensions.map((ext) => `${result}${ext}`);
-		possiblePaths.push(result);
+		const resolvedRelative = resolveRelative();
+		const relativePath = isUrl(resolvedRelative)
+			? resolvedRelative
+			: `file://${resolvedRelative}`;
+		const possiblePaths = extensions.map((ext) => `${relativePath}${ext}`);
+		possiblePaths.push(relativePath);
+
 		for (const possiblePath of possiblePaths) {
 			if (urls.includes(possiblePath)) {
 				return possiblePath;
@@ -87,4 +99,13 @@ function resolveImportPath(path: string, parent: string, urls: string[]) {
 		return null;
 	}
 	return path;
+}
+
+function isUrl(url: string): boolean {
+	try {
+		new URL(url);
+		return true;
+	} catch {
+		return false;
+	}
 }

@@ -17,7 +17,7 @@ describe('processFileDependencies', () => {
 			[
 				'file:///index.tsx',
 				new Map([
-					['./utils', ['cn']],
+					['/utils', ['cn']],
 					['./utils/helpers', ['helper']],
 					['@/utils/alias', ['aliastFn']],
 					['react/jsx-dev-runtime', ['_jsxDEV']],
