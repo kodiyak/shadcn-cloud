@@ -31,7 +31,7 @@ export default function TemplatePreview({
 	template,
 	onSelect,
 }: TemplatePreviewProps) {
-	const isCompiling = useCompilationStore((state) => state.isCompiling);
+	const isCompiling = useCompilationStore((state) => Object.values(state.compiling).some(Boolean));
 	const files = useMemo(() => {
 		return Object.entries(template.files).map(([path, content]) => {
 			const parts = path.split(/(\/|\\)/g);

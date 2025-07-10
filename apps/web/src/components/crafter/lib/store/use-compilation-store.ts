@@ -75,11 +75,11 @@ export const useCompilationStore = create<CompilationStore>((set, get) => ({
 	},
 	addLog: (level, message, category, metadata = {}) => {
 		set((state) => {
-			const newLogs = [...state.logs, {
+			const newLogs: ModpackLog[] = [...state.logs, {
 				level,
 				message,
 				timestamp: new Date().toISOString(),
-				source: 'modpack',
+				source: 'modpack' as const,
 				category,
 				metadata
 			}];
@@ -246,9 +246,9 @@ async function main() {
 					level: log.level, 
 					message: log.message,
 					timestamp: new Date().toISOString(),
-					source: 'modpack',
+					source: 'modpack' as const,
 					category: 'compilation',
-					metadata: log.metadata || {}
+					metadata: {}
 				}],
 			}));
 		},
