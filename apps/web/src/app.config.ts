@@ -26,6 +26,7 @@ export const appConfig: AppConfig = {
 			'js',
 			'javascript',
 			'html',
+			'bash',
 		],
 		langAlias: {},
 	},
