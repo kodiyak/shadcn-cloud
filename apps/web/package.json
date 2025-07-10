@@ -35,6 +35,8 @@
     "@tailwindcss/postcss": "^4",
     "@types/lodash.kebabcase": "^4.1.9",
     "@types/node": "^20",
+    "@vitejs/plugin-react": "4.6.0",
+    "vite-tsconfig-paths": "5.1.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@workspace/core": "workspace:*",
