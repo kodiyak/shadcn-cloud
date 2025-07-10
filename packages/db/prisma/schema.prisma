@@ -76,14 +76,17 @@ model Jwks {
 // Application Models
 // ...
 model Component {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
-  createdAt   DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
-  files       Json
-  metadata    Json
-  graph       Json
-  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String?
+  id                   String   @id @default(uuid())
+  name                 String
+  description          String?
+  createdAt            DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime @updatedAt @db.Timestamptz(3)
+  files                Json
+  metadata             Json
+  registry             Json
+  dependencies         Json[]   @default([])
+  registryDependencies Json[]   @default([])
+  sourceMap            Json
+  user                 User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId               String?
 }

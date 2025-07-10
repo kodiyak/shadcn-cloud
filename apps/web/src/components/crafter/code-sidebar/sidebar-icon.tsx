@@ -4,29 +4,18 @@ import { FileCodeIcon } from '@workspace/ui/components/icons';
 import { cn } from '@workspace/ui/lib/utils';
 import { SaveIcon } from 'lucide-react';
 import { useEditorStore } from '../lib/store/use-editor-store';
-import {
-	flattenNodes,
-	getNodeFiles,
-	useProjectStore,
-} from '../lib/store/use-project-store';
+import { flattenNodes, useProjectStore } from '../lib/store/use-project-store';
 
 export default function SidebarIcon() {
 	const nodes = flattenNodes(useProjectStore((state) => state.nodes)).filter(
 		(n) => n.type === 'file',
 	);
 	const activePath = useEditorStore((state) => state.activePath);
+	const publish = useProjectStore((state) => state.publish);
 
 	const onPublish = useMutation({
 		mutationFn: async () => {
-			const files = getNodeFiles(useProjectStore.getState().nodes);
-			await fetch(`/api/publish`, {
-				method: 'POST',
-				body: JSON.stringify({ files }),
-			})
-				.then((res) => res.json())
-				.then((data) => {
-					console.log('Publish response:', data);
-				});
+			await publish();
 		},
 	});
 

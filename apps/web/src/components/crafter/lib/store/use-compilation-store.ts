@@ -2,7 +2,6 @@ import type { Orchestrator } from '@modpack/core';
 import { create } from 'zustand';
 import type { ModpackLog } from '@/components/modpack/types';
 import { initializeModpack } from '@/components/modpack/utils/initialize-modpack';
-import { buildRegistry } from '@/lib/services';
 
 interface CompileProps {
 	entrypoint: string;
@@ -269,10 +268,6 @@ async function main() {
 			useCompilationStore.setState((prev) => ({
 				compiling: { ...prev.compiling, [path]: false },
 			}));
-
-			const { exports, imports } = useCompilationStore.getState();
-			console.log({ exports, imports });
-			buildRegistry({ entrypoint: 'file:///index.tsx', exports, imports });
 		},
 	});
 

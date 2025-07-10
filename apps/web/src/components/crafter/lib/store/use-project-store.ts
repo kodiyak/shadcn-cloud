@@ -1,5 +1,7 @@
 import type { TemplateProps } from '@workspace/core';
 import { create } from 'zustand';
+import { buildRegistry } from '@/lib/services';
+import { exportsMapToRecord, importsMapToRecord } from '@/lib/utils';
 import type { NodeProps } from '../../types';
 import { useCompilationStore } from './use-compilation-store';
 import { useEditorStore } from './use-editor-store';
@@ -20,6 +22,7 @@ interface ProjectStore {
 	findNode: (path: string) => NodeProps | undefined;
 	searchNodes: (callback: (node: NodeProps) => boolean) => NodeProps[];
 	save: (path: string, content: string) => Promise<void>;
+	publish: () => Promise<void>;
 }
 
 export const useProjectStore = create<ProjectStore>((set, get) => ({
@@ -203,6 +206,14 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			return;
 		}
 
+		const { imports, exports } = useCompilationStore.getState();
+
+		console.log(`Saving file at path: ${path}`, {
+			node,
+			exports,
+			imports,
+		});
+
 		set({
 			nodes: updateNodeInTree(
 				path,
@@ -211,6 +222,65 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			),
 		});
 		useCompilationStore.getState().hotReload(path, content);
+	},
+	publish: async () => {
+		const { nodes } = get();
+		const { exports, imports, modpack } = useCompilationStore.getState();
+		const virtualFiles = new Map(
+			modpack?.fs.readdir().files.map((path) => {
+				return [`file://${path}`, modpack?.fs.readFile(path) || ''];
+			}),
+		);
+		const files = new Map([
+			...Object.entries(getNodeFiles(nodes)),
+			...virtualFiles.entries(),
+		]);
+
+		const registry = buildRegistry({
+			imports,
+			exports,
+			files,
+			metadata: JSON.parse(files.get('/metadata.json') || '{}'),
+			entrypoint: 'file:///index.tsx',
+		});
+		const sourceMap = {
+			imports: importsMapToRecord(imports),
+			exports: exportsMapToRecord(exports),
+		};
+
+		console.log(`Publishing CN Component`, {
+			exports,
+			imports,
+			files,
+			nodes,
+			registry,
+			virtualFiles,
+			sourceMap,
+		});
+
+		/**
+		 * 1. tabs [CLI/Manual]
+		 * CLI -> shadcn cli command
+		 * Manual -> Step by step guide, copy paste files explorer.
+		 * 2. Refine and ship 🚀
+		 * - Errors UI
+		 * 	* - Preview Hot reload error.
+		 * - Remove modpack logs
+		 * - Remove logs
+		 */
+
+		await fetch(`/api/publish`, {
+			method: 'POST',
+			body: JSON.stringify({
+				sourceMap,
+				registry,
+				files: Object.fromEntries(files.entries()),
+			}),
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log('Publish response:', data);
+			});
 	},
 }));
 

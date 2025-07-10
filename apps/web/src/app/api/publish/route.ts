@@ -1,9 +1,14 @@
+import { registryItemSchema } from '@uipub/registry';
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/clients/db';
-import { extractFilesGraph } from '@/lib/services';
 
 const publishSchema = z.object({
+	registry: registryItemSchema,
+	sourceMap: z.object({
+		imports: z.record(z.any()),
+		exports: z.record(z.any()),
+	}),
 	files: z
 		.object({
 			'/index.mdx': z.string(),
@@ -29,9 +34,8 @@ export async function POST(req: NextRequest) {
 		);
 	}
 
-	const { files } = body;
+	const { files, registry, sourceMap } = body;
 	const metadata = JSON.parse(files['/metadata.json']);
-	const graph = extractFilesGraph();
 
 	const component = await db.component.create({
 		data: {
@@ -39,7 +43,10 @@ export async function POST(req: NextRequest) {
 			description: metadata.description,
 			metadata,
 			files: JSON.parse(JSON.stringify(files)),
-			graph: {}, // TODO: Create a graph from the files
+			registry,
+			sourceMap,
+			dependencies: registry.dependencies ?? [],
+			registryDependencies: registry.registryDependencies ?? [],
 		},
 	});
 
