@@ -45,7 +45,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		];
 
 		for (const [path, content] of Object.entries(templateFiles)) {
-			const parts = splitPath(path);
+			const parts = splitPath(path.replace('file://', ''));
 
 			// Create directory structure
 			for (let i = 0; i < parts.length; i++) {
