@@ -1,7 +1,7 @@
 import { Modpack, type ModpackBootOptions } from '@modpack/core';
 import { esmSh, http, inject, resolver, virtual } from '@modpack/plugins';
 import { react } from '@modpack/react';
-import { swc } from '@modpack/swc';
+import { type SwcOptions, swc } from '@modpack/swc';
 import { modpackUi } from '@workspace/ui/lib/modpack';
 import * as Motion from 'motion';
 import * as MotionReact from 'motion/react';
@@ -15,14 +15,33 @@ import * as ReactDOM from 'react-dom';
 import * as ReactDOMClient from 'react-dom/client';
 import defaultVirtualFiles from '@/lib/cn.json';
 
-export async function initializeModpack(options?: ModpackBootOptions) {
+export async function initializeModpack(
+	options?: ModpackBootOptions & {
+		onParse?: SwcOptions['onParse'];
+		onTransform?: SwcOptions['onTransform'];
+	},
+) {
 	const modpack = await Modpack.boot({
-		debug: false,
+		debug: true,
 		...options,
+		onBuildEnd: async (props) => {
+			await options?.onBuildEnd?.(props);
+			// console.log('Modpack build completed.');
+			// console.log('Exports:', exports);
+			// console.log('Imports:', imports);
+		},
+		onModuleUpdate: async (props) => {
+			await options?.onModuleUpdate?.(props);
+			// console.log(`Module updated: ${props.path}`);
+			// console.log('Exports:', exports);
+			// console.log('Imports:', imports);
+		},
 		plugins: [
-			http(),
 			swc({
+				onParse: options?.onParse,
+				onTransform: options?.onTransform,
 				extensions: ['.js', '.ts', '.tsx', '.jsx'],
+				contentTypes: ['application/javascript'],
 				jsc: {
 					target: 'es2022',
 					parser: {
@@ -47,12 +66,13 @@ export async function initializeModpack(options?: ModpackBootOptions) {
 					importInterop: 'swc',
 				},
 			}),
+			http(),
+			virtual(),
 			resolver({
 				extensions: ['.js', '.ts', '.tsx', '.jsx'],
 				alias: { '@/': '/' },
 				index: true,
 			}),
-			virtual(),
 			esmSh({
 				external: [
 					'react',

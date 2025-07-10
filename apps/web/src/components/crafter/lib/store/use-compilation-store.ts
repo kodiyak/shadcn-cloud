@@ -2,6 +2,7 @@ import type { Orchestrator } from '@modpack/core';
 import { create } from 'zustand';
 import type { ModpackLog } from '@/components/modpack/types';
 import { initializeModpack } from '@/components/modpack/utils/initialize-modpack';
+import { buildRegistry } from '@/lib/services';
 
 interface CompileProps {
 	entrypoint: string;
@@ -10,18 +11,24 @@ interface CompileProps {
 
 interface CompilationStore {
 	isReady: boolean;
+	isLoading: boolean;
 	logs: ModpackLog[];
 	modpack: Orchestrator | null;
 	results: Record<string, any>;
 	compiling: Record<string, boolean>;
 	errors: Record<string, Error>;
 	files: Record<string, string>;
+	exports: Map<string, string[]>;
+	imports: Map<string, Map<string, string[]>>;
 	compile: (props: CompileProps) => Promise<void>;
 	hotReload: (path: string, content: string) => void;
 }
 
 export const useCompilationStore = create<CompilationStore>((set, get) => ({
 	isReady: false,
+	isLoading: false,
+	exports: new Map(),
+	imports: new Map(),
 	logs: [],
 	files: {},
 	results: {},
@@ -71,14 +78,110 @@ async function main() {
 		console.warn('Modpack is already initialized');
 		return;
 	}
+	useCompilationStore.setState({ isLoading: true });
+
 	const modpack = await initializeModpack({
-		onBoot: ({ reporter }) => {
-			reporter.log('info', 'Modpack booting...');
+		onBoot: () => {
+			useCompilationStore.setState({ isLoading: false });
+		},
+		onParse: ({ url, parsed }) => {
+			const { exports, imports } = useCompilationStore.getState();
+
+			for (const node of parsed.body) {
+				const addExports = (...exportsList: string[]) => {
+					exports.set(
+						url,
+						Array.from(new Set([...(exports.get(url) || []), ...exportsList])),
+					);
+				};
+				const addImports = (path: string, importsList: string[]) => {
+					if (imports.has(url)) {
+						imports
+							.get(url)
+							?.set(
+								path,
+								Array.from(
+									new Set([
+										...(imports.get(url)?.get(path) || []),
+										...importsList,
+									]),
+								),
+							);
+					} else {
+						imports.set(
+							url,
+							new Map([[path, Array.from(new Set(importsList))]]),
+						);
+					}
+				};
+				if (
+					node.type === 'ExpressionStatement' &&
+					node.expression.type === 'AssignmentExpression' &&
+					node.expression.operator === '=' &&
+					node.expression.left.type === 'MemberExpression' &&
+					node.expression.left.object.type === 'Identifier' &&
+					node.expression.left.object.value === 'module' &&
+					node.expression.left.property.type === 'Identifier' &&
+					node.expression.left.property.value === 'exports'
+				) {
+					addExports('default');
+				}
+
+				if (node.type === 'ExportNamedDeclaration') {
+					for (const specifier of node.specifiers) {
+						if (specifier.type === 'ExportSpecifier') {
+							addExports(specifier.orig.value);
+						} else if (specifier.type === 'ExportDefaultSpecifier') {
+							addExports(specifier.exported.value);
+						}
+					}
+				}
+
+				if (node.type === 'ExportAllDeclaration') {
+					if (node.source.value) {
+						addExports(node.source.value);
+					} else {
+						addExports('default');
+					}
+				}
+
+				if (node.type === 'ExportDeclaration') {
+					if (
+						node.declaration.type === 'FunctionDeclaration' ||
+						node.declaration.type === 'ClassDeclaration'
+					) {
+						addExports(node.declaration.identifier.value);
+					}
+				}
+
+				if (node.type === 'ImportDeclaration') {
+					addImports(
+						node.source.value,
+						node.specifiers.map((specifier) => {
+							switch (specifier.type) {
+								case 'ImportSpecifier':
+									return specifier.local.value;
+								case 'ImportDefaultSpecifier':
+									return 'default';
+								case 'ImportNamespaceSpecifier':
+									return '*';
+								default:
+									return '';
+							}
+						}),
+					);
+				}
+			}
+
+			useCompilationStore.setState(() => ({
+				exports: new Map(exports),
+				imports: new Map(imports),
+			}));
 		},
 		onBuildStart: ({ reporter }) => {
 			reporter.log('info', 'Modpack build starting...');
 		},
-		onBuildEnd: async ({ result, error, options, entrypoint, reporter }) => {
+		onBuildEnd: async ({ result, error, entrypoint, reporter }) => {
 			if (result) {
 				useCompilationStore.setState((s) => ({
 					results: { ...s.results, [entrypoint]: result },
@@ -104,6 +207,9 @@ async function main() {
 					`Build failed: ${error ? error.message : 'Unknown error'}`,
 				);
 			}
+
+			const { exports, imports } = useCompilationStore.getState();
+			console.log({ exports, imports });
 		},
 		onLog: (log) => {
 			useCompilationStore.setState((state) => ({
@@ -163,6 +269,10 @@ async function main() {
 			useCompilationStore.setState((prev) => ({
 				compiling: { ...prev.compiling, [path]: false },
 			}));
+
+			const { exports, imports } = useCompilationStore.getState();
+			console.log({ exports, imports });
+			buildRegistry({ entrypoint: 'file:///index.tsx', exports, imports });
 		},
 	});
 
