@@ -4,16 +4,26 @@ interface ProcessDependencyContext {
 	files: string[];
 	dependencies: string[];
 }
-export function processFileDependencies(
-	imports: Imports,
-	exports: Exports,
-	path: string,
-	urls: string[],
-	context: ProcessDependencyContext,
-): ProcessDependencyContext | undefined {
+export interface ProcessFileDependenciesProps {
+	path: string;
+	exports: Exports;
+	imports: Imports;
+	urls: string[];
+	context: ProcessDependencyContext;
+}
+export function processFileDependencies({
+	imports,
+	exports,
+	path,
+	urls,
+	context,
+}: ProcessFileDependenciesProps): ProcessDependencyContext | undefined {
 	const file = imports.get(path);
 	if (!file) return;
 
+	if (!context.files.includes(path) && path.startsWith('file://')) {
+		context.files.push(path);
+	}
 	for (const [importPath] of file.entries()) {
 		const resolvedPath = resolveImportPath(importPath, path, urls);
 		if (!resolvedPath) {
@@ -25,7 +35,13 @@ export function processFileDependencies(
 			!context.files.includes(resolvedPath)
 		) {
 			context.files.push(resolvedPath);
-			processFileDependencies(imports, exports, resolvedPath, urls, context);
+			processFileDependencies({
+				path: resolvedPath,
+				imports,
+				exports,
+				urls,
+				context,
+			});
 		} else {
 			if (!context.dependencies.includes(resolvedPath)) {
 				context.dependencies.push(resolvedPath);

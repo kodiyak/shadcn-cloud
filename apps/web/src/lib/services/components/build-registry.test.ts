@@ -93,8 +93,22 @@ describe('buildRegistry', () => {
 				new Map([['react', ['*']]]),
 			],
 		]);
+		const files = new Map([
+			['file:///index.tsx', 'export const ComponentA = () => {};'],
+			['file:///utils.ts', 'export const cn = () => {};'],
+			['file:///utils/helpers.ts', 'export const helper = () => {};'],
+			['file:///utils/alias.ts', 'export const aliastFn = () => {};'],
+		]);
 
-		const result = buildRegistry({ entrypoint, exports, imports, metadata });
+		const result = buildRegistry({
+			entrypoint,
+			exports,
+			imports,
+			metadata,
+			files,
+		});
+
+		console.log(`Registry`, result);
 
 		expect(result).toBeDefined();
 		expect(result.name).toBe('button');
