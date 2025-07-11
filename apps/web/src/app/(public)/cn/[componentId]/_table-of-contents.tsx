@@ -1,6 +1,5 @@
 import { Button } from '@workspace/ui/components/button';
 import kebabCase from 'lodash.kebabcase';
-import Link from 'next/link';
 import { useMemo } from 'react';
 
 interface TableOfContentsProps {
@@ -25,8 +24,8 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
 				Table of Contents
 			</span>
 			<ul className="list-none pl-0 mt-2">
-				{toc.map((item) => (
-					<li className={'flex items-center'} key={item.level}>
+				{toc.map((item, i) => (
+					<li className={'flex items-center'} key={`${item.level}.${i}`}>
 						{[...Array(item.level - 1)].map((_, i) => (
 							<div className="w-2 h-2" key={`level.${item.level}.${i}`} />
 						))}
