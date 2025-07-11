@@ -19,10 +19,21 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@workspace/ui/components/tooltip';
+import { cn } from '@workspace/ui/lib/utils';
 import Link from 'next/link';
 import { Fragment } from 'react';
+import type { Component } from '@/lib/domain';
+import { useLikesStore } from '@/lib/store/use-likes-store';
 
-export default function DocFooter() {
+interface DocFooterProps {
+	component: Component;
+}
+
+export default function DocFooter({ component }: DocFooterProps) {
+	const isLiked = useLikesStore((state) =>
+		state.likedItems.includes(component.id),
+	);
+	const toggleLike = useLikesStore((state) => state.toggleLike);
 	const institutionLinks = [
 		{ label: 'Terms', href: '/terms' },
 		{ label: 'Privacy', href: '/privacy' },
@@ -66,9 +77,22 @@ export default function DocFooter() {
 					<ButtonsIcons
 						items={[
 							{
-								label: 'Like',
-								icon: <HeartIcon />,
-								className: 'rounded-3xl size-14',
+								label: isLiked ? 'Liked!' : 'Like',
+								icon: (
+									<HeartIcon
+										className={cn(
+											isLiked ? 'fill-red-500 dark:fill-red-600' : '',
+										)}
+										weight={isLiked ? 'fill' : 'regular'}
+									/>
+								),
+								className: cn(
+									'rounded-3xl size-14',
+									isLiked
+										? 'bg-red-400/30 border-red-500/20 dark:bg-red-500/10'
+										: '',
+								),
+								onClick: () => toggleLike(component.id),
 							},
 							{
 								label: 'Save',
