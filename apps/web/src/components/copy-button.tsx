@@ -11,6 +11,7 @@ interface CopyButtonProps {
 	content?: string;
 	size?: ButtonProps['size'];
 	variant?: ButtonProps['variant'];
+	copyLabel?: string;
 }
 
 export default function CopyButton({
@@ -18,6 +19,7 @@ export default function CopyButton({
 	className,
 	variant = 'outline',
 	size,
+	copyLabel = 'Copy',
 }: CopyButtonProps) {
 	const [copied, onCopy] = useCopy(2.5);
 	return (
@@ -28,7 +30,7 @@ export default function CopyButton({
 					className: cn(copied ? 'text-success' : '', className),
 					disabled: !content,
 					size,
-					label: copied ? 'Copied!' : 'Copy',
+					label: copied ? 'Copied!' : copyLabel,
 					icon: copied ? <CheckIcon /> : <CopyIcon />,
 					onClick: async () => {
 						if (content) {

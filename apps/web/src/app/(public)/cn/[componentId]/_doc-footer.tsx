@@ -22,8 +22,10 @@ import {
 import { useDisclosure } from '@workspace/ui/hooks/use-disclosure';
 import { cn } from '@workspace/ui/lib/utils';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Fragment } from 'react';
 import AuthInvite from '@/components/auth/auth-invite';
+import ShareDialog from '@/components/mkt/share-dialog';
 import type { Component } from '@/lib/domain';
 import { useLikesStore } from '@/lib/store/use-likes-store';
 
@@ -33,10 +35,12 @@ interface DocFooterProps {
 
 export default function DocFooter({ component }: DocFooterProps) {
 	const openSignup = useDisclosure();
+	const openShare = useDisclosure();
 	const isLiked = useLikesStore((state) =>
 		state.likedItems.includes(component.id),
 	);
 	const toggleLike = useLikesStore((state) => state.toggleLike);
+	const pathname = usePathname();
 	const institutionLinks = [
 		{ label: 'Terms', href: '/terms' },
 		{ label: 'Privacy', href: '/privacy' },
@@ -76,6 +80,7 @@ export default function DocFooter({ component }: DocFooterProps) {
 	return (
 		<>
 			<AuthInvite {...openSignup} />
+			<ShareDialog {...openShare} url={pathname} />
 			<div className="flex flex-col border-t border-dashed border-border gap-12 bg-muted/10">
 				<div className="flex justify-center items-center gap-4 pt-24">
 					<ButtonsIcons
@@ -114,6 +119,7 @@ export default function DocFooter({ component }: DocFooterProps) {
 								label: 'Share',
 								icon: <ShareIcon />,
 								className: 'rounded-3xl size-14',
+								onClick: () => openShare.onOpen(),
 							},
 						]}
 						size={'icon-lg'}
