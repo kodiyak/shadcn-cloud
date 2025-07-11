@@ -19,9 +19,11 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@workspace/ui/components/tooltip';
+import { useDisclosure } from '@workspace/ui/hooks/use-disclosure';
 import { cn } from '@workspace/ui/lib/utils';
 import Link from 'next/link';
 import { Fragment } from 'react';
+import AuthInvite from '@/components/auth/auth-invite';
 import type { Component } from '@/lib/domain';
 import { useLikesStore } from '@/lib/store/use-likes-store';
 
@@ -30,6 +32,7 @@ interface DocFooterProps {
 }
 
 export default function DocFooter({ component }: DocFooterProps) {
+	const openSignup = useDisclosure();
 	const isLiked = useLikesStore((state) =>
 		state.likedItems.includes(component.id),
 	);
@@ -72,6 +75,7 @@ export default function DocFooter({ component }: DocFooterProps) {
 
 	return (
 		<>
+			<AuthInvite {...openSignup} />
 			<div className="flex flex-col border-t border-dashed border-border gap-12 bg-muted/10">
 				<div className="flex justify-center items-center gap-4 pt-24">
 					<ButtonsIcons
@@ -98,11 +102,13 @@ export default function DocFooter({ component }: DocFooterProps) {
 								label: 'Save',
 								icon: <BookmarkIcon />,
 								className: 'rounded-3xl size-14',
+								onClick: () => openSignup.onOpen(),
 							},
 							{
 								label: 'Fork',
 								icon: <GitForkIcon />,
 								className: 'rounded-3xl size-14',
+								onClick: () => openSignup.onOpen(),
 							},
 							{
 								label: 'Share',
