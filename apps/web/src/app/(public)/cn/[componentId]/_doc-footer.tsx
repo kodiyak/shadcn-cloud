@@ -137,8 +137,14 @@ export default function DocFooter() {
 				</div>
 			</div>
 			<div className="border-t border-dashed flex justify-center items-center border-border h-16 bg-muted/20">
-				<span className="text-center text-xs text-muted-foreground font-medium">
-					© 2023 shadcn-cloud. All rights reserved.
+				<span className="text-center text-sm font-mono text-foreground font-medium">
+					Build with{' '}
+					<Link
+						className="underline text-muted-foreground hover:text-foreground"
+						href={'/'}
+					>
+						shadcn.cloud
+					</Link>
 				</span>
 			</div>
 		</>
