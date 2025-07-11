@@ -25,7 +25,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Fragment } from 'react';
 import AuthInvite from '@/components/auth/auth-invite';
-import ShareDialog from '@/components/mkt/share-dialog';
+import ShareDialog from '@/components/sections/share-dialog';
 import type { Component } from '@/lib/domain';
 import { useLikesStore } from '@/lib/store/use-likes-store';
 
