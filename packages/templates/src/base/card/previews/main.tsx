@@ -1,6 +1,6 @@
-import Card from '/index.tsx';
+import Card from '..';
 
-export default function HeroPreview() {
+export default function MainPreview() {
 	return (
 		<Card>
 			<h1>Title</h1>

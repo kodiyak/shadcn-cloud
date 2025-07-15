@@ -21,6 +21,7 @@ export default function Page({ children }: PropsWithChildren) {
 			icon: <HeartIcon weight="fill" />,
 		},
 		{ label: 'Bookmarks', href: '/bookmarks', icon: <BookmarksIcon /> },
+		{ label: 'Create', href: '/templates', icon: <PlusIcon /> },
 	];
 	const footerLinks = [{ label: 'Create', href: '/new', icon: <PlusIcon /> }];
 	return (

@@ -1,4 +1,53 @@
 {
-  "title": "Minimal Checkbox",
-  "description": "Native HTML Checkbox"
+  "title": "Checkbox",
+  "description": "An checkbox component for text entry, supporting various types and styles.",
+  "features": [
+    "Supports various checkbox types (text, password, email, etc.)",
+    "Customizable styles using Tailwind CSS",
+    "Accessible with ARIA attributes",
+    "Supports validation and error handling",
+    "Integrates with React Hook Form for form management"
+  ],
+  "references": [
+    {
+      "title": "llms.txt",
+      "href": "https://llms.ai/docs/components/checkbox"
+    },
+    {
+      "title": "MDN Reference",
+      "href": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/checkbox"
+    }
+  ],
+  "tools": [
+    {
+      "title": "React",
+      "icon": "react",
+      "href": "https://react.dev"
+    },
+    {
+      "title": "TypeScript",
+      "icon": "typescript",
+      "href": "https://www.typescriptlang.org"
+    },
+    {
+      "title": "Radix UI",
+      "icon": "radix",
+      "href": "https://www.radix-ui.com"
+    },
+    {
+      "title": "Tailwind CSS",
+      "icon": "tailwindcss",
+      "href": "https://tailwindcss.com"
+    },
+    {
+      "title": "Motion",
+      "icon": "motion",
+      "href": "https://motion.dev/one"
+    },
+    {
+      "title": "cva",
+      "icon": "cva",
+      "href": "https://cva-ui.com"
+    }
+  ]
 }

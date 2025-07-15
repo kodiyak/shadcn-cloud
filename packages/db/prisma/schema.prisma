@@ -89,4 +89,5 @@ model Component {
   sourceMap            Json
   user                 User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId               String?
+  isTemplate           Boolean  @default(false)
 }
