@@ -33,7 +33,7 @@ export default function FolderItem({ path, items = [] }: NodeProps) {
 									{
 										label: 'Create File',
 										icon: <PlusIcon />,
-										onClick: () => createFile.onOpen(),
+										onClick: createFile.onOpen,
 									},
 								]}
 								size={'icon-xs'}
