@@ -90,4 +90,5 @@ model Component {
   user                 User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId               String?
   isTemplate           Boolean  @default(false)
+  isForkable           Boolean  @default(true)
 }

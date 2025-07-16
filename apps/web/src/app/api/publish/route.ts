@@ -15,6 +15,8 @@ const publishSchema = z.object({
 			'file:///metadata.json': z.string(),
 		})
 		.passthrough(),
+	isTemplate: z.boolean(),
+	isForkable: z.boolean(),
 });
 
 export async function POST(req: NextRequest) {
@@ -34,7 +36,7 @@ export async function POST(req: NextRequest) {
 		);
 	}
 
-	const { files, registry, sourceMap } = body;
+	const { files, registry, sourceMap, isForkable, isTemplate } = body;
 	const metadata = JSON.parse(files['file:///metadata.json']);
 
 	const component = await db.component.create({
@@ -45,6 +47,8 @@ export async function POST(req: NextRequest) {
 			files: JSON.parse(JSON.stringify(files)),
 			registry,
 			sourceMap,
+			isTemplate,
+			isForkable,
 			dependencies: registry.dependencies ?? [],
 			registryDependencies: registry.registryDependencies ?? [],
 		},

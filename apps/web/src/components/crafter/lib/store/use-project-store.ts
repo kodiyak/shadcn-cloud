@@ -1,4 +1,5 @@
 import type { TemplateProps } from '@workspace/core';
+import z from 'zod';
 import { create } from 'zustand';
 import { buildRegistry } from '@/lib/services';
 import { exportsMapToRecord, importsMapToRecord } from '@/lib/utils';
@@ -9,6 +10,12 @@ import { useEditorStore } from './use-editor-store';
 interface CreateNodeProps extends Omit<NodeProps, 'path'> {
 	name: string;
 }
+
+export const publishSchema = z.object({
+	isTemplate: z.boolean(),
+	isForkable: z.boolean(),
+});
+export type PublishProps = z.infer<typeof publishSchema>;
 
 interface ProjectStore {
 	isReady: boolean;
@@ -22,7 +29,7 @@ interface ProjectStore {
 	findNode: (path: string) => NodeProps | undefined;
 	searchNodes: (callback: (node: NodeProps) => boolean) => NodeProps[];
 	save: (path: string, content: string) => Promise<void>;
-	publish: () => Promise<void>;
+	publish: (props: PublishProps) => Promise<void>;
 }
 
 export const useProjectStore = create<ProjectStore>((set, get) => ({
@@ -223,7 +230,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		});
 		useCompilationStore.getState().hotReload(path, content);
 	},
-	publish: async () => {
+	publish: async (data) => {
 		const { nodes } = get();
 		const { exports, imports, modpack } = useCompilationStore.getState();
 		const virtualFiles = new Map(
@@ -253,6 +260,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			registry,
 			virtualFiles,
 			sourceMap,
+			data,
 		});
 
 		/**
@@ -272,6 +280,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 				sourceMap,
 				registry,
 				files: Object.fromEntries(files.entries()),
+				...data,
 			}),
 		})
 			.then((res) => res.json())
