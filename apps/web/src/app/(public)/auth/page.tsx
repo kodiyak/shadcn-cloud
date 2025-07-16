@@ -17,6 +17,7 @@ import {
 } from '@workspace/ui/components/card';
 import { GithubIcon } from '@workspace/ui/components/icons';
 import Link from 'next/link';
+import { authClient } from '@/lib/auth-client';
 
 export default function Login() {
 	return (
@@ -28,7 +29,12 @@ export default function Login() {
 						<CardDescription>Sign in to your account.</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<Button variant={'outline'}>
+						<Button
+							onClick={() => {
+								authClient.signIn.social({ provider: 'github' });
+							}}
+							variant={'outline'}
+						>
 							<GithubIcon />
 							<span>Continue with GitHub</span>
 						</Button>
@@ -36,11 +42,11 @@ export default function Login() {
 					<CardFooter className="pt-16">
 						<span className="text-xs text-muted-foreground">
 							By signing in, you agree to our{' '}
-							<Link className="underline" href="/terms">
+							<Link className="underline hover:text-foreground" href="/terms">
 								terms of service
 							</Link>{' '}
 							and{' '}
-							<Link className="underline" href="/privacy">
+							<Link className="underline hover:text-foreground" href="/privacy">
 								privacy policy
 							</Link>
 							.
