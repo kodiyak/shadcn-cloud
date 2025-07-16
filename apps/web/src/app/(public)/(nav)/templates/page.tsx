@@ -1,20 +1,20 @@
-import { LibraryIcon } from 'lucide-react';
+import { LayoutIcon } from '@phosphor-icons/react/dist/ssr';
 import PageLayout from '@/components/layouts/page-layout';
 import TemplateCard from '@/components/templates/template-card';
+import { findManyTemplates } from '@/lib/services';
 
-export default function Page() {
+export default async function Page() {
+	const templates = await findManyTemplates();
+
+	console.log({ templates });
+
 	return (
-		<div className="flex items-stretch h-screen overflow-hidden">
-			<div className="flex-1 flex flex-col relative overflow-hidden h-full border-r">
-				<PageLayout icon={<LibraryIcon />} title={'My Library'}>
-					<div className="grid grid-cols-2 gap-6 py-2 px-6">
-						{Array.from({ length: 20 }).map((_, index) => (
-							<TemplateCard key={index} />
-						))}
-					</div>
-				</PageLayout>
+		<PageLayout icon={<LayoutIcon />} title={'Templates Library'}>
+			<div className="grid grid-cols-5 gap-6 py-2 px-6">
+				{templates.map((template) => (
+					<TemplateCard key={template.id} template={template} />
+				))}
 			</div>
-			<div className="flex-1"></div>
-		</div>
+		</PageLayout>
 	);
 }

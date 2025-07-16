@@ -13,11 +13,8 @@ import { CheckboxField, FieldWrap } from '@workspace/ui/components/fields';
 import { Form, FormField } from '@workspace/ui/components/form';
 import type { UseDisclosure } from '@workspace/ui/hooks/use-disclosure';
 import { useForm } from 'react-hook-form';
-import {
-	type PublishProps,
-	publishSchema,
-	useProjectStore,
-} from '../crafter/lib/store/use-project-store';
+import { type PublishProps, publishSchema } from '@/lib/domain';
+import { useProjectStore } from '../crafter/lib/store/use-project-store';
 
 interface PublishComponentProps extends UseDisclosure {}
 

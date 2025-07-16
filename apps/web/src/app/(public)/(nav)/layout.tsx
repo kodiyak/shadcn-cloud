@@ -1,6 +1,11 @@
 'use client';
 
-import { BookmarksIcon, GlobeIcon, HeartIcon } from '@phosphor-icons/react';
+import {
+	BookmarksIcon,
+	GlobeIcon,
+	HeartIcon,
+	SignInIcon,
+} from '@phosphor-icons/react';
 import { Button } from '@workspace/ui/components/button';
 import {
 	Tooltip,
@@ -23,7 +28,7 @@ export default function Page({ children }: PropsWithChildren) {
 		{ label: 'Bookmarks', href: '/bookmarks', icon: <BookmarksIcon /> },
 		{ label: 'Create', href: '/templates', icon: <PlusIcon /> },
 	];
-	const footerLinks = [{ label: 'Create', href: '/new', icon: <PlusIcon /> }];
+	const footerLinks = [{ label: 'Login', href: '/auth', icon: <SignInIcon /> }];
 	return (
 		<>
 			<div className="fixed left-0 top-0 flex flex-col h-screen w-16 border-r">

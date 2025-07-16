@@ -1,6 +1,6 @@
 import type { TemplateProps } from '@workspace/core';
-import z from 'zod';
 import { create } from 'zustand';
+import type { PublishProps } from '@/lib/domain';
 import { buildRegistry } from '@/lib/services';
 import { exportsMapToRecord, importsMapToRecord } from '@/lib/utils';
 import type { NodeProps } from '../../types';
@@ -10,12 +10,6 @@ import { useEditorStore } from './use-editor-store';
 interface CreateNodeProps extends Omit<NodeProps, 'path'> {
 	name: string;
 }
-
-export const publishSchema = z.object({
-	isTemplate: z.boolean(),
-	isForkable: z.boolean(),
-});
-export type PublishProps = z.infer<typeof publishSchema>;
 
 interface ProjectStore {
 	isReady: boolean;
