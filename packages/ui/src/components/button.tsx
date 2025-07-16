@@ -12,7 +12,7 @@ import {
 
 const buttonVariants = cva(
 	cn(
-		'inline-flex font-sans items-center cursor-default justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all',
+		'inline-flex font-sans outline-none items-center cursor-default justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all',
 		'disabled:bg-accent disabled:from-accent disabled:to-accent disabled:opacity-40 disabled:text-muted-foreground/50 disabled:cursor-not-allowed',
 		'shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
 		'[&_svg]:pointer-events-none [&_svg]:shrink-0',
