@@ -5,11 +5,14 @@ import { metadataSchema } from './metadata';
 
 export const componentSchema = z.object({
 	id: z.string(),
+	name: z.string(),
 	metadata: metadataSchema,
 	files: z.record(z.string()),
 	sourceMap: sourceMapSchema,
 	registry: registryItemSchema,
 	registryDependencies: z.string().array(),
 	dependencies: z.string().array(),
+	isForkable: z.boolean(),
+	isTemplate: z.boolean(),
 });
 export type Component = z.infer<typeof componentSchema>;

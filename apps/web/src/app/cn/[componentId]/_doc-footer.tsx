@@ -6,6 +6,7 @@ import {
 	HeartIcon,
 	ShareIcon,
 } from '@phosphor-icons/react';
+import { useMutation } from '@tanstack/react-query';
 import {
 	Avatar,
 	AvatarFallback,
@@ -14,6 +15,7 @@ import {
 import { Button, ButtonsIcons } from '@workspace/ui/components/button';
 import { Card, CardContent } from '@workspace/ui/components/card';
 import { SocialIcon } from '@workspace/ui/components/icons';
+import { Spinner } from '@workspace/ui/components/spinner';
 import {
 	Tooltip,
 	TooltipContent,
@@ -26,6 +28,8 @@ import { usePathname } from 'next/navigation';
 import { Fragment } from 'react';
 import AuthInvite from '@/components/auth/auth-invite';
 import ShareDialog from '@/components/sections/share-dialog';
+import { authClient } from '@/lib/auth-client';
+import { backendClient } from '@/lib/clients/backend';
 import type { Component } from '@/lib/domain';
 import { useLikesStore } from '@/lib/store/use-likes-store';
 
@@ -34,6 +38,8 @@ interface DocFooterProps {
 }
 
 export default function DocFooter({ component }: DocFooterProps) {
+	const { data } = authClient.useSession();
+	const onFork = useMutation({ mutationFn: backendClient.fork });
 	const openSignup = useDisclosure();
 	const openShare = useDisclosure();
 	const isLiked = useLikesStore((state) =>
@@ -111,9 +117,16 @@ export default function DocFooter({ component }: DocFooterProps) {
 							},
 							{
 								label: 'Fork',
-								icon: <GitForkIcon />,
+								icon: onFork.isPending ? <Spinner /> : <GitForkIcon />,
 								className: 'rounded-3xl size-14',
-								onClick: () => openSignup.onOpen(),
+								disabled: onFork.isPending,
+								onClick: () => {
+									if (data?.user) {
+										onFork.mutate({ componentId: component.id });
+									} else {
+										openSignup.onOpen();
+									}
+								},
 							},
 							{
 								label: 'Share',
