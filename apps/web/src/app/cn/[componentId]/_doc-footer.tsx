@@ -43,7 +43,7 @@ export default function DocFooter({ component }: DocFooterProps) {
 	const openSignup = useDisclosure();
 	const openShare = useDisclosure();
 	const isLiked = useLikesStore((state) =>
-		state.likedItems.includes(component.id),
+		state.likedItems.some((item) => item.componentId === component.id),
 	);
 	const toggleLike = useLikesStore((state) => state.toggleLike);
 	const pathname = usePathname();
@@ -108,12 +108,6 @@ export default function DocFooter({ component }: DocFooterProps) {
 										: '',
 								),
 								onClick: () => toggleLike(component.id),
-							},
-							{
-								label: 'Save',
-								icon: <BookmarkIcon />,
-								className: 'rounded-3xl size-14',
-								onClick: () => openSignup.onOpen(),
 							},
 							{
 								label: 'Fork',

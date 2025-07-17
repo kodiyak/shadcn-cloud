@@ -10,16 +10,17 @@ datasource db {
 }
 
 model User {
-  id            String      @id @default(uuid())
-  name          String
-  email         String
-  emailVerified Boolean
-  image         String?
-  createdAt     DateTime    @db.Timestamptz(3)
-  updatedAt     DateTime    @db.Timestamptz(3)
-  sessions      Session[]
-  accounts      Account[]
-  Component     Component[]
+  id                String      @id @default(uuid())
+  name              String
+  email             String
+  emailVerified     Boolean
+  image             String?
+  createdAt         DateTime    @db.Timestamptz(3)
+  updatedAt         DateTime    @db.Timestamptz(3)
+  sessions          Session[]
+  accounts          Account[]
+  createdComponents Component[]
+  likedComponents   Like[]
 
   @@unique([email])
 }
@@ -91,4 +92,17 @@ model Component {
   userId               String?
   isTemplate           Boolean  @default(false)
   isForkable           Boolean  @default(true)
+  likes                Like[]
+}
+
+model Like {
+  id          String    @id @default(uuid())
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(3)
+  component   Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
+  componentId String
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String?
+
+  @@unique([componentId, userId])
 }

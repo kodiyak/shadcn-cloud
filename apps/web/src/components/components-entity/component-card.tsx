@@ -2,8 +2,13 @@ import { Badge } from '@workspace/ui/components/badge';
 import { Card } from '@workspace/ui/components/card';
 import { FileCodeIcon } from '@workspace/ui/components/icons';
 import Link from 'next/link';
+import type { Component } from '@/lib/domain';
 
-export default function ComponentCard() {
+interface ComponentCardProps {
+	component: Component;
+}
+
+export default function ComponentCard({ component }: ComponentCardProps) {
 	return (
 		<Card className="p-2 rounded-2xl gap-2">
 			<div className="w-full aspect-video rounded-2xl bg-background relative border border-border">
@@ -21,16 +26,15 @@ export default function ComponentCard() {
 			<div className="flex flex-col gap-1">
 				<Link
 					className="text-lg font-medium hover:underline"
-					href={`/cn/component_id`}
+					href={`/cn/${component.id}`}
 				>
-					The Developer-First Cookie Banner
+					{component.name}
 				</Link>
 				<Link
 					className="text-sm text-muted-foreground hover:underline"
-					href={`/cn/component_id`}
+					href={`/cn/${component.id}`}
 				>
-					c15t is an open source framework for managing cookies, consent, and
-					privacy compliance.
+					{component.description || 'No description available'}
 				</Link>
 			</div>
 		</Card>

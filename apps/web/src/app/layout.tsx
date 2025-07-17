@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
 import { Geist_Mono as Font_Mono, Geist as Font_Sans } from 'next/font/google';
+import '@/lib/store';
 import '@workspace/ui/globals.css';
 import { SidebarProvider } from '@workspace/ui/components/sidebar';
 import { cn } from '@workspace/ui/lib/utils';
 import type { CSSProperties } from 'react';
+import AuthProvider from '@/components/providers/auth-provider';
+import LikesProvider from '@/components/providers/likes-provider';
 import { QueryProvider } from '@/components/providers/query-provider';
 
 const sans = Font_Sans({
@@ -40,7 +43,11 @@ export default function RootLayout({
 				}
 			>
 				<SidebarProvider>
-					<QueryProvider>{children}</QueryProvider>
+					<QueryProvider>
+						<AuthProvider />
+						<LikesProvider />
+						{children}
+					</QueryProvider>
 				</SidebarProvider>
 			</body>
 		</html>

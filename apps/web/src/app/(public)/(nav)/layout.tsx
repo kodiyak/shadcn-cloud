@@ -29,9 +29,11 @@ import { LibraryIcon, LogOutIcon, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import type { PropsWithChildren } from 'react';
 import { authClient } from '@/lib/auth-client';
+import { useAuthStore } from '@/lib/store/use-auth-store';
 
 export default function Page({ children }: PropsWithChildren) {
-	const { data, isPending } = authClient.useSession();
+	const isPending = useAuthStore((state) => state.isPending);
+	const user = useAuthStore((state) => state.user);
 	const links = [
 		{ label: 'Explore', href: '/', icon: <GlobeIcon /> },
 		{ label: 'My Library', href: '/my-library', icon: <LibraryIcon /> },
@@ -40,7 +42,6 @@ export default function Page({ children }: PropsWithChildren) {
 			href: '/favorites',
 			icon: <HeartIcon weight="fill" />,
 		},
-		{ label: 'Bookmarks', href: '/bookmarks', icon: <BookmarksIcon /> },
 		{ label: 'Create', href: '/templates', icon: <PlusIcon /> },
 	];
 	const footerLinks = [{ label: 'Login', href: '/auth', icon: <SignInIcon /> }];
@@ -64,12 +65,12 @@ export default function Page({ children }: PropsWithChildren) {
 				<div className="flex-1"></div>
 				{!isPending && (
 					<div className="flex flex-col items-center py-2">
-						{data?.user ? (
+						{user ? (
 							<DropdownMenu>
-								<DropdownMenuTrigger>
+								<DropdownMenuTrigger asChild>
 									<Button size={'icon-lg'} variant={'ghost'}>
 										<Avatar>
-											<AvatarImage src={data.user.image || undefined} />
+											<AvatarImage src={user.image || undefined} />
 											<AvatarFallback />
 										</Avatar>
 									</Button>
@@ -79,11 +80,13 @@ export default function Page({ children }: PropsWithChildren) {
 									className="w-[220]"
 									side={'right'}
 								>
-									<DropdownMenuLabel>{data.user.name}</DropdownMenuLabel>
+									<DropdownMenuLabel>{user.name}</DropdownMenuLabel>
 									<DropdownMenuSeparator />
 									<DropdownMenuItem
-										onClick={() => {
-											authClient.signOut();
+										onClick={async () => {
+											useAuthStore.setState({ isPending: true });
+											await authClient.signOut();
+											useAuthStore.setState({ isPending: false, user: null });
 										}}
 									>
 										<span className="flex-1">Sign Out</span>
