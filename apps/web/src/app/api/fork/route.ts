@@ -20,8 +20,13 @@ export async function POST(req: NextRequest) {
 	}
 
 	const { componentId } = data;
+	const component = await findComponent(componentId);
+	if (!component.isForkable) {
+		return badRequest('This component cannot be forked');
+	}
+
 	const result = await forkComponent({
-		component: await findComponent(componentId),
+		component,
 		authId: session.user.id,
 	});
 
