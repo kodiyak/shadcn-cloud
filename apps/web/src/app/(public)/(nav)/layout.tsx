@@ -29,6 +29,7 @@ import { LibraryIcon, LogOutIcon, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import type { PropsWithChildren } from 'react';
 import { authClient } from '@/lib/auth-client';
+import { backendClient } from '@/lib/clients/backend';
 import { useLikesStore } from '@/lib/store';
 import { useAuthStore } from '@/lib/store/use-auth-store';
 
@@ -101,6 +102,7 @@ export default function Page({ children }: PropsWithChildren) {
 										onClick={async () => {
 											useAuthStore.setState({ isPending: true });
 											await authClient.signOut();
+											backendClient.setToken(null);
 											useAuthStore.setState({ isPending: false, user: null });
 										}}
 									>

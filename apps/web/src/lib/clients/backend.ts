@@ -20,7 +20,11 @@ function getBearerToken() {
 
 export const backendClient = {
 	getToken,
-	setToken: (token: string) => {
+	setToken: (token: string | null) => {
+		if (!token) {
+			localStorage.removeItem('auth_token');
+			return;
+		}
 		localStorage.setItem('auth_token', token);
 	},
 	fork: async (props: ForkProps): Promise<{ data: Component }> => {
