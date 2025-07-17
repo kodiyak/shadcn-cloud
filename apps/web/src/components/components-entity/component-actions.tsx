@@ -38,7 +38,7 @@ export default function ComponentActions({ component }: ComponentActionsProps) {
 					{
 						label: 'Fork',
 						icon: onFork.isPending ? <Spinner size={16} /> : <GitForkIcon />,
-						hidden: !component.isForkable || !isOwner,
+						hidden: !component.isForkable,
 						disabled: onFork.isPending,
 						onClick: () => {
 							if (userId) {
