@@ -1,7 +1,6 @@
 import { Badge } from '@workspace/ui/components/badge';
 import { Card } from '@workspace/ui/components/card';
 import { FileCodeIcon } from '@workspace/ui/components/icons';
-import Link from 'next/link';
 import type { Component } from '@/lib/domain';
 import ComponentActions from './component-actions';
 
@@ -10,6 +9,10 @@ interface ComponentCardProps {
 }
 
 export default function ComponentCard({ component }: ComponentCardProps) {
+	const files = Object.keys(component.files).map(
+		(f) => f.split('/').pop() || '',
+	);
+
 	return (
 		<Card className="p-2 rounded-2xl gap-2">
 			<div className="w-full aspect-video rounded-2xl bg-background relative border border-border">
@@ -24,9 +27,14 @@ export default function ComponentCard({ component }: ComponentCardProps) {
 							<ComponentActions component={component} />
 						</div>
 					</div>
-					<div className="flex mt-auto justify-end p-2 gap-1">
-						{['index.tsx', 'basic-preview.tsx'].map((file) => (
-							<Badge key={file} variant={'muted'}>
+					<div className="flex mt-auto justify-end p-2 gap-1 overflow-hidden relative">
+						<div className="absolute left-0 top-0 h-full w-full z-20 bg-gradient-to-l from-transparent to-background rounded-bl-2xl flex items-center px-6">
+							<span className="text-xs text-muted-foreground">
+								{files.length} files
+							</span>
+						</div>
+						{files.map((file, f) => (
+							<Badge key={`${file + f}`} variant={'muted'}>
 								<FileCodeIcon type={file.split('.').pop() || ''} />
 								<span>{file}</span>
 							</Badge>
@@ -35,18 +43,12 @@ export default function ComponentCard({ component }: ComponentCardProps) {
 				</div>
 			</div>
 			<div className="flex flex-col gap-1">
-				<Link
-					className="text-lg font-medium hover:underline"
-					href={`/cn/${component.id}`}
-				>
-					{component.name}
-				</Link>
-				<Link
-					className="text-sm text-muted-foreground hover:underline"
-					href={`/cn/${component.id}`}
-				>
-					{component.description || 'No description available'}
-				</Link>
+				<span className="text-lg font-medium cursor-default">
+					{component.metadata.title}
+				</span>
+				<span className="text-sm text-muted-foreground line-clamp-2 cursor-default">
+					{component.metadata.description}
+				</span>
 			</div>
 		</Card>
 	);
