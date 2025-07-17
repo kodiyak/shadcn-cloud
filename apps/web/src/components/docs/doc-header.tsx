@@ -34,21 +34,22 @@ export default function DocHeader({
 						))}
 					</div>
 				</div>
-				<div className="flex flex-col w-[180]">
-					{references.map((item) => (
-						<Button
-							asChild
-							key={item.href + item.title}
-							size={'sm'}
-							variant={'link'}
-						>
-							<Link href={item.href}>
-								<span className="flex-1 text-left">{item.title}</span>
-								<ArrowRightIcon className="size-3.5" />
-							</Link>
-						</Button>
-					))}
-				</div>
+			</div>
+			<div className="grid grid-cols-4">
+				{references.map((item) => (
+					<Button
+						asChild
+						className="border-r border-b"
+						key={item.href + item.title}
+						size={'sm'}
+						variant={'link'}
+					>
+						<Link href={item.href}>
+							<span className="flex-1 text-left">{item.title}</span>
+							<ArrowRightIcon className="size-3.5" />
+						</Link>
+					</Button>
+				))}
 			</div>
 			<div className="py-4.5 flex flex-col gap-0.5">
 				<span className="text-xs px-2 text-muted-foreground font-mono">

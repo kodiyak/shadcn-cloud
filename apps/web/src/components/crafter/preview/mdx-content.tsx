@@ -52,7 +52,7 @@ interface MdxContentProps {
 
 export default function MdxContent({ content, className }: MdxContentProps) {
 	const [mdxModule, setMdxModule] = useState<any>(null);
-	const Content = mdxModule ? mdxModule.default : Fragment;
+	const Content = mdxModule ? mdxModule.default : 'div';
 
 	const loadMdx = async (code: string) => {
 		const compiled = await compile(code, {
@@ -73,13 +73,8 @@ export default function MdxContent({ content, className }: MdxContentProps) {
 	return (
 		<ErrorBoundary
 			fallback={(err) => <div>Error loading documentation {err?.stack}</div>}
-			key={`error.${content}`}
 		>
-			<Content
-				className={className}
-				components={components}
-				key={`content.${content}`}
-			/>
+			<Content className={className} components={components} />
 		</ErrorBoundary>
 	);
 }

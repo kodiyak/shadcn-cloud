@@ -1,9 +1,9 @@
 import {
 	AccordionContent,
 	AccordionItem,
-	AccordionTrigger,
+	AccordionPrimitiveTrigger,
 } from '@workspace/ui/components/accordion';
-import { ButtonsIcons } from '@workspace/ui/components/button';
+import { Button, ButtonsIcons } from '@workspace/ui/components/button';
 import { useDisclosure } from '@workspace/ui/hooks/use-disclosure';
 import { FolderIcon, PlusIcon } from 'lucide-react';
 import type { NodeProps } from '../types';
@@ -21,27 +21,29 @@ export default function FolderItem({ path, items = [] }: NodeProps) {
 		<>
 			<CreateFile {...createFile} parentPath={path} />
 			<AccordionItem className="mt-0.5" value={path}>
-				<AccordionTrigger removeArrow>
-					<div>
-						<div className="flex flex-1 overflow-hidden pr-5 items-center text-left gap-2 relative">
-							<FolderIcon className="size-4 shrink-0 text-muted-foreground" />
-							<span className="truncate">{name || '/'}</span>
+				<AccordionPrimitiveTrigger asChild>
+					<Button asChild className="w-full" size={'xs'} variant={'ghost'}>
+						<div>
+							<div className="flex flex-1 overflow-hidden pr-5 items-center text-left gap-2 relative">
+								<FolderIcon className="size-4 shrink-0 text-muted-foreground" />
+								<span className="truncate">{name || '/'}</span>
+							</div>
+							<div className="absolute right-2 top-1.5 z-20">
+								<ButtonsIcons
+									items={[
+										{
+											label: 'Create File',
+											icon: <PlusIcon />,
+											onClick: createFile.onOpen,
+										},
+									]}
+									size={'icon-xs'}
+									variant={'ghost'}
+								/>
+							</div>
 						</div>
-						<div className="absolute right-2 top-1.5 z-20">
-							<ButtonsIcons
-								items={[
-									{
-										label: 'Create File',
-										icon: <PlusIcon />,
-										onClick: createFile.onOpen,
-									},
-								]}
-								size={'icon-xs'}
-								variant={'ghost'}
-							/>
-						</div>
-					</div>
-				</AccordionTrigger>
+					</Button>
+				</AccordionPrimitiveTrigger>
 				<AccordionContent>
 					<div className="pl-2 flex flex-col">
 						<div className="flex flex-col border-l pl-1">

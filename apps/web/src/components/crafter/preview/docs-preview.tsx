@@ -1,52 +1,17 @@
 'use client';
 
-import { compile, run } from '@mdx-js/mdx';
-import { ErrorBoundary } from '@workspace/ui/components/error-boundary';
-import { ScrollArea } from '@workspace/ui/components/scroll-area';
-import { cn } from '@workspace/ui/lib/utils';
-import { Fragment, type ReactNode, useEffect, useMemo, useState } from 'react';
-import * as runtime from 'react/jsx-runtime';
+import {
+	ScrollArea,
+	ScrollAreaShadow,
+} from '@workspace/ui/components/scroll-area';
+import { useEffect, useMemo, useState } from 'react';
 import DocHeader from '@/components/docs/doc-header';
-import * as MDXComponents from '@/components/docs/mdx-components';
 import {
 	findNodeInTree,
 	searchNodes,
 	useProjectStore,
 } from '../lib/store/use-project-store';
 import MdxContent from './mdx-content';
-
-/** @todo Improve components injection logic */
-const components: Record<string, (props: any) => ReactNode> = {
-	h1: ({ className, ...rest }) => (
-		<h1
-			className={cn(
-				'text-2xl font-mono font-bold leading-none mt-4 mb-1',
-				className,
-			)}
-			{...rest}
-		/>
-	),
-	h2: ({ className, ...rest }) => (
-		<h2
-			className={cn(
-				'text-xl font-mono font-semibold leading-none mt-4 mb-1',
-				className,
-			)}
-			{...rest}
-		/>
-	),
-	h3: ({ className, ...rest }) => (
-		<h3
-			className={cn(
-				'text-lg font-mono font-semibold leading-none mt-4 mb-1',
-				className,
-			)}
-			{...rest}
-		/>
-	),
-	pre: (props) => <pre {...props} />,
-	...MDXComponents,
-};
 
 export default function DocsPreview() {
 	const [path, setPath] = useState('/index.mdx');
@@ -74,18 +39,17 @@ export default function DocsPreview() {
 	}, [node?.content]);
 
 	return (
-		<div className="size-full flex flex-col">
-			<div className="size-full relative overflow-hidden">
-				<div className="size-full rounded-2xl bg-background absolute inset-0 overflow-hidden">
-					<ScrollArea className="size-full absolute inset-0">
-						<div className="pt-12 bg-gradient-to-b from-muted/15 to-background rounded-t-xl">
-							<DocHeader {...metadata} />
-						</div>
-						<div className="max-w-4xl mx-auto min-h-screen flex flex-col gap-2">
-							<MdxContent content={content} />
-						</div>
-					</ScrollArea>
-				</div>
+		<div className="size-full relative">
+			<div className="size-full bg-background absolute inset-0">
+				<ScrollAreaShadow className="to-background" />
+				<ScrollArea className="size-full absolute inset-0">
+					<div className="pt-12 bg-gradient-to-b from-muted/15 to-background">
+						<DocHeader {...metadata} />
+					</div>
+					<div className="max-w-full w-4xl mx-auto min-h-screen flex flex-col gap-2">
+						<MdxContent content={content} />
+					</div>
+				</ScrollArea>
 			</div>
 		</div>
 	);

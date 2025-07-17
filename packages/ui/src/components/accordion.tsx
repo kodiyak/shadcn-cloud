@@ -71,4 +71,12 @@ function AccordionContent({
 	);
 }
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
+const AccordionPrimitiveTrigger = AccordionPrimitive.Trigger;
+
+export {
+	Accordion,
+	AccordionItem,
+	AccordionTrigger,
+	AccordionContent,
+	AccordionPrimitiveTrigger,
+};

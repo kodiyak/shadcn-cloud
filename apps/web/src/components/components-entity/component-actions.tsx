@@ -20,6 +20,7 @@ export default function ComponentActions({ component }: ComponentActionsProps) {
 	const userId = useAuthStore((state) => state.user?.id);
 	const isOwner = userId === component.userId;
 	const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/cn/${component.id}`;
+	const editorUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/editor/${component.id}`;
 	const openShare = useDisclosure();
 	const openSignup = useDisclosure();
 	const onFork = useMutation({ mutationFn: backendClient.fork });
@@ -34,6 +35,9 @@ export default function ComponentActions({ component }: ComponentActionsProps) {
 						label: 'Edit Code',
 						icon: <CodeIcon />,
 						hidden: !isOwner || component.status === 'published',
+						onClick: () => {
+							window.open(editorUrl, '_blank');
+						},
 					},
 					{
 						label: 'Fork',

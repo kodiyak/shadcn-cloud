@@ -5,14 +5,32 @@ import {
 	ResizablePanel,
 	ResizablePanelGroup,
 } from '@workspace/ui/components/resizable';
+import { useEffect } from 'react';
 import CodeEditor from '@/components/crafter/code-editor';
 import Preview from '@/components/crafter/preview';
+import type { Component } from '@/lib/domain';
 import CodeSidebar from './code-sidebar';
 import { useProjectStore } from './lib/store/use-project-store';
 import SelectTemplate from './select-template';
 
-export default function Crafter() {
+interface CrafterProps {
+	component: Component;
+}
+
+export default function Crafter({ component }: CrafterProps) {
 	const isReady = useProjectStore((state) => state.isReady);
+	const selectTemplate = useProjectStore((state) => state.selectTemplate);
+
+	useEffect(() => {
+		if (!isReady && component) {
+			selectTemplate({
+				title: component.metadata.title,
+				description: component.metadata.description || '',
+				files: component.files,
+			});
+		}
+	}, [component.id, isReady]);
+
 	return (
 		<>
 			{!isReady ? (

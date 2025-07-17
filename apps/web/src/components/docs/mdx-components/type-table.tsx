@@ -30,7 +30,7 @@ function TypeTable({ type: types }: TypeTableProps) {
 		}));
 	}, [types]);
 	return (
-		<Table className="w-full">
+		<Table className="w-full overflow-hidden">
 			<TableHeader>
 				<TableRow>
 					<TableHead className="w-[200]">Prop</TableHead>
@@ -38,7 +38,7 @@ function TypeTable({ type: types }: TypeTableProps) {
 					<TableHead className="w-[150]">Default</TableHead>
 				</TableRow>
 			</TableHeader>
-			<TableBody>
+			<TableBody className="overflow-auto">
 				{rows.map((row) => (
 					<TableRow className="bg-background/50" key={row.type}>
 						<TableCell>

@@ -42,95 +42,98 @@ export default function FileItem({ path, content, draftContent }: NodeProps) {
 
 	return (
 		<Button
+			asChild
 			className="rounded-md w-full gap-2 justify-start relative mt-0.5 group"
 			data-state={path === activePath || openEdit.isOpen ? 'open' : undefined}
 			onClick={openEdit.isOpen ? undefined : () => openFile(path)}
 			size={'xs'}
 			variant={'ghost'}
 		>
-			<FileCodeIcon className="size-4" type={filename?.split('.').pop()} />
-			{openEdit.isOpen ? (
-				<div className="flex-1 pr-12">
-					<input
-						className={cn(
-							'w-full h-6 bg-background px-1.5 font-medium rounded-md border-none outline-none transition-all',
-							'focus-visible:ring-2 focus-visible:ring-ring',
-						)}
-						onBlur={(e) => {
-							onCancelEdit();
-						}}
-						onChange={(e) => setUpdatedValue(e.target.value)}
-						onKeyDown={(e) => {
-							if (e.key === 'Enter') {
-								e.preventDefault();
-								if (!updatedValue || updatedValue.trim() === '') {
-									console.warn('Filename cannot be empty');
-									onCancelEdit();
-									return;
+			<div>
+				<FileCodeIcon className="size-4" type={filename?.split('.').pop()} />
+				{openEdit.isOpen ? (
+					<div className="flex-1 pr-12">
+						<input
+							className={cn(
+								'w-full h-6 bg-background px-1.5 font-medium rounded-md border-none outline-none transition-all',
+								'focus-visible:ring-2 focus-visible:ring-ring',
+							)}
+							onBlur={(e) => {
+								onCancelEdit();
+							}}
+							onChange={(e) => setUpdatedValue(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter') {
+									e.preventDefault();
+									if (!updatedValue || updatedValue.trim() === '') {
+										console.warn('Filename cannot be empty');
+										onCancelEdit();
+										return;
+									}
+									onSaveEdit();
 								}
-								onSaveEdit();
-							}
-							if (e.key === 'Escape') {
-								console.warn('Edit cancelled');
-								e.preventDefault();
-								openEdit.onToggle();
-								setUpdatedValue(filename);
-							}
-						}}
-						ref={inputRef}
-						value={updatedValue}
+								if (e.key === 'Escape') {
+									console.warn('Edit cancelled');
+									e.preventDefault();
+									openEdit.onToggle();
+									setUpdatedValue(filename);
+								}
+							}}
+							ref={inputRef}
+							value={updatedValue}
+						/>
+					</div>
+				) : (
+					<span className="flex-1 text-left overflow-hidden truncate group-hover:pr-10">
+						{filename}
+					</span>
+				)}
+				{draftContent !== content && (
+					<div className="size-1.5 rounded-full bg-foreground"></div>
+				)}
+
+				<div
+					className={cn(
+						'flex gap-0.5 items-center',
+						'absolute right-2 top-1.5 z-20 opacity-0 translate-x-5 transition-all',
+						'group-hover:opacity-100 group-hover:translate-x-0',
+						openEdit.isOpen &&
+							'opacity-100 -translate-x-2 group-hover:-translate-x-2',
+					)}
+				>
+					<ButtonsIcons
+						items={
+							openEdit.isOpen
+								? [
+										{
+											label: 'Save File',
+											icon: <Edit2Icon />,
+											onClick: openEdit.onToggle,
+										},
+										{
+											label: 'Cancel',
+											icon: <XIcon />,
+											variant: 'destructive-ghost',
+											onClick: openEdit.onToggle,
+										},
+									]
+								: [
+										{
+											label: 'Rename File',
+											icon: <AlignLeftSimpleIcon />,
+											onClick: openEdit.onToggle,
+										},
+										{
+											label: 'Remove File',
+											icon: <TrashIcon />,
+											variant: 'destructive-ghost',
+										},
+									]
+						}
+						size={'icon-xs'}
+						variant={'ghost'}
 					/>
 				</div>
-			) : (
-				<span className="flex-1 text-left overflow-hidden truncate group-hover:pr-10">
-					{filename}
-				</span>
-			)}
-			{draftContent !== content && (
-				<div className="size-1.5 rounded-full bg-foreground"></div>
-			)}
-
-			<div
-				className={cn(
-					'flex gap-0.5 items-center',
-					'absolute right-2 top-1.5 z-20 opacity-0 translate-x-5 transition-all',
-					'group-hover:opacity-100 group-hover:translate-x-0',
-					openEdit.isOpen &&
-						'opacity-100 -translate-x-2 group-hover:-translate-x-2',
-				)}
-			>
-				<ButtonsIcons
-					items={
-						openEdit.isOpen
-							? [
-									{
-										label: 'Save File',
-										icon: <Edit2Icon />,
-										onClick: openEdit.onToggle,
-									},
-									{
-										label: 'Cancel',
-										icon: <XIcon />,
-										variant: 'destructive-ghost',
-										onClick: openEdit.onToggle,
-									},
-								]
-							: [
-									{
-										label: 'Rename File',
-										icon: <AlignLeftSimpleIcon />,
-										onClick: openEdit.onToggle,
-									},
-									{
-										label: 'Remove File',
-										icon: <TrashIcon />,
-										variant: 'destructive-ghost',
-									},
-								]
-					}
-					size={'icon-xs'}
-					variant={'ghost'}
-				/>
 			</div>
 		</Button>
 	);

@@ -45,6 +45,14 @@ export const backendClient = {
 			},
 		}).then((res) => res.json());
 	},
+	getComponent: async (componentId: string): Promise<{ data: Component }> => {
+		return fetch(`/api/component/${componentId}`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: getBearerToken(),
+			},
+		}).then((res) => res.json());
+	},
 	likes: {
 		getAll: async (): Promise<{ data: Like[] }> => {
 			const likes = localLikes.getAll();

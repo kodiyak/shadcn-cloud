@@ -10,9 +10,6 @@ const nextConfig: NextConfig = {
 	images: {
 		remotePatterns: [new URL('https://s3.us-east-005.backblazeb2.com/**')],
 	},
-	experimental: {
-		reactCompiler: false,
-	},
 };
 
 export default nextConfig;
