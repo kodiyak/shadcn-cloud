@@ -13,10 +13,10 @@ export default function DocHeader({
 	tools = [],
 }: Metadata) {
 	return (
-		<div className="flex flex-col container max-w-4xl mx-auto">
+		<div className="flex flex-col container max-w-xl w-full mx-auto">
 			<div className="flex flex-col md:flex-row md:items-end border-b border-dashed pb-6 gap-16">
 				<div className="flex flex-col flex-1 gap-6">
-					<div className="flex flex-col gap-4">
+					<div className="flex flex-col gap-4 text-center">
 						<h2 className="text-3xl font-bold font-mono">{title}</h2>
 						<h3 className="text-muted-foreground text-lg">{description}</h3>
 					</div>
@@ -39,7 +39,7 @@ export default function DocHeader({
 				{references.map((item) => (
 					<Button
 						asChild
-						className="border-r border-b"
+						className="rounded-none "
 						key={item.href + item.title}
 						size={'sm'}
 						variant={'link'}
@@ -55,7 +55,8 @@ export default function DocHeader({
 				<span className="text-xs px-2 text-muted-foreground font-mono">
 					Build with
 				</span>
-				<div className="flex items-center gap-1">
+				<div className="flex overflow-hidden relative items-center gap-1">
+					<div className="absolute bg-gradient-to-r from-transparent to-background w-1/2 h-full right-0 top-0 z-20"></div>
 					{tools.map((item) => (
 						<Badge
 							asChild

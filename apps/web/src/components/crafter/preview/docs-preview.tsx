@@ -39,18 +39,16 @@ export default function DocsPreview() {
 	}, [node?.content]);
 
 	return (
-		<div className="size-full relative">
-			<div className="size-full bg-background absolute inset-0">
-				<ScrollAreaShadow className="to-background" />
-				<ScrollArea className="size-full absolute inset-0">
-					<div className="pt-12 bg-gradient-to-b from-muted/15 to-background">
-						<DocHeader {...metadata} />
-					</div>
-					<div className="max-w-full w-4xl mx-auto min-h-screen flex flex-col gap-2">
-						<MdxContent content={content} />
-					</div>
-				</ScrollArea>
-			</div>
+		<div className="size-full bg-background absolute inset-0 overflow-hidden">
+			<ScrollAreaShadow className="to-background" />
+			<ScrollArea className="size-full absolute inset-0 [&_[data-slot=scroll-area-viewport]]:[&>div]:max-w-full [&_[data-slot=scroll-area-viewport]]:[&>div]:overflow-hidden">
+				<div className="pt-12 bg-gradient-to-b from-muted/15 to-background">
+					<DocHeader {...metadata} />
+				</div>
+				<div className="max-w-xl w-full mx-auto min-h-screen flex flex-col gap-2">
+					<MdxContent content={content} />
+				</div>
+			</ScrollArea>
 		</div>
 	);
 }

@@ -14,6 +14,7 @@ export default function FileItem({ path, content, draftContent }: NodeProps) {
 	const activePath = useEditorStore((state) => state.activePath);
 	const openFile = useEditorStore((state) => state.openFile);
 	const openEdit = useDisclosure();
+	const isEdited = content !== draftContent;
 
 	const [updatedValue, setUpdatedValue] = useState(() => filename);
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -52,7 +53,7 @@ export default function FileItem({ path, content, draftContent }: NodeProps) {
 			<div>
 				<FileCodeIcon className="size-4" type={filename?.split('.').pop()} />
 				{openEdit.isOpen ? (
-					<div className="flex-1 pr-12">
+					<div className={cn('flex-1 pr-12', isEdited && 'pr-14')}>
 						<input
 							className={cn(
 								'w-full h-6 bg-background px-1.5 font-medium rounded-md border-none outline-none transition-all',
@@ -88,7 +89,7 @@ export default function FileItem({ path, content, draftContent }: NodeProps) {
 						{filename}
 					</span>
 				)}
-				{draftContent !== content && (
+				{isEdited && (
 					<div className="size-1.5 rounded-full bg-foreground"></div>
 				)}
 
@@ -96,12 +97,20 @@ export default function FileItem({ path, content, draftContent }: NodeProps) {
 					className={cn(
 						'flex gap-0.5 items-center',
 						'absolute right-2 top-1.5 z-20 opacity-0 translate-x-5 transition-all',
-						'group-hover:opacity-100 group-hover:translate-x-0',
+						'group-hover:opacity-100',
+						isEdited
+							? 'group-hover:-translate-x-4'
+							: 'group-hover:translate-x-0',
+						openEdit.isOpen && 'opacity-100',
 						openEdit.isOpen &&
-							'opacity-100 -translate-x-2 group-hover:-translate-x-2',
+							(isEdited
+								? '-translate-x-4 group-hover:-translate-x-4'
+								: '-translate-x-0 group-hover:-translate-x-0'),
+						isEdited && ' ',
 					)}
 				>
 					<ButtonsIcons
+						delayDuration={1700}
 						items={
 							openEdit.isOpen
 								? [

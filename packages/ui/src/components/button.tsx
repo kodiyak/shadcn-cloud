@@ -106,6 +106,7 @@ function Button({
 
 export interface ButtonsIconsProps {
 	variant?: ButtonProps['variant'];
+	delayDuration?: number;
 	size?: ButtonProps['size'];
 	contentProps?: Partial<TooltipContentProps>;
 	items: {
@@ -125,6 +126,7 @@ function ButtonsIcons({
 	variant = 'ghost',
 	size = 'icon',
 	contentProps,
+	delayDuration = 0,
 }: ButtonsIconsProps) {
 	return (
 		<>
@@ -132,7 +134,7 @@ function ButtonsIcons({
 				.filter((i) => !i.hidden)
 				.map((item, index) => (
 					<Tooltip key={`${item.label}.${index}`}>
-						<TooltipProvider delayDuration={0}>
+						<TooltipProvider delayDuration={delayDuration}>
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<Button
