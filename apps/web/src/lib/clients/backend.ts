@@ -1,4 +1,5 @@
 import {
+	type Component,
 	type DeleteLikesBatchSchema,
 	type ForkProps,
 	forkSchema,
@@ -11,18 +12,32 @@ function getToken() {
 	return localStorage.getItem('auth_token') || undefined;
 }
 
+function getBearerToken() {
+	const token = getToken();
+	if (!token) console.warn('No auth token found in localStorage');
+	return token ? `Bearer ${token}` : '';
+}
+
 export const backendClient = {
 	getToken,
 	setToken: (token: string) => {
 		localStorage.setItem('auth_token', token);
 	},
-	fork: async (props: ForkProps) => {
+	fork: async (props: ForkProps): Promise<{ data: Component }> => {
 		return fetch(`/api/fork`, {
 			body: JSON.stringify(forkSchema.parse(props)),
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${getToken()}`,
+				Authorization: getBearerToken(),
+			},
+		}).then((res) => res.json());
+	},
+	getLibraryComponents: async (): Promise<{ data: Component[] }> => {
+		return fetch(`/api/library`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: getBearerToken(),
 			},
 		}).then((res) => res.json());
 	},
@@ -37,7 +52,7 @@ export const backendClient = {
 			console.log(url);
 			return fetch(`${url.pathname}${url.search}`, {
 				headers: {
-					Authorization: `Bearer ${getToken()}`,
+					Authorization: getBearerToken(),
 				},
 			}).then((res) => res.json());
 		},
@@ -47,7 +62,7 @@ export const backendClient = {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${getToken()}`,
+					Authorization: getBearerToken(),
 				},
 			}).then((res) => res.json());
 		},
@@ -57,7 +72,7 @@ export const backendClient = {
 				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${getToken()}`,
+					Authorization: getBearerToken(),
 				},
 			}).then((res) => res.json());
 		},

@@ -6,8 +6,6 @@ import { findManyTemplates } from '@/lib/services';
 export default async function Page() {
 	const templates = await findManyTemplates();
 
-	console.log({ templates });
-
 	return (
 		<PageLayout icon={<LayoutIcon />} title={'Templates Library'}>
 			<div className="grid grid-cols-5 gap-6 py-2 px-6">

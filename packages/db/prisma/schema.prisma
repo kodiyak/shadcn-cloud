@@ -77,22 +77,29 @@ model Jwks {
 // Application Models
 // ...
 model Component {
-  id                   String   @id @default(uuid())
+  id                   String          @id @default(uuid())
   name                 String
   description          String?
-  createdAt            DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt            DateTime @updatedAt @db.Timestamptz(3)
+  createdAt            DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime        @updatedAt @db.Timestamptz(3)
   files                Json
   metadata             Json
   registry             Json
-  dependencies         Json[]   @default([])
-  registryDependencies Json[]   @default([])
+  dependencies         Json[]          @default([])
+  registryDependencies Json[]          @default([])
   sourceMap            Json
-  user                 User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                 User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId               String?
-  isTemplate           Boolean  @default(false)
-  isForkable           Boolean  @default(true)
+  status               ComponentStatus @default(draft)
+  isTemplate           Boolean         @default(false)
+  isForkable           Boolean         @default(true)
   likes                Like[]
+}
+
+enum ComponentStatus {
+  draft
+  published
+  archived
 }
 
 model Like {

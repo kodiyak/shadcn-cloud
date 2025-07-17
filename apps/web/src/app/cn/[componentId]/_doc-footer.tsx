@@ -28,9 +28,9 @@ import { usePathname } from 'next/navigation';
 import { Fragment } from 'react';
 import AuthInvite from '@/components/auth/auth-invite';
 import ShareDialog from '@/components/sections/share-dialog';
-import { authClient } from '@/lib/auth-client';
 import { backendClient } from '@/lib/clients/backend';
 import type { Component } from '@/lib/domain';
+import { useAuthStore } from '@/lib/store';
 import { useLikesStore } from '@/lib/store/use-likes-store';
 
 interface DocFooterProps {
@@ -38,7 +38,7 @@ interface DocFooterProps {
 }
 
 export default function DocFooter({ component }: DocFooterProps) {
-	const { data } = authClient.useSession();
+	const userId = useAuthStore((state) => state.user?.id);
 	const onFork = useMutation({ mutationFn: backendClient.fork });
 	const openSignup = useDisclosure();
 	const openShare = useDisclosure();
@@ -115,7 +115,7 @@ export default function DocFooter({ component }: DocFooterProps) {
 								className: 'rounded-3xl size-14',
 								disabled: onFork.isPending,
 								onClick: () => {
-									if (data?.user) {
+									if (userId) {
 										onFork.mutate({ componentId: component.id });
 									} else {
 										openSignup.onOpen();

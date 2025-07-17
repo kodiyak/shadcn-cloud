@@ -6,6 +6,7 @@ import { metadataSchema } from './metadata';
 export const componentSchema = z.object({
 	id: z.string(),
 	name: z.string(),
+	userId: z.string().nullish(),
 	metadata: metadataSchema,
 	files: z.record(z.string()),
 	sourceMap: sourceMapSchema,
@@ -14,5 +15,6 @@ export const componentSchema = z.object({
 	dependencies: z.string().array(),
 	isForkable: z.boolean(),
 	isTemplate: z.boolean(),
+	status: z.enum(['draft', 'published', 'archived']),
 });
 export type Component = z.infer<typeof componentSchema>;

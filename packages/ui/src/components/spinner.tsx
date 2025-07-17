@@ -41,8 +41,8 @@ function Spinner({
 						className="absolute bg-transparent rounded-[0]"
 						key={`spinner-bar-${index as any}`}
 						style={{
-							left: `${x - barWidth + radius / 2}px`,
-							top: `${y - barHeight + radius / 2}px`,
+							left: `${x - barWidth / 2}px`,
+							top: `${y - barHeight / 2}px`,
 							width: barWidth,
 							height: barHeight,
 							transform: `rotate(${rotation}deg)`,

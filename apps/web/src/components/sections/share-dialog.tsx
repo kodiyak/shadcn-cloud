@@ -19,6 +19,7 @@ interface ShareDialogProps extends UseDisclosure {
 export default function ShareDialog({
 	isOpen,
 	onOpenChange,
+	url,
 }: ShareDialogProps) {
 	const shareOptions = [
 		{
@@ -65,18 +66,10 @@ export default function ShareDialog({
 						))}
 					</div>
 					<div className="relative">
-						<Input
-							className="pr-12"
-							readOnly
-							value={
-								'http://localhost:4000/cn/d0e78617-1100-4803-aba1-f819e8a1fdca'
-							}
-						/>
+						<Input className="pr-12" readOnly value={url} />
 						<CopyButton
 							className="absolute right-2 top-1.5"
-							content={
-								'http://localhost:4000/cn/d0e78617-1100-4803-aba1-f819e8a1fdca'
-							}
+							content={url}
 							copyLabel={'Copy URL'}
 						/>
 					</div>
