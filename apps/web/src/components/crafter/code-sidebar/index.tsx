@@ -14,7 +14,6 @@ const MFileTree = motion.create(FileTree);
 const MButton = motion.create(Button);
 
 export default function CodeSidebar() {
-	const openSidebar = useDisclosure({ defaultOpen: true });
 	const openSettings = useDisclosure();
 
 	return (
@@ -44,12 +43,7 @@ export default function CodeSidebar() {
 						/>
 					</motion.div>
 				</div>
-				<div
-					className={cn(
-						'flex flex-col items-center py-4',
-						openSidebar.isOpen ? 'xl:pl-4' : '',
-					)}
-				>
+				<div className={cn('flex flex-col items-center py-4 xl:pl-4')}>
 					<MButton
 						animate={{ scale: 1, opacity: 1 }}
 						className="w-full"

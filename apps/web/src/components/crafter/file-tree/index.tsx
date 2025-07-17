@@ -16,7 +16,7 @@ export default function FileTree() {
 			<div className="size-full pr-1 pl-3 flex flex-col overflow-y-auto overflow-x-hidden">
 				<div className="flex items-center py-2 justify-between min-w-[180]">
 					<span className="text-xs">Workspace</span>
-					<div className="flex items-center gap-0.5 pr-12">
+					<div className="flex items-center gap-0.5">
 						<ButtonsIcons
 							items={[
 								{

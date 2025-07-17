@@ -22,7 +22,12 @@ export default function FolderItem({ path, items = [] }: NodeProps) {
 			<CreateFile {...createFile} parentPath={path} />
 			<AccordionItem className="mt-0.5" value={path}>
 				<AccordionPrimitiveTrigger asChild>
-					<Button asChild className="w-full" size={'xs'} variant={'ghost'}>
+					<Button
+						asChild
+						className="w-full relative"
+						size={'xs'}
+						variant={'ghost'}
+					>
 						<div>
 							<div className="flex flex-1 overflow-hidden pr-5 items-center text-left gap-2 relative">
 								<FolderIcon className="size-4 shrink-0 text-muted-foreground" />
@@ -30,6 +35,7 @@ export default function FolderItem({ path, items = [] }: NodeProps) {
 							</div>
 							<div className="absolute right-2 top-1.5 z-20">
 								<ButtonsIcons
+									delayDuration={700}
 									items={[
 										{
 											label: 'Create File',
