@@ -29,18 +29,21 @@ import { LibraryIcon, LogOutIcon, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import type { PropsWithChildren } from 'react';
 import { authClient } from '@/lib/auth-client';
+import { useLikesStore } from '@/lib/store';
 import { useAuthStore } from '@/lib/store/use-auth-store';
 
 export default function Page({ children }: PropsWithChildren) {
+	const likedCount = useLikesStore((state) => state.likedItems.length);
 	const isPending = useAuthStore((state) => state.isPending);
 	const user = useAuthStore((state) => state.user);
 	const links = [
 		{ label: 'Explore', href: '/', icon: <GlobeIcon /> },
 		{ label: 'My Library', href: '/my-library', icon: <LibraryIcon /> },
 		{
-			label: 'Favorites',
+			label: 'Liked Components',
 			href: '/favorites',
 			icon: <HeartIcon weight="fill" />,
+			badge: likedCount > 0 ? likedCount : undefined,
 		},
 		{ label: 'Create', href: '/templates', icon: <PlusIcon /> },
 	];
@@ -52,8 +55,20 @@ export default function Page({ children }: PropsWithChildren) {
 					{links.map((link) => (
 						<Tooltip delayDuration={0} key={link.href}>
 							<TooltipTrigger asChild>
-								<Button asChild size={'icon-lg'} variant={'ghost'}>
-									<Link href={link.href}>{link.icon}</Link>
+								<Button
+									asChild
+									className="relative"
+									size={'icon-lg'}
+									variant={'ghost'}
+								>
+									<Link href={link.href}>
+										{link.icon}
+										{link.badge && (
+											<span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center w-4 h-4 text-xs font-medium bg-primary text-primary-foreground rounded-md">
+												{link.badge}
+											</span>
+										)}
+									</Link>
 								</Button>
 							</TooltipTrigger>
 							<TooltipContent side={'right'}>
