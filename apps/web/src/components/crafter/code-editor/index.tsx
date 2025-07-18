@@ -110,17 +110,9 @@ export default function CodeEditor() {
 	}
 
 	return (
-		<div className="size-full px-1 py-3 flex flex-col">
-			<div className="flex items-center px-4 h-10">
-				<Badge className="h-auto py-1 px-3 gap-1.5" variant={'muted'}>
-					<FileCodeIcon className="size-5" type={language} />
-					{node?.path || 'Untitled'}
-				</Badge>
-				<div className="flex-1"></div>
-				<span className="text-xs text-muted-foreground">{language}</span>
-			</div>
+		<div className="size-full flex flex-col">
 			<div className="flex-1 relative">
-				<div className="size-full bg-muted/30 rounded-2xl overflow-hidden">
+				<div className="size-full overflow-hidden">
 					<ErrorBoundary fallback={(err) => `${err.message}`}>
 						<Editor
 							beforeMount={beforeMount}

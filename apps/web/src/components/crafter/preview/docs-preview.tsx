@@ -42,7 +42,7 @@ export default function DocsPreview() {
 		<div className="size-full bg-background absolute inset-0 overflow-hidden">
 			<ScrollAreaShadow className="to-background" />
 			<ScrollArea className="size-full absolute inset-0 [&_[data-slot=scroll-area-viewport]]:[&>div]:max-w-full [&_[data-slot=scroll-area-viewport]]:[&>div]:overflow-hidden">
-				<div className="pt-12 bg-gradient-to-b from-muted/15 to-background">
+				<div className="pt-12">
 					<DocHeader {...metadata} />
 				</div>
 				<div className="max-w-xl w-full mx-auto min-h-screen flex flex-col gap-2">
