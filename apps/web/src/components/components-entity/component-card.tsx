@@ -1,7 +1,17 @@
 import { Badge } from '@workspace/ui/components/badge';
 import { Card } from '@workspace/ui/components/card';
-import { FileCodeIcon } from '@workspace/ui/components/icons';
+import {
+	Carousel,
+	type CarouselApi,
+	CarouselContent,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious,
+} from '@workspace/ui/components/carousel';
+import { cn } from '@workspace/ui/lib/utils';
+import { useEffect, useState } from 'react';
 import type { Component } from '@/lib/domain';
+import ModpackRuntime from '../modpack/modpack-runtime';
 import ComponentActions from './component-actions';
 
 interface ComponentCardProps {
@@ -9,15 +19,37 @@ interface ComponentCardProps {
 }
 
 export default function ComponentCard({ component }: ComponentCardProps) {
-	const files = Object.keys(component.files).map(
-		(f) => f.split('/').pop() || '',
+	const [api, setApi] = useState<CarouselApi>();
+	const files = Object.keys(component.files).reduce(
+		(acc, file) => {
+			acc[file.replace('file://', '')] = component.files[file];
+			return acc;
+		},
+		{} as Record<string, string>,
 	);
 
+	const previews = Object.keys(files)
+		.filter((f) => f.startsWith('/previews/'))
+		.map((path) => ({
+			path,
+			content: files[path],
+		}));
+	const [index, setIndex] = useState(0);
+
+	useEffect(() => {
+		if (!api) return;
+
+		setIndex(() => api.selectedScrollSnap());
+		api.on('select', () => {
+			setIndex(() => api.selectedScrollSnap());
+		});
+	}, [api]);
+
 	return (
-		<Card className="p-2 rounded-2xl gap-2">
-			<div className="w-full aspect-video rounded-2xl bg-background relative border border-border">
-				<div className="absolute size-full inset-0 flex flex-col">
-					<div className="flex justify-between items-center py-1 px-3.5">
+		<Card className="p-2 rounded-2xl gap-2 flex flex-col">
+			<div className="w-full overflow-hidden aspect-video rounded-2xl bg-background relative border border-border">
+				<div className="absolute z-30 size-full inset-0 flex flex-col">
+					<div className="absolute top-0 w-full z-20 flex justify-between items-center py-1 px-3.5">
 						<Badge
 							variant={component.status === 'published' ? 'success' : 'muted'}
 						>
@@ -27,20 +59,36 @@ export default function ComponentCard({ component }: ComponentCardProps) {
 							<ComponentActions component={component} />
 						</div>
 					</div>
-					<div className="flex mt-auto justify-end p-2 gap-1 overflow-hidden relative">
-						<div className="absolute left-0 top-0 h-full w-full z-20 bg-gradient-to-l from-transparent to-background rounded-bl-2xl flex items-center px-6">
-							<span className="text-xs text-muted-foreground">
-								{files.length} files
-							</span>
-						</div>
-						{files.map((file, f) => (
-							<Badge key={`${file + f}`} variant={'muted'}>
-								<FileCodeIcon type={file.split('.').pop() || ''} />
-								<span>{file}</span>
-							</Badge>
-						))}
-					</div>
+					<Carousel className="size-full absolute inset-0 z-10" setApi={setApi}>
+						<CarouselContent>
+							{previews.map((preview) => (
+								<CarouselItem
+									className="w-full aspect-video flex items-center justify-center relative"
+									key={`preview:${preview.path}`}
+								>
+									<ModpackRuntime
+										componentId={component.id}
+										files={files}
+										path={preview.path}
+									/>
+								</CarouselItem>
+							))}
+						</CarouselContent>
+						<CarouselPrevious className="left-4" />
+						<CarouselNext className="right-4" />
+					</Carousel>
 				</div>
+			</div>
+			<div className="bottom-0 w-full px-4 flex items-center justify-center gap-1">
+				{previews.map((preview, i) => (
+					<div
+						className={cn(
+							`w-3 h-1 rounded-lg bg-muted`,
+							i === index && 'bg-primary',
+						)}
+						key={`id:${preview.path}`}
+					/>
+				))}
 			</div>
 			<div className="flex flex-col gap-1">
 				<span className="text-lg font-medium cursor-default">

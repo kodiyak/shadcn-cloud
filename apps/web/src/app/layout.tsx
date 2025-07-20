@@ -7,6 +7,7 @@ import { cn } from '@workspace/ui/lib/utils';
 import type { CSSProperties } from 'react';
 import AuthProvider from '@/components/providers/auth-provider';
 import LikesProvider from '@/components/providers/likes-provider';
+import ModpackProvider from '@/components/providers/modpack-provider';
 import { QueryProvider } from '@/components/providers/query-provider';
 
 const sans = Font_Sans({
@@ -46,6 +47,8 @@ export default function RootLayout({
 					<QueryProvider>
 						<AuthProvider />
 						<LikesProvider />
+						<ModpackProvider />
+
 						{children}
 					</QueryProvider>
 				</SidebarProvider>

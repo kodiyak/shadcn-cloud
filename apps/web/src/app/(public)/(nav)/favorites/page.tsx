@@ -11,12 +11,20 @@ export default function Page() {
 		queryKey: ['likes'],
 		queryFn: async () => backendClient.likes.getAll(),
 	});
+
+	const data = likes?.data ?? [];
+
 	return (
 		<PageLayout icon={<HeartIcon weight="fill" />} title={'Favorites'}>
-			<div className="grid grid-cols-5 gap-4 p-4">
-				{(likes?.data ?? []).map((like) => (
-					<ComponentCard component={like.component!} key={like.component!.id} />
-				))}
+			<div className="container mx-auto">
+				<div className="grid grid-cols-2 gap-6 p-4">
+					{data.map((like) => (
+						<ComponentCard
+							component={like.component!}
+							key={like.component!.id}
+						/>
+					))}
+				</div>
 			</div>
 		</PageLayout>
 	);

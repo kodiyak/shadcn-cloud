@@ -36,6 +36,7 @@ function Preview({ path, style }: PreviewProps) {
 	const module = useCompilationStore((state) => state.results)[path];
 	const error = useCompilationStore((state) => state.errors)[path];
 	const compiling = useCompilationStore((state) => state.compiling)[path];
+	const files = getNodeFiles(nodes);
 
 	const status = compiling ? 'compiling' : error ? 'error' : 'ready';
 	const compilationStatus = {
@@ -70,6 +71,10 @@ function Preview({ path, style }: PreviewProps) {
 		});
 	};
 
+	if (Object.keys(files).length === 0) {
+		return null;
+	}
+
 	return (
 		<Tabs
 			className={cn('flex flex-col rounded-xl gap-0 border bg-muted/30')}
@@ -77,7 +82,9 @@ function Preview({ path, style }: PreviewProps) {
 		>
 			<div className="flex px-4 py-2 items-center">
 				<div className="flex flex-col flex-1">
-					<span className="text-lg font-medium tracking-wider">Button.tsx</span>
+					<span className="text-lg font-medium tracking-wider">
+						{path.split('/').pop()}
+					</span>
 					<span className="text-xs text-muted-foreground">{path}</span>
 				</div>
 				<TabsList>
