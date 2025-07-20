@@ -6,6 +6,7 @@ import { ButtonsIcons } from '@workspace/ui/components/button';
 import { Spinner } from '@workspace/ui/components/spinner';
 import { useDisclosure } from '@workspace/ui/hooks/use-disclosure';
 import { ExternalLinkIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { backendClient } from '@/lib/clients/backend';
 import type { Component } from '@/lib/domain';
 import { useAuthStore } from '@/lib/store';
@@ -17,13 +18,19 @@ interface ComponentActionsProps {
 }
 
 export default function ComponentActions({ component }: ComponentActionsProps) {
+	const router = useRouter();
 	const userId = useAuthStore((state) => state.user?.id);
 	const isOwner = userId === component.userId;
 	const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/cn/${component.id}`;
 	const editorUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/editor/${component.id}`;
 	const openShare = useDisclosure();
 	const openSignup = useDisclosure();
-	const onFork = useMutation({ mutationFn: backendClient.fork });
+	const onFork = useMutation({
+		mutationFn: backendClient.fork,
+		onSuccess: (result) => {
+			router.push(`/editor/${result.data.id}`);
+		},
+	});
 
 	return (
 		<>

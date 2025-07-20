@@ -24,7 +24,7 @@ import {
 import { useDisclosure } from '@workspace/ui/hooks/use-disclosure';
 import { cn } from '@workspace/ui/lib/utils';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import AuthInvite from '@/components/auth/auth-invite';
 import ShareDialog from '@/components/sections/share-dialog';
@@ -39,7 +39,13 @@ interface DocFooterProps {
 
 export default function DocFooter({ component }: DocFooterProps) {
 	const userId = useAuthStore((state) => state.user?.id);
-	const onFork = useMutation({ mutationFn: backendClient.fork });
+	const router = useRouter();
+	const onFork = useMutation({
+		mutationFn: backendClient.fork,
+		onSuccess: (result) => {
+			router.push(`/editor/${result.data.id}`);
+		},
+	});
 	const openSignup = useDisclosure();
 	const openShare = useDisclosure();
 	const isLiked = useLikesStore((state) =>
@@ -111,7 +117,11 @@ export default function DocFooter({ component }: DocFooterProps) {
 							},
 							{
 								label: 'Fork',
-								icon: onFork.isPending ? <Spinner /> : <GitForkIcon />,
+								icon: onFork.isPending ? (
+									<Spinner size={20} />
+								) : (
+									<GitForkIcon />
+								),
 								className: 'rounded-3xl size-14',
 								disabled: onFork.isPending,
 								onClick: () => {
