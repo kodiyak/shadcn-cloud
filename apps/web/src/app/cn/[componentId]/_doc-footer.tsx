@@ -1,11 +1,6 @@
 'use client';
 
-import {
-	BookmarkIcon,
-	GitForkIcon,
-	HeartIcon,
-	ShareIcon,
-} from '@phosphor-icons/react';
+import { GitForkIcon, HeartIcon, ShareIcon } from '@phosphor-icons/react';
 import { useMutation } from '@tanstack/react-query';
 import {
 	Avatar,
