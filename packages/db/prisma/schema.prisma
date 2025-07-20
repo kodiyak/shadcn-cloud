@@ -84,10 +84,10 @@ model Component {
   updatedAt            DateTime        @updatedAt @db.Timestamptz(3)
   files                Json
   metadata             Json
-  registry             Json
+  registry             Json?
   dependencies         Json[]          @default([])
   registryDependencies Json[]          @default([])
-  sourceMap            Json
+  sourceMap            Json?
   user                 User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId               String?
   status               ComponentStatus @default(draft)

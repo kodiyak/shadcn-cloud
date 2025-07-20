@@ -48,7 +48,7 @@ function loadTemplate(name: string): TemplateProps {
 	);
 	const files = new Map<string, string>();
 	readFilesRecursively(path, files);
-	Object.assign(metadata, { files: Object.fromEntries(files) });
+	metadata.files = Object.fromEntries(files);
 
 	return metadata;
 }
@@ -65,12 +65,12 @@ function readFilesRecursively(dir: string, files = new Map<string, string>()) {
 				.replace(templatesDir, '')
 				.split(sep)
 				.splice(2)
-				.join(sep);
+				.join('/');
 			const content = readFileSync(fullPath, 'utf-8');
 			console.log(
 				`+ FILE [${templateSlug}]: ${relativePath} (${content.length} bytes)`,
 			);
-			files.set(relativePath, content);
+			files.set(`/${relativePath}`, content);
 		}
 	}
 }

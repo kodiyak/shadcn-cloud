@@ -59,7 +59,10 @@ export default function ComponentCard({ component }: ComponentCardProps) {
 							<ComponentActions component={component} />
 						</div>
 					</div>
-					<Carousel className="size-full absolute inset-0 z-10" setApi={setApi}>
+					<Carousel
+						className="size-full absolute inset-0 z-10 bg-gradient-to-b from-background to-muted/50"
+						setApi={setApi}
+					>
 						<CarouselContent>
 							{previews.map((preview) => (
 								<CarouselItem

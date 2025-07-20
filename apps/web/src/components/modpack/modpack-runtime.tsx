@@ -36,9 +36,7 @@ export default function ModpackRuntime({
 
 	return (
 		<div
-			className={
-				'size-full absolute inset-0 flex items-center justify-center bg-gradient-to-b from-background to-muted/50'
-			}
+			className={'size-full absolute inset-0 flex items-center justify-center'}
 		>
 			{Component && (
 				<ErrorBoundary fallback={(err) => <div>{err.stack}</div>}>

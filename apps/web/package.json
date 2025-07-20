@@ -8,6 +8,8 @@
     "test": "vitest",
     "build": "next build",
     "start": "next start",
+    "db:seed": "tsx scripts/db/seed.ts",
+    "db:reset": "tsx scripts/db/reset.ts",
     "lint": "biome lint"
   },
   "dependencies": {
@@ -42,6 +44,7 @@
     "vite-tsconfig-paths": "5.1.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "tsx": "4.20.3",
     "@workspace/core": "workspace:*",
     "monaco-editor": "0.52.2"
   }

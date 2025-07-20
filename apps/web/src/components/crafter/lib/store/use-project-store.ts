@@ -1,7 +1,6 @@
 import type { TemplateProps } from '@workspace/core';
 import { create } from 'zustand';
 import type { PublishProps } from '@/lib/domain';
-import { buildRegistry } from '@/lib/services';
 import { exportsMapToRecord, importsMapToRecord } from '@/lib/utils';
 import type { NodeProps } from '../../types';
 import { useCompilationStore } from './use-compilation-store';
@@ -46,7 +45,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		];
 
 		for (const [path, content] of Object.entries(templateFiles)) {
-			const parts = splitPath(path.replace('file://', ''));
+			const parts = splitPath(path);
 
 			// Create directory structure
 			for (let i = 0; i < parts.length; i++) {
@@ -187,8 +186,6 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			...node,
 			path: newPath,
 		};
-		// modpack?.fs.rm(oldPath);
-		// modpack?.fs.writeFile(newPath, updatedNode.content || '');
 
 		set({
 			nodes: updateNodeInTree(oldPath, updatedNode, nodes),
@@ -207,14 +204,6 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			return;
 		}
 
-		const { imports, exports } = useCompilationStore.getState();
-
-		console.log(`Saving file at path: ${path}`, {
-			node,
-			exports,
-			imports,
-		});
-
 		set({
 			nodes: updateNodeInTree(
 				path,
@@ -225,54 +214,25 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		useCompilationStore.getState().hotReload(path, content);
 	},
 	publish: async (data) => {
-		const { nodes } = get();
 		const { exports, imports, modpack } = useCompilationStore.getState();
-		const virtualFiles = new Map(
-			modpack?.fs.readdir().files.map((path) => {
-				return [`file://${path}`, modpack?.fs.readFile(path) || ''];
-			}),
+		const virtualFiles =
+			modpack?.fs.readdir().files.map((path) => ({
+				path,
+				content: modpack?.fs.readFile(path) || '',
+			})) ?? [];
+		const files = new Map(
+			virtualFiles.map((file) => [file.path, file.content]),
 		);
-		const files = new Map([...virtualFiles.entries()]);
 
-		const registry = buildRegistry({
-			imports,
-			exports,
-			files,
-			metadata: JSON.parse(files.get('file:///metadata.json') || '{}'),
-			entrypoint: 'file:///index.tsx',
-		});
 		const sourceMap = {
 			imports: importsMapToRecord(imports),
 			exports: exportsMapToRecord(exports),
 		};
 
-		console.log(`Publishing CN Component`, {
-			exports,
-			imports,
-			files,
-			nodes,
-			registry,
-			virtualFiles,
-			sourceMap,
-			data,
-		});
-
-		/**
-		 * 1. tabs [CLI/Manual]
-		 * CLI -> shadcn cli command
-		 * Manual -> Step by step guide, copy paste files explorer.
-		 * 2. Refine and ship 🚀
-		 * - Errors UI
-		 * 	* - Preview Hot reload error.
-		 * - Remove modpack logs
-		 * - Remove logs
-		 */
-
 		await fetch(`/api/publish`, {
 			method: 'POST',
 			body: JSON.stringify({
 				sourceMap,
-				registry,
 				files: Object.fromEntries(files.entries()),
 				...data,
 			}),

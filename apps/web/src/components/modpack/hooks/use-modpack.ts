@@ -18,6 +18,7 @@ import * as DevJSXRuntime from 'react/jsx-dev-runtime';
 import * as ReactJSXRuntime from 'react/jsx-runtime';
 import * as ReactDOM from 'react-dom';
 import * as ReactDOMClient from 'react-dom/client';
+import defaultVirtualFiles from '@/lib/cn.json';
 
 export function useModpack(baseUrl: string) {
 	const modpackRef = useRef<Orchestrator | null>(null);
@@ -94,6 +95,11 @@ export function useModpack(baseUrl: string) {
 			console.error('Modpack is not initialized');
 			return;
 		}
+
+		for (const [filePath, content] of Object.entries(defaultVirtualFiles)) {
+			modpackRef.current.fs.writeFile(`/${baseUrl}${filePath}`, content);
+		}
+
 		for (const [filePath, content] of Object.entries(files)) {
 			modpackRef.current.fs.writeFile(`/${baseUrl}${filePath}`, content);
 		}
