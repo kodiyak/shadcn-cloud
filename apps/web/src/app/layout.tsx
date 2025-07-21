@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import '@/lib/store';
-import '@workspace/ui/globals.css';
+import './index.css';
 import { SidebarProvider } from '@workspace/ui/components/sidebar';
 import AuthProvider from '@/components/providers/auth-provider';
 import LikesProvider from '@/components/providers/likes-provider';

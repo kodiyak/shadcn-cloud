@@ -1,3 +1,5 @@
+'use client';
+
 import { ErrorBoundary } from '@workspace/ui/components/error-boundary';
 import { useEffect, useRef } from 'react';
 import { useModpack } from './hooks/use-modpack';
