@@ -2,10 +2,9 @@
 
 import { compile, run } from '@mdx-js/mdx';
 import { ErrorBoundary } from '@workspace/ui/components/error-boundary';
-import { ScrollArea } from '@workspace/ui/components/scroll-area';
 import { cn } from '@workspace/ui/lib/utils';
 import kebabCase from 'lodash.kebabcase';
-import { Fragment, type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import * as runtime from 'react/jsx-runtime';
 import * as MDXComponents from '@/components/docs/mdx-components';
 

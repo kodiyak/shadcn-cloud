@@ -53,13 +53,11 @@ export default function DocContent({ component }: DocContentProps) {
 		<div className="flex flex-col">
 			<div className="flex gap-12 max-w-4xl items-stretch mx-auto w-full py-12">
 				<div className="flex-1 flex flex-col gap-2 overflow-hidden">
-					<MdxContent content={component.files['file:///index.mdx'] || ''} />
+					<MdxContent content={component.files['/index.mdx'] || ''} />
 				</div>
 				<div className="w-1/5 flex flex-col shrink-0">
 					<div className="sticky top-4">
-						<TableOfContents
-							content={component.files['file:///index.mdx'] || ''}
-						/>
+						<TableOfContents content={component.files['/index.mdx'] || ''} />
 					</div>
 				</div>
 			</div>
