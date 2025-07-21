@@ -1,39 +1,25 @@
-# Usage
+# Kibo Mini Calendar
+
+Customizable mini calendar component for React, built with Radix UI and Tailwind CSS.
+
+## Features
+
+- Customizable date selection
+- Supports range selection
+- Keyboard navigation
+- Accessible with ARIA attributes
+- Responsive design with Tailwind CSS
+- Animations with Motion One
+
+## Usage
 
 ```tsx
-import Button from "@workspace/ui/components/button";
+import { MiniCalendar } from "./index";
 
-<Button>Click me</Button>
+<MiniCalendar />
 ```
 
+## Previews
 
-# Previews
-
-## Minimal
+### Minimal
 <Preview path={'/previews/minimal.tsx'} />
-
-# Props
-
-<TypeTable
-  type={{
-    variant: {
-      description: 'Button variants',
-      type: '"default" | "primary" | "secondary" | "destructive" | "outline" | "ghost" | "link"',
-      default: 'default',
-    },
-    size: {
-      description: 'Button sizes',
-      type: '"default" | "sm" | "lg"',
-      default: 'default',
-    },
-    disabled: {
-      description: 'Disable the button',
-      type: 'boolean',
-      default: 'false',
-    },
-    className: {
-      description: 'Additional CSS classes',
-      type: 'string',
-    },
-  }}
-/>

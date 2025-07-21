@@ -1,0 +1,28 @@
+{
+  "title": "Kibo Avatar Stack",
+  "description": "Avatar stack component for React, built with Radix UI.",
+  "features": [
+    "Displays a stack of avatars",
+    "Supports fallback initials",
+    "Customizable avatar images",
+    "Responsive design"
+  ],
+  "author": "kibo",
+  "tools": [
+    {
+      "title": "React",
+      "icon": "react",
+      "href": "https://react.dev"
+    },
+    {
+      "title": "TypeScript",
+      "icon": "typescript",
+      "href": "https://www.typescriptlang.org"
+    },
+    {
+      "title": "Radix UI",
+      "icon": "radix",
+      "href": "https://www.radix-ui.com"
+    }
+  ]
+}
