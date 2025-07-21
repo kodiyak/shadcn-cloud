@@ -1,12 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 @source "../**/*.{ts,tsx}";
 @source "../../../../apps/frontend/**/*.{ts,tsx}";
 @source "../../../../apps/web/**/*.{ts,tsx}";
 @source "../../../../plugins/**/**/*.{ts,tsx}";
+
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
 	--font-sans: Geist, ui-sans-serif, sans-serif;
