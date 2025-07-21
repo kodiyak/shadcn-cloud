@@ -1,11 +1,6 @@
 'use client';
 
-import {
-	BookmarksIcon,
-	GlobeIcon,
-	HeartIcon,
-	SignInIcon,
-} from '@phosphor-icons/react';
+import { GlobeIcon, HeartIcon, SignInIcon } from '@phosphor-icons/react';
 import {
 	Avatar,
 	AvatarFallback,
@@ -25,20 +20,23 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@workspace/ui/components/tooltip';
-import { LibraryIcon, LogOutIcon, PlusIcon } from 'lucide-react';
+import { cn } from '@workspace/ui/lib/utils';
+import { HomeIcon, LibraryIcon, LogOutIcon } from 'lucide-react';
 import Link from 'next/link';
 import type { PropsWithChildren } from 'react';
 import { authClient } from '@/lib/auth-client';
 import { backendClient } from '@/lib/clients/backend';
 import { useLikesStore } from '@/lib/store';
 import { useAuthStore } from '@/lib/store/use-auth-store';
+import { useThemeStore } from '@/lib/store/use-theme-store';
 
 export default function Page({ children }: PropsWithChildren) {
 	const likedCount = useLikesStore((state) => state.likedItems.length);
 	const isPending = useAuthStore((state) => state.isPending);
 	const user = useAuthStore((state) => state.user);
 	const links = [
-		{ label: 'Explore', href: '/', icon: <GlobeIcon /> },
+		{ label: 'Home', href: '/', icon: <HomeIcon /> },
+		{ label: 'Explore', href: '/templates', icon: <GlobeIcon /> },
 		{ label: 'My Library', href: '/my-library', icon: <LibraryIcon /> },
 		{
 			label: 'Liked Components',
@@ -46,9 +44,10 @@ export default function Page({ children }: PropsWithChildren) {
 			icon: <HeartIcon weight="fill" />,
 			badge: likedCount > 0 ? likedCount : undefined,
 		},
-		{ label: 'Create', href: '/templates', icon: <PlusIcon /> },
 	];
 	const footerLinks = [{ label: 'Login', href: '/auth', icon: <SignInIcon /> }];
+	const { theme, setTheme } = useThemeStore();
+
 	return (
 		<>
 			<div className="fixed left-0 top-0 flex flex-col h-screen w-16 border-r">
@@ -98,6 +97,38 @@ export default function Page({ children }: PropsWithChildren) {
 								>
 									<DropdownMenuLabel>{user.name}</DropdownMenuLabel>
 									<DropdownMenuSeparator />
+									<div className="p-2 grid grid-cols-3 gap-2">
+										{[
+											{
+												class: 'bg-muted border-foreground',
+												value: 'base',
+											},
+											{
+												class: 'bg-lime-500 border-lime-300',
+												value: 'lime',
+											},
+											{
+												class: 'bg-blue-500 border-blue-300',
+												value: 'purple',
+											},
+										].map((themeOption) => (
+											<Button
+												className={cn(`h-auto p-2`)}
+												key={themeOption.value}
+												onClick={() => setTheme(themeOption.value)}
+												variant={
+													theme === themeOption.value ? 'accent' : 'ghost'
+												}
+											>
+												<div
+													className={cn(
+														'size-full aspect-square rounded-full border-4',
+														themeOption.class,
+													)}
+												></div>
+											</Button>
+										))}
+									</div>
 									<DropdownMenuItem
 										onClick={async () => {
 											useAuthStore.setState({ isPending: true });

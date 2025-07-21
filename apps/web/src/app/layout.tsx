@@ -1,23 +1,12 @@
 import type { Metadata } from 'next';
-import { Geist_Mono as Font_Mono, Geist as Font_Sans } from 'next/font/google';
 import '@/lib/store';
 import '@workspace/ui/globals.css';
 import { SidebarProvider } from '@workspace/ui/components/sidebar';
-import { cn } from '@workspace/ui/lib/utils';
-import type { CSSProperties } from 'react';
 import AuthProvider from '@/components/providers/auth-provider';
 import LikesProvider from '@/components/providers/likes-provider';
 import ModpackProvider from '@/components/providers/modpack-provider';
 import { QueryProvider } from '@/components/providers/query-provider';
-
-const sans = Font_Sans({
-	variable: '--font-sans',
-	subsets: ['latin'],
-});
-const mono = Font_Mono({
-	variable: '--font-mono',
-	subsets: ['latin'],
-});
+import ThemeProvider from '@/components/providers/theme-provider';
 
 export const metadata: Metadata = {
 	title: 'CN Cloud - Share your component with the world',
@@ -31,18 +20,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body
-				className={cn(
-					'antialiased font-sans dark',
-					sans.variable,
-					mono.variable,
-				)}
-				style={
-					{
-						'--nav-top-height': 'calc(var(--spacing)* 10)',
-					} as CSSProperties
-				}
-			>
+			<ThemeProvider>
 				<SidebarProvider>
 					<QueryProvider>
 						<AuthProvider />
@@ -52,7 +30,7 @@ export default function RootLayout({
 						{children}
 					</QueryProvider>
 				</SidebarProvider>
-			</body>
+			</ThemeProvider>
 		</html>
 	);
 }
