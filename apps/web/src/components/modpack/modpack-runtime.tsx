@@ -1,5 +1,5 @@
 import { ErrorBoundary } from '@workspace/ui/components/error-boundary';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useModpack } from './hooks/use-modpack';
 
 interface ModpackRuntimeProps {
@@ -13,7 +13,8 @@ export default function ModpackRuntime({
 	files,
 	path,
 }: ModpackRuntimeProps) {
-	const { isReady, mount, module } = useModpack(componentId);
+	const elementRef = useRef<HTMLDivElement | null>(null);
+	const { isReady, mount, module } = useModpack(componentId, { elementRef });
 	const Component = module?.default;
 	const onMount = async () => {
 		try {
@@ -37,6 +38,7 @@ export default function ModpackRuntime({
 	return (
 		<div
 			className={'size-full absolute inset-0 flex items-center justify-center'}
+			ref={elementRef}
 		>
 			{Component && (
 				<ErrorBoundary fallback={(err) => <div>{err.stack}</div>}>

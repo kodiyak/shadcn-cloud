@@ -117,7 +117,7 @@ export default function Page({ children }: PropsWithChildren) {
 												key={themeOption.value}
 												onClick={() => setTheme(themeOption.value)}
 												variant={
-													theme === themeOption.value ? 'accent' : 'ghost'
+													theme === themeOption.value ? 'outline' : 'ghost'
 												}
 											>
 												<div
