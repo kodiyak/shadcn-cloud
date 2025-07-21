@@ -2,3 +2,139 @@
 title: metadata.json
 description: Schema for publishing components to shadcn.cloud.
 ---
+
+Every component and template has the `metadata.json` configuration file.
+
+```json
+{
+  "title": "Button",
+  "description": "Used to trigger an action or event, such as submitting a form, displaying a dialog or sending a request.",
+  "features": [
+    "A wrapper around native HTML <button>, supports all HTMLButtonElement properties, methods and events",
+    "Different variants, sizes and border radiuses",
+    "Pending state animation",
+    "Respects reduce motion settings",
+    "Supports icons, loading spinner and custom content"
+  ],
+  "references": [
+    {
+      "title": "llms.txt",
+      "href": "https://llms.ai/docs/components/button"
+    },
+    {
+      "title": "MDN Reference",
+      "href": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button"
+    }
+  ],
+  "categories": [
+    "Buttons",
+    "Forms"
+  ],
+  "author": "shadcn",
+  "tools": [
+    {
+      "title": "React",
+      "icon": "react",
+      "href": "https://react.dev"
+    },
+    {
+      "title": "TypeScript",
+      "icon": "typescript",
+      "href": "https://www.typescriptlang.org"
+    },
+    {
+      "title": "Radix UI",
+      "icon": "radix",
+      "href": "https://www.radix-ui.com"
+    },
+    {
+      "title": "Tailwind CSS",
+      "icon": "tailwindcss",
+      "href": "https://tailwindcss.com"
+    },
+    {
+      "title": "Motion",
+      "icon": "motion",
+      "href": "https://motion.dev/one"
+    },
+    {
+      "title": "cva",
+      "icon": "cva",
+      "href": "https://cva-ui.com"
+    }
+  ]
+}
+```
+
+## Definitions
+
+Let's break down each key field within your `metadata.json` and understand its power.
+
+### title
+The `title` field is a string that represents the name of the component or template. 
+
+```json
+{
+    "title": "Button"
+}
+```
+
+### description
+The `description` field is a string that provides a brief overview of the component or template's purpose and functionality.
+
+```json
+{
+    "description": "Used to trigger an action or event, such as submitting a form, displaying a dialog or sending a request."
+}
+```
+
+### features
+The `features` field is an array of strings that lists the key features or capabilities of the component or template. This helps users quickly understand what the component offers.
+
+```json
+{
+    "features": [
+        "A wrapper around native HTML <button>, supports all HTMLButtonElement properties, methods and events",
+    ]
+}
+```
+
+### references
+The `references` field is an array of objects, each containing a `title` and a `href`. This allows you to link to external resources or documentation that provide additional information about the component or template.
+
+```json
+{
+    "references": [
+        {
+            "title": "llms.txt",
+            "href": "https://llms.ai/docs/components/button"
+        },
+    ]
+}
+```
+
+### tools
+The `tools` field is an array of objects, each containing a `title`, `icon`, and `href`. This allows you to specify the technologies or libraries used in the component or template, along with their respective icons and links.
+
+```json
+{
+    "tools": [
+        {
+            "title": "React",
+            "icon": "react",
+            "href": "https://react.dev"
+        },
+    ]
+}
+```
+
+Available icons are:
+- `react`
+- `typescript`
+- `radix`
+- `tailwindcss`
+- `motion`
+- `cva`
+- `shadcn`
+
+
