@@ -1,3 +1,5 @@
+'use client';
+
 import { Badge } from '@workspace/ui/components/badge';
 import { Card } from '@workspace/ui/components/card';
 import {
