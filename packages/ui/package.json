@@ -50,6 +50,7 @@
     "./postcss.config.mjs": "./postcss.config.mjs",
     "./lib/*": "./src/lib/*.ts",
     "./components/*": "./src/components/*.tsx",
+    "./themes/*": "./src/styles/*",
     "./hooks/*": "./src/hooks/*.ts"
   }
 }

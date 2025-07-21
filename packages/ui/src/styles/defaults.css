@@ -1,0 +1,8 @@
+:root {
+	--radius: 0.5rem;
+	--spacing: 0.25rem;
+	--tracking-normal: 0em;
+	--font-sans: Geist, ui-sans-serif, sans-serif;
+	--font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+	--font-mono: Geist Mono, ui-monospace, monospace;
+}
