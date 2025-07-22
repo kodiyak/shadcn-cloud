@@ -1,5 +1,6 @@
 import type { TemplateProps } from '@workspace/core';
 import { create } from 'zustand';
+import { backendClient } from '@/lib/clients/backend';
 import type { PublishProps } from '@/lib/domain';
 import { exportsMapToRecord, importsMapToRecord } from '@/lib/utils';
 import type { NodeProps } from '../../types';
@@ -12,7 +13,10 @@ interface CreateNodeProps extends Omit<NodeProps, 'path'> {
 
 interface ProjectStore {
 	isReady: boolean;
-	selectTemplate: (template: TemplateProps) => Promise<void>;
+	componentId: string;
+	selectTemplate: (
+		template: TemplateProps & { componentId: string },
+	) => Promise<void>;
 	nodes: NodeProps[];
 	setNodes: (nodes: NodeProps[]) => void;
 	addNode: (parent: string, node: CreateNodeProps) => void;
@@ -26,6 +30,7 @@ interface ProjectStore {
 }
 
 export const useProjectStore = create<ProjectStore>((set, get) => ({
+	componentId: '',
 	isReady: false,
 	nodes: [],
 	searchNodes: (callback) => {
@@ -83,6 +88,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		useEditorStore.getState().setActivePath('/index.mdx');
 
 		set({
+			componentId: template.componentId,
 			isReady: true,
 			nodes,
 		});
@@ -192,26 +198,35 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 		});
 	},
 	save: async (path, content) => {
-		const { nodes } = get();
+		const { nodes, componentId } = useProjectStore.getState();
 		const node = findNodeInTree(nodes, path);
 		if (!node) {
 			console.error(`Node ${path} not found.`);
 			return;
 		}
 
-		if (node.content === content) {
-			console.warn(`No changes detected for path ${path}. Skipping save...`);
-			return;
+		const nextNodes = updateNodeInTree(
+			path,
+			{ content, draftContent: content, isDirty: false },
+			nodes,
+		);
+
+		try {
+			if (node.content === content) {
+				console.warn(`No changes detected for path ${path}. Skipping save...`);
+				return;
+			}
+
+			set({ nodes: nextNodes });
+			useCompilationStore.getState().hotReload(path, content);
+		} catch (error) {
+			console.error(`Error saving node ${path}:`, error);
 		}
 
-		set({
-			nodes: updateNodeInTree(
-				path,
-				{ content, draftContent: content, isDirty: false },
-				nodes,
-			),
+		await backendClient.component.save({
+			componentId,
+			files: getNodeFiles(nextNodes),
 		});
-		useCompilationStore.getState().hotReload(path, content);
 	},
 	publish: async (data) => {
 		const { exports, imports, modpack } = useCompilationStore.getState();

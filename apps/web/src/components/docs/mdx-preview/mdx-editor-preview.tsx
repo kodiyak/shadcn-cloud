@@ -116,7 +116,7 @@ export function MdxEditorPreview({ path, style }: PreviewProps) {
 			</div>
 
 			<div className="bg-muted/30 border-t border-border rounded-xl flex flex-col">
-				<TabsContent value="preview">
+				<TabsContent ref={elementRef} value="preview">
 					<div className="p-4 aspect-video" style={style}>
 						<ErrorBoundary
 							fallback={(err) => (

@@ -53,6 +53,24 @@ export const backendClient = {
 			},
 		}).then((res) => res.json());
 	},
+	component: {
+		save: async ({
+			componentId,
+			files,
+		}: {
+			componentId: string;
+			files: Record<string, string>;
+		}) => {
+			return fetch(`/api/component/${componentId}/save`, {
+				body: JSON.stringify({ files }),
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: getBearerToken(),
+				},
+			}).then((res) => res.json());
+		},
+	},
 	likes: {
 		getAll: async (): Promise<{ data: Like[] }> => {
 			const likes = localLikes.getAll();

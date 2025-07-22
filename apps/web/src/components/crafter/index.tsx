@@ -34,6 +34,7 @@ export default function Crafter({ component }: CrafterProps) {
 	useEffect(() => {
 		if (!isReady && component) {
 			selectTemplate({
+				componentId: component.id,
 				title: component.metadata.title,
 				description: component.metadata.description || '',
 				files: component.files,

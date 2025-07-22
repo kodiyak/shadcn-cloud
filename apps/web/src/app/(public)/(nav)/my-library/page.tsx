@@ -14,10 +14,12 @@ export default function Page() {
 	});
 	return (
 		<PageLayout icon={<LibraryIcon />} title={'My Library'}>
-			<div className="grid grid-cols-5 gap-4 p-4">
-				{(components?.data ?? []).map((component) => (
-					<ComponentCard component={component} key={component.id} />
-				))}
+			<div className="container mx-auto">
+				<div className="grid grid-cols-2 gap-4 py-4">
+					{(components?.data ?? []).map((component) => (
+						<ComponentCard component={component} key={component.id} />
+					))}
+				</div>
 			</div>
 		</PageLayout>
 	);

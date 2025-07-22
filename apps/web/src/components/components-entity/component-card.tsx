@@ -11,7 +11,7 @@ import {
 	CarouselPrevious,
 } from '@workspace/ui/components/carousel';
 import { cn } from '@workspace/ui/lib/utils';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import type { Component } from '@/lib/domain';
 import ModpackRuntime from '../modpack/modpack-runtime';
 import ComponentActions from './component-actions';
@@ -20,7 +20,7 @@ interface ComponentCardProps {
 	component: Component;
 }
 
-export default function ComponentCard({ component }: ComponentCardProps) {
+function ComponentCard({ component }: ComponentCardProps) {
 	const [api, setApi] = useState<CarouselApi>();
 	const files = Object.keys(component.files).reduce(
 		(acc, file) => {
@@ -106,3 +106,5 @@ export default function ComponentCard({ component }: ComponentCardProps) {
 		</Card>
 	);
 }
+
+export default memo(ComponentCard, () => true);

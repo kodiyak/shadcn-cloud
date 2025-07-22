@@ -192,12 +192,14 @@ export function useModpack(baseUrl: string, options?: UseModpackProps) {
 				props.result ? setModule(props.result) : setModule(null);
 				props.error ? setError(props.error) : setError(null);
 				compiling.onClose();
+				console.log('[onBuildEnd] Modpack build completed:', props);
 				return options?.onBuildEnd?.(props);
 			},
 			onModuleUpdate: async (props) => {
-				props.result ? setModule(props.result) : setModule(null);
-				props.error ? setError(props.error) : setError(null);
+				// props.result ? setModule(props.result) : setModule(null);
+				// props.error ? setError(props.error) : setError(null);
 				compiling.onClose();
+				console.log('[onModuleUpdate] Modpack module updated:', props);
 				return options?.onModuleUpdate?.(props);
 			},
 			plugins,
