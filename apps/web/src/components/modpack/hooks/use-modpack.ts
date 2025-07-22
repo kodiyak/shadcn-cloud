@@ -1,4 +1,9 @@
-import { Modpack, type Orchestrator } from '@modpack/core';
+import {
+	Modpack,
+	type ModpackBootOptions,
+	type OnLogHook,
+	type Orchestrator,
+} from '@modpack/core';
 import { esmSh, http, inject, resolver } from '@modpack/plugins';
 import { react } from '@modpack/react';
 import { swc } from '@modpack/swc';
@@ -8,16 +13,19 @@ import { type RefObject, useEffect, useRef, useState } from 'react';
 import defaultVirtualFiles from '@/lib/cn.json';
 import { getModpackInjections } from '../utils/get-modpack-injections';
 
-interface UseModpackProps {
+interface UseModpackProps extends Partial<ModpackBootOptions> {
 	elementRef?: RefObject<HTMLDivElement | null>;
 }
+
+export type ModpackLog = Pick<Parameters<OnLogHook>[0], 'message' | 'level'>;
 
 export function useModpack(baseUrl: string, options?: UseModpackProps) {
 	const modpackRef = useRef<Orchestrator | null>(null);
 	const [module, setModule] = useState<any | null>(null);
 	const loaded = useRef(false);
 	const [isReady, setIsReady] = useState(false);
-	const loading = useDisclosure();
+	const [error, setError] = useState<Error | null>(null);
+	const compiling = useDisclosure();
 
 	const initializeModpack = async () => {
 		const injectModules = getModpackInjections();
@@ -176,11 +184,21 @@ export function useModpack(baseUrl: string, options?: UseModpackProps) {
 
 		return await Modpack.boot({
 			debug: true,
+			...options,
+			onBuildStart: async () => {
+				compiling.onOpen();
+			},
 			onBuildEnd: async (props) => {
-				if (props.result) setModule(props.result);
+				props.result ? setModule(props.result) : setModule(null);
+				props.error ? setError(props.error) : setError(null);
+				compiling.onClose();
+				return options?.onBuildEnd?.(props);
 			},
 			onModuleUpdate: async (props) => {
-				if (props.result) setModule(props.result);
+				props.result ? setModule(props.result) : setModule(null);
+				props.error ? setError(props.error) : setError(null);
+				compiling.onClose();
+				return options?.onModuleUpdate?.(props);
 			},
 			plugins,
 		});
@@ -191,7 +209,7 @@ export function useModpack(baseUrl: string, options?: UseModpackProps) {
 		loaded.current = true;
 		try {
 			modpackRef.current = await initializeModpack();
-			setIsReady(true);
+			setIsReady(() => true);
 		} catch (error) {
 			console.error('Failed to initialize modpack:', error);
 		}
@@ -203,18 +221,42 @@ export function useModpack(baseUrl: string, options?: UseModpackProps) {
 			return;
 		}
 
-		for (const [filePath, content] of Object.entries(defaultVirtualFiles)) {
-			modpackRef.current.fs.writeFile(`/${baseUrl}${filePath}`, content);
+		compiling.onOpen();
+		try {
+			for (const [filePath, content] of Object.entries(defaultVirtualFiles)) {
+				modpackRef.current.fs.writeFile(`/${baseUrl}${filePath}`, content);
+			}
+
+			for (const [filePath, content] of Object.entries(files)) {
+				modpackRef.current.fs.writeFile(`/${baseUrl}${filePath}`, content);
+			}
+
+			await modpackRef.current.mount(`file:///${baseUrl}${entrypoint}`);
+		} catch (error) {
+			console.error('Failed to mount modpack:', error);
+		}
+	};
+
+	const refresh = async (entrypoint: string, files: Record<string, string>) => {
+		if (!modpackRef.current) {
+			console.error('Modpack is not initialized');
+			return;
 		}
 
 		for (const [filePath, content] of Object.entries(files)) {
 			modpackRef.current.fs.writeFile(`/${baseUrl}${filePath}`, content);
 		}
 
-		loading.onOpen();
-		await modpackRef.current.mount(`file:///${baseUrl}${entrypoint}`);
-		loading.onClose();
-		setIsReady(() => true);
+		try {
+			await modpackRef.current.refresh(
+				`file:///${baseUrl}${entrypoint}`,
+				files[entrypoint],
+			);
+		} catch (error) {
+			console.error('Failed to refresh modpack:', error);
+		}
+
+		await new Promise((resolve) => setTimeout(resolve, 1000));
 	};
 
 	useEffect(() => {
@@ -223,8 +265,11 @@ export function useModpack(baseUrl: string, options?: UseModpackProps) {
 
 	return {
 		mount,
+		refresh,
 		isReady,
+		isCompiling: compiling.isOpen,
 		modpack: modpackRef.current,
 		module,
+		error,
 	};
 }

@@ -55,7 +55,7 @@ export default function Crafter({ component }: CrafterProps) {
 						</Link>
 					</Button>
 					<div className="flex-1 flex items-center justify-center">
-						<div className="w-full max-w-2xl h-8 flex items-center justify-center rounded-lg bg-muted/50 border border-border gap-2 px-4.5">
+						<div className="w-full max-w-2xl h-7 flex items-center justify-center rounded-md bg-muted/20 border gap-2 px-4.5">
 							<FileCodeIcon
 								className="size-3.5"
 								type={filename.split('.').pop() || ''}

@@ -35,23 +35,17 @@ export function initializeLikesStore() {
 		console.warn('useLikesStore should only be used in a browser context');
 		return;
 	}
-	console.log('LOAAADED');
 
 	const localLikedItems = localLikes.getAll();
-	console.log({ localLikedItems });
 	useLikesStore.setState({
 		likedItems: localLikedItems,
 	});
-	console.log(
-		'Initializing likes store with local likes:',
-		localLikes.getAll(),
-	);
+	console.log('Likes Store initialized with:', localLikes.getAll());
 	useAuthStore.subscribe(
 		(state) => state.user,
 		async (user) => {
 			const userId = user?.id;
 			const localLikedItems = localLikes.getAll();
-			console.log('User ID:', userId);
 			if (!userId) {
 				console.warn('User not authenticated. Using local likes only.');
 				useLikesStore.setState({

@@ -7,6 +7,7 @@ import kebabCase from 'lodash.kebabcase';
 import { type ReactNode, useEffect, useState } from 'react';
 import * as runtime from 'react/jsx-runtime';
 import * as MDXComponents from '@/components/docs/mdx-components';
+import { MdxEditorPreview } from '@/components/docs/mdx-preview/mdx-editor-preview';
 
 /** @todo Improve components injection logic */
 const components: Record<string, (props: any) => ReactNode> = {
@@ -73,7 +74,13 @@ export default function MdxContent({ content, className }: MdxContentProps) {
 		<ErrorBoundary
 			fallback={(err) => <div>Error loading documentation {err?.stack}</div>}
 		>
-			<Content className={className} components={components} />
+			<Content
+				className={className}
+				components={{
+					...components,
+					Preview: MdxEditorPreview,
+				}}
+			/>
 		</ErrorBoundary>
 	);
 }

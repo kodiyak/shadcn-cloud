@@ -1,5 +1,3 @@
-import { CheckIcon } from '@phosphor-icons/react';
-import { Badge } from '@workspace/ui/components/badge';
 import { ButtonsIcons } from '@workspace/ui/components/button';
 import { ErrorBoundary } from '@workspace/ui/components/error-boundary';
 import { Separator } from '@workspace/ui/components/separator';
@@ -12,64 +10,73 @@ import {
 } from '@workspace/ui/components/tabs';
 import { cn } from '@workspace/ui/lib/utils';
 import { RefreshCwIcon } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
-import { type CSSProperties, useMemo } from 'react';
+import { type CSSProperties, useEffect, useRef, useState } from 'react';
 import { CodeBlock } from '@/components/code-block';
 import CopyButton from '@/components/copy-button';
-import { useCompilationStore } from '@/components/crafter/lib/store/use-compilation-store';
 import {
 	findNodeInTree,
 	getNodeFiles,
 	useProjectStore,
 } from '@/components/crafter/lib/store/use-project-store';
-import { standardTransition } from '@/lib/transitions';
+import {
+	type ModpackLog,
+	useModpack,
+} from '@/components/modpack/hooks/use-modpack';
+import ModpackLogs from '@/components/modpack/modpack-logs';
 
 interface PreviewProps {
 	path: string;
 	style?: CSSProperties;
 }
 
-function Preview({ path, style }: PreviewProps) {
+export function MdxEditorPreview({ path, style }: PreviewProps) {
+	const elementRef = useRef<HTMLDivElement | null>(null);
 	const nodes = useProjectStore((state) => state.nodes);
 	const node = findNodeInTree(nodes, path);
-	const compile = useCompilationStore((state) => state.compile);
-	const module = useCompilationStore((state) => state.results)[path];
-	const error = useCompilationStore((state) => state.errors)[path];
-	const compiling = useCompilationStore((state) => state.compiling)[path];
-	const files = getNodeFiles(nodes);
-
-	const status = compiling ? 'compiling' : error ? 'error' : 'ready';
-	const compilationStatus = {
-		compiling: {
-			label: 'Compiling...',
-			icon: <Spinner className="mr-1" size={12} />,
-			variant: 'muted' as const,
+	const nodeFiles = getNodeFiles(nodes);
+	const files = Object.keys(nodeFiles).reduce(
+		(acc, filePath) => {
+			acc[filePath.replace('file://', '')] = nodeFiles[filePath];
+			return acc;
 		},
-		error: {
-			label: 'Error',
-			icon: <CheckIcon className="mr-1" size={12} />,
-			variant: 'destructive' as const,
-		},
-		ready: {
-			label: 'Ready',
-			icon: <CheckIcon className="mr-1" size={12} />,
-			variant: 'success' as const,
-		},
-	}[status];
+		{} as Record<string, string>,
+	);
 
-	const Component = useMemo(() => {
-		if (!module) return null;
-		return module.default || module.Component || null;
-	}, [module, path, compiling]);
+	const [logs, setLogs] = useState<ModpackLog[]>([]);
 
-	const load = async (entrypoint: string) => {
-		const { nodes } = useProjectStore.getState();
-		const files = getNodeFiles(nodes);
-		await compile({
-			entrypoint,
-			files,
-		});
+	const { isReady, module, mount, isCompiling, refresh } = useModpack(
+		`editor`,
+		{
+			elementRef,
+			onLog: (log) => setLogs((prev) => [...prev, log]),
+		},
+	);
+	const Component = module?.default;
+
+	const onMount = async () => {
+		if (isCompiling) return;
+		try {
+			await mount(path, files);
+		} catch (error) {
+			console.error('Failed to mount', error);
+		}
 	};
+
+	const onLoad = async () => {
+		if (isCompiling) return;
+		try {
+			await refresh(path, files);
+		} catch (error) {
+			console.error('Failed to compile:', error);
+		}
+	};
+
+	useEffect(() => {
+		if (isReady && nodes.length > 0 && !isCompiling) {
+			const onLoadOrMount = Component ? onLoad : onMount;
+			onLoadOrMount();
+		}
+	}, [files[path]]);
 
 	if (Object.keys(files).length === 0) {
 		return null;
@@ -96,16 +103,13 @@ function Preview({ path, style }: PreviewProps) {
 					items={[
 						{
 							label: 'Reload',
-							icon: compiling ? (
+							disabled: !isReady || isCompiling,
+							icon: isCompiling ? (
 								<Spinner size={16} />
 							) : (
 								<RefreshCwIcon className="size-4" />
 							),
-							onClick: async () => {
-								if (node) {
-									await load(node.path);
-								}
-							},
+							onClick: () => onMount(),
 						},
 					]}
 				/>
@@ -113,7 +117,7 @@ function Preview({ path, style }: PreviewProps) {
 
 			<div className="bg-muted/30 border-t border-border rounded-xl flex flex-col">
 				<TabsContent value="preview">
-					<div className="p-4" style={style}>
+					<div className="p-4 aspect-video" style={style}>
 						<ErrorBoundary
 							fallback={(err) => (
 								<div className="p-4 border bg-background border-destructive rounded-xl overflow-auto">
@@ -137,31 +141,9 @@ function Preview({ path, style }: PreviewProps) {
 						</ErrorBoundary>
 					</div>
 
-					<div className="flex flex-row justify-end p-4 border-t border-dashed border-border">
-						<Badge variant={compilationStatus.variant}>
-							{compilationStatus.icon}
-							<span>{compilationStatus.label}</span>
-						</Badge>
+					<div className="flex flex-col border-t border-dashed border-border">
+						<ModpackLogs logs={logs} />
 					</div>
-					{error && (
-						<AnimatePresence mode={'wait'}>
-							<motion.div
-								animate={{ opacity: 1, scale: 1, height: 'auto' }}
-								exit={{ opacity: 0, scale: 0.95, height: 0 }}
-								initial={{ opacity: 0, scale: 0.95, height: 0 }}
-								layout
-								transition={standardTransition}
-							>
-								<div className="p-4">
-									<div className="p-8 border bg-background border-destructive rounded-xl">
-										<p className="text-destructive text-xs font-medium font-mono">
-											{error ? String(error) : 'N/A'}
-										</p>
-									</div>
-								</div>
-							</motion.div>
-						</AnimatePresence>
-					)}
 				</TabsContent>
 				<TabsContent className="relative" value="code">
 					<CodeBlock
@@ -181,5 +163,3 @@ function Preview({ path, style }: PreviewProps) {
 		</Tabs>
 	);
 }
-
-export { Preview };
