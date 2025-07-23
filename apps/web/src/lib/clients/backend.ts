@@ -4,6 +4,7 @@ import {
 	type ForkProps,
 	forkSchema,
 	type Like,
+	type PackageJson,
 	type SaveLikesBatchSchema,
 } from '../domain';
 import { localLikes } from '../utils';
@@ -47,6 +48,16 @@ export const backendClient = {
 	},
 	getComponent: async (componentId: string): Promise<{ data: Component }> => {
 		return fetch(`/api/component/${componentId}`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: getBearerToken(),
+			},
+		}).then((res) => res.json());
+	},
+	getExternalPackage: async (
+		packageName: string,
+	): Promise<{ data: PackageJson }> => {
+		return fetch(`/api/npm/${packageName}`, {
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: getBearerToken(),

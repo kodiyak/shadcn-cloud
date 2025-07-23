@@ -69,8 +69,9 @@ export default function PublishComponent({
 
 			return result;
 		},
-		onSuccess: () => {
-			console.log('Component compiled successfully');
+		onSuccess: (res) => {
+			console.log('Component compiled successfully', res);
+			return res;
 		},
 		onError: (error) => {
 			console.error('Error compiling component:', error);

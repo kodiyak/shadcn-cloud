@@ -1,5 +1,8 @@
 import type { Orchestrator } from '@modpack/core';
 import { initializeModpack } from '@/components/modpack/utils/initialize-modpack';
+import { backendClient } from '@/lib/clients/backend';
+import cnFiles from '@/lib/cn.json';
+import type { PackageJson } from '@/lib/domain';
 import { buildDependenciesExtractor } from './build-dependencies-extractor';
 import { buildRegistry } from './build-registry';
 
@@ -53,8 +56,46 @@ export async function compileComponent({
 		),
 	});
 
+	const ignoredDependencies = ['react', 'react-dom'];
+	const dependencies = (
+		await Promise.all(
+			(registry.dependencies ?? []).map(async (dep) => {
+				return backendClient
+					.getExternalPackage(dep)
+					.then((res) => res.data)
+					.catch(() => null) as Promise<PackageJson>;
+			}),
+		)
+	)
+		.filter((dep) => dep && !ignoredDependencies.includes(dep.name))
+		.reduce((acc: PackageJson[], curr) => {
+			if (!curr || acc.some((pkg) => pkg.name === curr.name)) return acc;
+			acc.push(curr);
+			return acc;
+		}, [] as PackageJson[]);
+
+	registry.files = (registry.files ?? []).map((file) => ({
+		...file,
+		path: file.path.replace(`/${baseUrl}`, ''),
+	}));
+	registry.registryDependencies = registry.registryDependencies ?? [];
+
+	const cnPaths = Object.keys(cnFiles);
+	const cnIgnore = ['/lib/utils.ts'];
+	registry.files?.forEach((file) => {
+		if (cnPaths.includes(file.path)) {
+			registry.files = registry.files?.filter((f) => f.path !== file.path);
+
+			if (!cnIgnore.includes(file.path)) {
+				const registryDependency = file.path.split('/').pop()!.split('.')[0];
+				registry.registryDependencies?.push(registryDependency);
+			}
+		}
+	});
+
 	return {
 		registry,
+		dependencies,
 		imports: deps.getImports(),
 		exports: deps.getExports(),
 	};

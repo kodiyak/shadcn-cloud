@@ -28,6 +28,7 @@
     "@workspace/templates": "workspace:*",
     "@workspace/ui": "workspace:*",
     "lodash.kebabcase": "^4.1.1",
+    "axios": "1.10.0",
     "motion": "12.23.0",
     "next": "15.3.2",
     "shiki": "3.7.0",

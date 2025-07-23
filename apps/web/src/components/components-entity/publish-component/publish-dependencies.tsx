@@ -8,6 +8,7 @@ interface PublishDependenciesProps extends CompileComponentResult {}
 
 export default function PublishDependencies({
 	registry,
+	dependencies,
 }: PublishDependenciesProps) {
 	return (
 		<div className="flex flex-col gap-2">
@@ -15,20 +16,20 @@ export default function PublishDependencies({
 				Dependencies
 			</span>
 			<div className="grid grid-cols-3 gap-1">
-				{(registry.dependencies ?? []).map((dependency) => (
+				{(dependencies ?? []).map((dependency) => (
 					<Button
 						asChild
 						className="group"
-						key={dependency}
+						key={dependency.name}
 						size={'xs'}
 						variant={'outline'}
 					>
 						<Link
-							href={`https://www.npmjs.com/package/${dependency}`}
+							href={`https://www.npmjs.com/package/${dependency.name}`}
 							target="_blank"
 						>
 							<span className="text-xs font-mono text-left flex-1 truncate">
-								{dependency}
+								{dependency.name}@{dependency.version}
 							</span>
 							<div className="size-4 relative">
 								<ToolIcon
