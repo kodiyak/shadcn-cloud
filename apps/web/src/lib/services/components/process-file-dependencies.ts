@@ -21,7 +21,7 @@ export function processFileDependencies({
 	const file = imports.get(path);
 	if (!file) return;
 
-	if (!context.files.includes(path) && path.startsWith('file://')) {
+	if (path.startsWith('file://') && !context.files.includes(path)) {
 		context.files.push(path);
 	}
 	for (const [importPath] of file.entries()) {
@@ -65,7 +65,7 @@ function resolveImportPath(path: string, parent: string, urls: string[]) {
 		const resolveRelative = () => {
 			const parts = path.split('/').filter(Boolean);
 			if (path.startsWith('../') || path.startsWith('..')) {
-				if (!path.startsWith('../')) base.pop(); // Remove last part if starts with '..'
+				if (!path.startsWith('../')) base.pop();
 				const upCount = path.split('/').filter((p) => p === '..').length;
 				return [...base.slice(0, -upCount), ...parts.slice(upCount)].join('/');
 			} else if (path.startsWith('./')) {
@@ -77,7 +77,6 @@ function resolveImportPath(path: string, parent: string, urls: string[]) {
 			} else if (path.startsWith('@/')) {
 				return [...base, ...parts.slice(1)].join('/');
 			} else if (path.startsWith('/')) {
-				console.log('Absolute path detected:', path);
 				return `/${[...parts].join('/')}`;
 			}
 			return [...base, ...parts].join('/');

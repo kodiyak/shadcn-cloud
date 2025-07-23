@@ -20,6 +20,7 @@ export default function DocContent({ component }: DocContentProps) {
 		const { selectTemplate } = useProjectStore.getState();
 		const { compile } = useCompilationStore.getState();
 		await selectTemplate({
+			componentId: component.id,
 			title: component.metadata.title,
 			description: component.metadata.description || '',
 			files: component.files,

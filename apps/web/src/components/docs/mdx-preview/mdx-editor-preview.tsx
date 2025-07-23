@@ -1,3 +1,5 @@
+'use client';
+
 import { ButtonsIcons } from '@workspace/ui/components/button';
 import { ErrorBoundary } from '@workspace/ui/components/error-boundary';
 import { Separator } from '@workspace/ui/components/separator';

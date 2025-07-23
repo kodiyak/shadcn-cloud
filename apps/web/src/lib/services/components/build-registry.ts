@@ -12,7 +12,7 @@ interface BuildRegistryProps {
 	exports: ExportsMap;
 	imports: ImportsMap;
 	metadata: Metadata;
-	files: Map<string, string>;
+	files: Record<string, string>;
 }
 
 export function buildRegistry({
@@ -39,7 +39,7 @@ export function buildRegistry({
 
 	const registryFiles = new Map(
 		(result?.files || []).map((file) => {
-			const content = files.get(file);
+			const content = files[normalizePath(file)];
 			return [file, content];
 		}),
 	);
