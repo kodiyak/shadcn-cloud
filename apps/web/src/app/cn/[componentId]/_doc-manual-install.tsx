@@ -10,10 +10,10 @@ export default function DocManualInstall({ component }: DocManualInstallProps) {
 	return (
 		<div className="flex flex-col gap-12">
 			<div className="flex flex-col">
-				<NpmInstall packages={component.registry.dependencies ?? []} />
+				<NpmInstall packages={component.registry?.dependencies ?? []} />
 			</div>
 
-			{component.registry.files?.map((file) => (
+			{component.registry?.files?.map((file) => (
 				<ManualCode
 					content={file.content || ''}
 					key={file.path}
