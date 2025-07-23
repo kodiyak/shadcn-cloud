@@ -33,10 +33,10 @@ export default function PublishDependencies({
 							</span>
 							<div className="size-4 relative">
 								<ToolIcon
-									className="absolute inset-0 size-full transition-all duration-500 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100"
+									className="absolute inset-0 size-full transition-all duration-300 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100"
 									type={'npm'}
 								/>
-								<ExternalLinkIcon className="absolute inset-0 size-full transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:scale-50" />
+								<ExternalLinkIcon className="absolute inset-0 size-full transition-all duration-300 opacity-100 group-hover:opacity-0 group-hover:scale-50" />
 							</div>
 						</Link>
 					</Button>

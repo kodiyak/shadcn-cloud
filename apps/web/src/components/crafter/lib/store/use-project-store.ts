@@ -1,7 +1,7 @@
 import type { TemplateProps } from '@workspace/core';
 import { create } from 'zustand';
 import { backendClient } from '@/lib/clients/backend';
-import type { PublishProps } from '@/lib/domain';
+import type { Component, PublishProps } from '@/lib/domain';
 import { exportsMapToRecord, importsMapToRecord } from '@/lib/utils';
 import type { NodeProps } from '../../types';
 import { useCompilationStore } from './use-compilation-store';
@@ -26,7 +26,7 @@ interface ProjectStore {
 	findNode: (path: string) => NodeProps | undefined;
 	searchNodes: (callback: (node: NodeProps) => boolean) => NodeProps[];
 	save: (path: string, content: string) => Promise<void>;
-	publish: (props: PublishProps) => Promise<void>;
+	publish: (props: PublishProps) => Promise<Component>;
 }
 
 export const useProjectStore = create<ProjectStore>((set, get) => ({
@@ -244,18 +244,18 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 			exports: exportsMapToRecord(exports),
 		};
 
-		await fetch(`/api/publish`, {
-			method: 'POST',
-			body: JSON.stringify({
-				sourceMap,
-				files: Object.fromEntries(files.entries()),
-				...data,
-			}),
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				console.log('Publish response:', data);
-			});
+		// await fetch(`/api/publish`, {
+		// 	method: 'POST',
+		// 	body: JSON.stringify({
+		// 		sourceMap,
+		// 		files: Object.fromEntries(files.entries()),
+		// 		...data,
+		// 	}),
+		// })
+		// 	.then((res) => res.json())
+		// 	.then((data) => {
+		// 		console.log('Publish response:', data);
+		// 	});
 	},
 }));
 

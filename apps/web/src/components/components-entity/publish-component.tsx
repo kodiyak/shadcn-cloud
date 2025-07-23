@@ -22,7 +22,9 @@ import {
 	TabsTrigger,
 } from '@workspace/ui/components/tabs';
 import type { UseDisclosure } from '@workspace/ui/hooks/use-disclosure';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { backendClient } from '@/lib/clients/backend';
 import { type PublishProps, publishSchema } from '@/lib/domain';
 import { compileComponent } from '@/lib/services';
 import {
@@ -40,20 +42,29 @@ interface PublishComponentProps extends UseDisclosure {}
 export default function PublishComponent({
 	isOpen,
 	onOpenChange,
+	onClose,
 }: PublishComponentProps) {
-	const publish = useProjectStore((state) => state.publish);
+	const router = useRouter();
+	const componentId = useProjectStore((state) => state.componentId);
 	const form = useForm({
 		resolver: zodResolver(publishSchema),
 		defaultValues: {
 			isTemplate: false,
 			isForkable: true,
+			componentId,
 		},
 	});
 	const { isSubmitting, isValid } = form.formState;
 	const onSubmit = useMutation({
 		mutationFn: async (data: PublishProps) => {
 			console.log('Form submitted with data:', data);
-			await publish(data);
+			return backendClient.component.publish(data);
+		},
+		onSuccess: async (response) => {
+			if (response.data.status === 'published') {
+				onClose();
+				router.push(`/cn/${componentId}`);
+			}
 		},
 	});
 	const onCompile = useMutation({
@@ -71,6 +82,15 @@ export default function PublishComponent({
 		},
 		onSuccess: (res) => {
 			console.log('Component compiled successfully', res);
+			form.reset(
+				{
+					...form.getValues(),
+					registry: res.registry,
+					dependencies: res.dependencies,
+					componentId,
+				},
+				{ keepDirty: false },
+			);
 			return res;
 		},
 		onError: (error) => {
@@ -90,11 +110,14 @@ export default function PublishComponent({
 					</DialogHeader>
 					<form
 						className="flex flex-col gap-6"
-						onSubmit={form.handleSubmit((v) => onSubmit.mutateAsync(v))}
+						onSubmit={form.handleSubmit(
+							(v) => onSubmit.mutateAsync(v),
+							console.error,
+						)}
 					>
 						<div className="flex flex-col">
 							<Tabs
-								className="bg-muted/50 rounded-xl border"
+								className="bg-muted/50 rounded-xl border gap-0"
 								defaultValue="preview"
 							>
 								<TabsList className="p-1">
@@ -102,15 +125,13 @@ export default function PublishComponent({
 										<InfoIcon />
 										<span>Info</span>
 									</TabsTrigger>
+									<TabsTrigger value="preview">Preview</TabsTrigger>
 									<TabsTrigger disabled={!onCompile.data} value="registry">
 										Registry
 									</TabsTrigger>
 								</TabsList>
 								<div className="aspect-video overflow-y-auto">
-									<TabsContent
-										className="px-2 py-0 flex flex-col gap-4 pb-4"
-										value="info"
-									>
+									<TabsContent className="p-2 flex flex-col gap-4" value="info">
 										<FormField
 											name={'isForkable'}
 											render={({ field }) => (
@@ -159,17 +180,7 @@ export default function PublishComponent({
 									<TabsContent value="preview">
 										{onCompile.data && <PublishPreview {...onCompile.data} />}
 									</TabsContent>
-									<TabsContent value="dependencies">
-										{onCompile.data && (
-											<PublishDependencies {...onCompile.data} />
-										)}
-									</TabsContent>
-									<TabsContent value="registryDependencies">
-										{onCompile.data && (
-											<PublishRegistryDependencies {...onCompile.data} />
-										)}
-									</TabsContent>
-									<TabsContent value="registry">
+									<TabsContent className="size-full" value="registry">
 										{onCompile.data && <PublishRegistry {...onCompile.data} />}
 									</TabsContent>
 								</div>
@@ -181,12 +192,13 @@ export default function PublishComponent({
 								onClick={() => {
 									onCompile.mutate();
 								}}
+								variant={'outline'}
 							>
 								Build Registry
 							</Button>
 							<Button
 								className="px-6"
-								disabled={!isValid || isSubmitting}
+								disabled={isSubmitting || !isValid}
 								type="submit"
 							>
 								Publish

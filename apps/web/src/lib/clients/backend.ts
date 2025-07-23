@@ -5,6 +5,7 @@ import {
 	forkSchema,
 	type Like,
 	type PackageJson,
+	type PublishProps,
 	type SaveLikesBatchSchema,
 } from '../domain';
 import { localLikes } from '../utils';
@@ -74,6 +75,16 @@ export const backendClient = {
 		}) => {
 			return fetch(`/api/component/${componentId}/save`, {
 				body: JSON.stringify({ files }),
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: getBearerToken(),
+				},
+			}).then((res) => res.json());
+		},
+		publish: async (props: PublishProps): Promise<{ data: Component }> => {
+			return fetch(`/api/publish`, {
+				body: JSON.stringify(props),
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

@@ -1,8 +1,13 @@
+import { registryItemSchema } from '@uipub/registry';
 import z from 'zod';
+import { packageJsonSchema } from './package-json';
 
 export const publishSchema = z.object({
+	componentId: z.string(),
 	isTemplate: z.boolean(),
 	isForkable: z.boolean(),
+	registry: registryItemSchema,
+	dependencies: packageJsonSchema.array(),
 });
 export type PublishProps = z.infer<typeof publishSchema>;
 

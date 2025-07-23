@@ -15,7 +15,12 @@ interface AppConfig {
 export const appConfig: AppConfig = {
 	name: 'shadcn-cloud',
 	shikiOptions: {
-		themes: [{ ...shikiTheme, name: 'default' }],
+		themes: [
+			{
+				...shikiTheme,
+				name: 'default',
+			},
+		],
 		langs: [
 			'typescript',
 			'tsx',

@@ -1,23 +1,7 @@
-import { registryItemSchema } from '@uipub/registry';
 import { type NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
 import { db } from '@/lib/clients/db';
-
-const publishSchema = z.object({
-	registry: registryItemSchema,
-	sourceMap: z.object({
-		imports: z.record(z.any()),
-		exports: z.record(z.any()),
-	}),
-	files: z
-		.object({
-			'/index.mdx': z.string(),
-			'/metadata.json': z.string(),
-		})
-		.passthrough(),
-	isTemplate: z.boolean(),
-	isForkable: z.boolean(),
-});
+import { componentSchema, publishSchema } from '@/lib/domain';
+import { ok } from '@/lib/utils';
 
 export async function POST(req: NextRequest) {
 	const {
@@ -36,27 +20,17 @@ export async function POST(req: NextRequest) {
 		);
 	}
 
-	const { files, registry, sourceMap, isForkable, isTemplate } = body;
-	const metadata = JSON.parse(files['/metadata.json']);
-
-	const component = await db.component.create({
+	const { registry, isForkable, isTemplate, componentId, dependencies } = body;
+	const component = await db.component.update({
+		where: { id: componentId },
 		data: {
-			name: metadata.title,
-			description: metadata.description,
-			metadata,
-			files: JSON.parse(JSON.stringify(files)),
 			registry,
-			sourceMap,
 			isTemplate,
 			isForkable,
-			dependencies: registry.dependencies ?? [],
-			registryDependencies: registry.registryDependencies ?? [],
+			dependencies,
+			status: 'published',
 		},
 	});
 
-	return NextResponse.json({
-		component,
-		files,
-		metadata,
-	});
+	return ok(componentSchema.parse(component));
 }
