@@ -91,6 +91,7 @@ model Jwks {
 model Component {
   id                   String          @id @default(uuid())
   name                 String
+  title                String?
   description          String?
   createdAt            DateTime        @default(now()) @db.Timestamptz(3)
   updatedAt            DateTime        @updatedAt @db.Timestamptz(3)

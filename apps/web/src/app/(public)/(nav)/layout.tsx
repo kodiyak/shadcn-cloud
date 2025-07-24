@@ -70,7 +70,7 @@ export default async function Page({ children }: PropsWithChildren) {
 									asChild
 									className="relative"
 									key={`${link.href}-${l}`}
-									size={'xs'}
+									size={'sm'}
 									variant={'ghost'}
 								>
 									<Link href={link.href}>
@@ -95,7 +95,7 @@ export default async function Page({ children }: PropsWithChildren) {
 													asChild
 													className="relative"
 													key={link.href}
-													size={'xs'}
+													size={'sm'}
 													variant={'ghost'}
 												>
 													<Link href={link.href}>
@@ -119,16 +119,12 @@ export default async function Page({ children }: PropsWithChildren) {
 				</div>
 				<div className="flex flex-col py-2 px-8">
 					{footerLinks.map((link) => (
-						<Tooltip delayDuration={0} key={link.href}>
-							<TooltipTrigger asChild>
-								<Button asChild size={'icon-lg'} variant={'ghost'}>
-									<Link href={link.href}>{link.icon}</Link>
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent side={'right'}>
-								<p>{link.label}</p>
-							</TooltipContent>
-						</Tooltip>
+						<Button asChild key={link.href} size={'sm'} variant={'ghost'}>
+							<Link href={link.href}>
+								{link.icon}
+								<span className="flex-1 text-left">{link.label}</span>
+							</Link>
+						</Button>
 					))}
 				</div>
 			</div>

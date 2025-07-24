@@ -1,5 +1,5 @@
-import { db } from '@/lib/clients/db';
-import { type Component, componentSchema } from '@/lib/domain';
+import { db } from "@/lib/clients/db";
+import { type Component, componentSchema } from "@/lib/domain";
 
 interface ForkComponentProps {
 	component: Component;
@@ -11,11 +11,9 @@ export async function forkComponent({ component, authId }: ForkComponentProps) {
 		data: {
 			files: component.files,
 			metadata: component.metadata,
-			name: component.metadata.title,
+			name: component.name,
+			title: component.metadata.title,
 			description: component.metadata.description,
-			registry: component.registry,
-			sourceMap: component.sourceMap,
-			dependencies: component.dependencies,
 			registryDependencies: component.registryDependencies,
 			isForkable: component.isForkable,
 			isTemplate: component.isTemplate,

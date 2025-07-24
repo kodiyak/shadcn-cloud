@@ -32,7 +32,7 @@ export const deleteLikesBatchSchema = z.object({
 export type DeleteLikesBatchSchema = z.infer<typeof deleteLikesBatchSchema>;
 
 export const addCollectionComponentSchema = z.object({
-	componentId: z.string(),
+	url: z.string(),
 });
 export type AddCollectionComponentProps = z.infer<
 	typeof addCollectionComponentSchema

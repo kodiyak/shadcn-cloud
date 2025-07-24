@@ -1,3 +1,4 @@
+import kebabCase from 'lodash.kebabcase';
 import { db } from '@/lib/clients/db';
 import templatesJson from '@/lib/templates.json';
 
@@ -61,7 +62,8 @@ async function seedTemplates(userId: string) {
 	for (const template of templatesJson) {
 		const { id } = await db.component.create({
 			data: {
-				name: template.title,
+				name: kebabCase(template.title),
+				title: template.title,
 				description: template.description,
 				user: { connect: { id: userId } },
 				files: template.files,

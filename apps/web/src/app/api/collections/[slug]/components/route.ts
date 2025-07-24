@@ -6,6 +6,7 @@ import {
 	componentSchema,
 	removeCollectionComponentSchema,
 } from '@/lib/domain';
+import { findComponent } from '@/lib/services';
 import { notFound, ok, role, unauthorized } from '@/lib/utils';
 
 interface RouteProps {
@@ -47,9 +48,6 @@ export async function GET(req: NextRequest, { params }: RouteProps) {
 	const components = await db.component.findMany({ where, orderBy });
 	return ok(componentSchema.array().parse(components), {
 		meta: { total: await db.component.count({ where }) },
-		headers: {
-			'Cache-Control': 'public, max-age=60, stale-while-revalidate=30',
-		},
 	});
 }
 
@@ -66,11 +64,13 @@ export async function POST(req: NextRequest, { params }: RouteProps) {
 	});
 
 	if (!collection) return notFound('Collection not found');
-	const { componentId } = addCollectionComponentSchema.parse(await req.json());
+	const { url } = addCollectionComponentSchema.parse(await req.json());
+	const component = await findComponent(url);
+	if (!component) return notFound('Component not found');
 
 	await db.collection.update({
 		where: { id: collection.id },
-		data: { components: { connect: { id: componentId } } },
+		data: { components: { connect: { id: component.id } } },
 	});
 
 	return ok({});

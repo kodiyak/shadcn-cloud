@@ -2,51 +2,16 @@
 
 import { Badge } from '@workspace/ui/components/badge';
 import { Card } from '@workspace/ui/components/card';
-import {
-	Carousel,
-	type CarouselApi,
-	CarouselContent,
-	CarouselItem,
-	CarouselNext,
-	CarouselPrevious,
-} from '@workspace/ui/components/carousel';
-import { cn } from '@workspace/ui/lib/utils';
-import { memo, useEffect, useState } from 'react';
+import { memo } from 'react';
 import type { Component } from '@/lib/domain';
-import ModpackRuntime from '../modpack/modpack-runtime';
 import ComponentActions from './component-actions';
+import ComponentPreviewsCarousel from './component-previews-carousel';
 
 interface ComponentCardProps {
 	component: Component;
 }
 
 function ComponentCard({ component }: ComponentCardProps) {
-	const [api, setApi] = useState<CarouselApi>();
-	const files = Object.keys(component.files).reduce(
-		(acc, file) => {
-			acc[file.replace('file://', '')] = component.files[file];
-			return acc;
-		},
-		{} as Record<string, string>,
-	);
-
-	const previews = Object.keys(files)
-		.filter((f) => f.startsWith('/previews/'))
-		.map((path) => ({
-			path,
-			content: files[path],
-		}));
-	const [index, setIndex] = useState(0);
-
-	useEffect(() => {
-		if (!api) return;
-
-		setIndex(() => api.selectedScrollSnap());
-		api.on('select', () => {
-			setIndex(() => api.selectedScrollSnap());
-		});
-	}, [api]);
-
 	return (
 		<Card className="p-1 rounded-2xl gap-2 flex flex-col bg-transparent dark:bg-transparent border-0">
 			<div className="w-full overflow-hidden aspect-video rounded-2xl bg-background relative border border-border">
@@ -61,40 +26,15 @@ function ComponentCard({ component }: ComponentCardProps) {
 							<ComponentActions component={component} />
 						</div>
 					</div>
-					<Carousel
-						className="size-full absolute inset-0 z-10 bg-gradient-to-b from-background to-muted/50"
-						setApi={setApi}
-					>
-						<CarouselContent>
-							{previews.map((preview) => (
-								<CarouselItem
-									className="w-full aspect-video flex items-center justify-center relative"
-									key={`preview:${preview.path}`}
-								>
-									<ModpackRuntime
-										componentId={component.id}
-										files={files}
-										path={preview.path}
-									/>
-								</CarouselItem>
-							))}
-						</CarouselContent>
-						<CarouselPrevious className="left-4" />
-						<CarouselNext className="right-4" />
-					</Carousel>
+					<ComponentPreviewsCarousel
+						className={
+							'size-full absolute inset-0 z-10 bg-gradient-to-b from-background to-muted/50'
+						}
+						component={component}
+					/>
 				</div>
 			</div>
-			<div className="bottom-0 w-full px-4 flex items-center justify-center gap-1">
-				{previews.map((preview, i) => (
-					<div
-						className={cn(
-							`w-3 h-1 rounded-lg bg-muted`,
-							i === index && 'bg-foreground/20',
-						)}
-						key={`id:${preview.path}`}
-					/>
-				))}
-			</div>
+
 			<div className="flex flex-col gap-1">
 				<span className="text-sm font-medium cursor-default">
 					{component.metadata.title}
