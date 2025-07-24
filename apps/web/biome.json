@@ -7,7 +7,10 @@
     "useIgnoreFile": false
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": true,
+    "includes": [
+      "src/**/*.{ts,tsx,js,jsx,json,css,html}"
+    ]
   },
   "formatter": {
     "enabled": true,
