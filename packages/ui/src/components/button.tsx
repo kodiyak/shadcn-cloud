@@ -29,7 +29,9 @@ const buttonVariants = cva(
 				secondary:
 					'border bg-background/50 bg-gradient-to-b from-accent/10 to-background text-muted-foreground hover:text-foreground',
 				ghost: cn(
-					'text-muted-foreground hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/30',
+					'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+					'opacity-70 hover:opacity-100',
+					'dark:text-muted-foreground dark:hover:bg-accent/30',
 					'data-[state=open]:bg-accent data-[state=open]:text-foreground',
 					'dark:data-[state=open]:bg-accent/40 dark:data-[state=open]:text-foreground',
 				),

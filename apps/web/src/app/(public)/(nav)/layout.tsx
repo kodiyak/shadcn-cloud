@@ -1,74 +1,128 @@
-'use client';
-
-import { GlobeIcon, HeartIcon, SignInIcon } from '@phosphor-icons/react';
-import {
-	Avatar,
-	AvatarFallback,
-	AvatarImage,
-} from '@workspace/ui/components/avatar';
+import { GlobeIcon, SignInIcon } from '@phosphor-icons/react/ssr';
 import { Button } from '@workspace/ui/components/button';
+import { ToolIcon } from '@workspace/ui/components/icons';
 import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from '@workspace/ui/components/dropdown-menu';
+	ScrollArea,
+	ScrollAreaShadow,
+} from '@workspace/ui/components/scroll-area';
+import { Separator } from '@workspace/ui/components/separator';
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from '@workspace/ui/components/tooltip';
-import { cn } from '@workspace/ui/lib/utils';
-import { HomeIcon, LibraryIcon, LogOutIcon } from 'lucide-react';
+import { HomeIcon } from 'lucide-react';
+import { headers } from 'next/headers';
 import Link from 'next/link';
 import type { PropsWithChildren } from 'react';
-import { authClient } from '@/lib/auth-client';
-import { backendClient } from '@/lib/clients/backend';
-import { useLikesStore } from '@/lib/store';
-import { useAuthStore } from '@/lib/store/use-auth-store';
-import { useThemeStore } from '@/lib/store/use-theme-store';
+import { auth } from '@/lib/clients/auth';
+import { loadSidebarCollections } from '@/lib/services';
 
-export default function Page({ children }: PropsWithChildren) {
-	const likedCount = useLikesStore((state) => state.likedItems.length);
-	const isPending = useAuthStore((state) => state.isPending);
-	const user = useAuthStore((state) => state.user);
+export default async function Page({ children }: PropsWithChildren) {
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
+	const user = session?.user || null;
 	const links = [
 		{ label: 'Home', href: '/', icon: <HomeIcon /> },
 		{ label: 'Explore', href: '/templates', icon: <GlobeIcon /> },
-		{ label: 'My Library', href: '/my-library', icon: <LibraryIcon /> },
+	];
+
+	const collections = await loadSidebarCollections();
+
+	const groups = [
 		{
-			label: 'Liked Components',
-			href: '/favorites',
-			icon: <HeartIcon weight="fill" />,
-			badge: likedCount > 0 ? likedCount : undefined,
+			label: 'shadcn/ui registries',
+			icon: <ToolIcon className="size-3" type={'shadcn'} />,
+			links: [
+				{ label: 'Pages', href: '/r/pages' },
+				{ label: 'UI', href: '/r/ui' },
+				{ label: 'Blocks', href: '/r/blocks' },
+				{ label: 'Components', href: '/r/components' },
+			],
+		},
+		{
+			label: 'collections',
+			icon: <ToolIcon className="size-3" type={'shadcn'} />,
+			links: collections
+				.sort((a, b) => a.name.localeCompare(b.name))
+				.map((collection) => ({
+					label: collection.name,
+					href: `/c/${collection.slug}`,
+				})),
 		},
 	];
 	const footerLinks = [{ label: 'Login', href: '/auth', icon: <SignInIcon /> }];
-	const { theme, setTheme } = useThemeStore();
 
 	return (
 		<>
-			<div className="fixed left-0 top-0 flex flex-col h-screen w-16 border-r">
-				<div className="flex flex-col items-center py-2">
-					{links.map((link) => (
-						<Tooltip delayDuration={0} key={link.href}>
-							<TooltipTrigger asChild>
+			<div className="fixed left-0 top-0 flex flex-col h-screen w-[280]">
+				<div className="px-8 h-12 flex items-center gap-1.5">
+					<ToolIcon className="size-4" type={'shadcn'} />
+					<span className="font-mono font-medium text-sm">shadcn.cloud</span>
+				</div>
+				<div className="flex flex-1 overflow-hidden relative">
+					<ScrollAreaShadow className="to-background h-4" />
+					<ScrollArea className="size-full inset-0 absolute">
+						<div className="flex flex-col py-2 px-8">
+							{links.map((link, l) => (
 								<Button
 									asChild
 									className="relative"
-									size={'icon-lg'}
+									key={`${link.href}-${l}`}
+									size={'xs'}
 									variant={'ghost'}
 								>
 									<Link href={link.href}>
 										{link.icon}
-										{link.badge && (
-											<span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center w-4 h-4 text-xs font-medium bg-primary text-primary-foreground rounded-md">
-												{link.badge}
-											</span>
-										)}
+										<span className="flex-1 text-left">{link.label}</span>
 									</Link>
+								</Button>
+							))}
+							<div className="px-4">
+								<Separator className={'my-4'} />
+							</div>
+							<div className="flex flex-col gap-4">
+								{groups.map((group, g) => (
+									<div className="flex flex-col gap-2" key={group.label}>
+										<div className="flex items-center gap-2">
+											{group.icon}
+											<span className="text-xs font-medium">{group.label}</span>
+										</div>
+										<div className="flex flex-col">
+											{group.links.map((link) => (
+												<Button
+													asChild
+													className="relative"
+													key={link.href}
+													size={'xs'}
+													variant={'ghost'}
+												>
+													<Link href={link.href}>
+														<span className="flex-1 text-left">
+															{link.label}
+														</span>
+													</Link>
+												</Button>
+											))}
+										</div>
+										{g < groups.length - 1 && (
+											<div className="px-4">
+												<Separator />
+											</div>
+										)}
+									</div>
+								))}
+							</div>
+						</div>
+					</ScrollArea>
+				</div>
+				<div className="flex flex-col py-2 px-8">
+					{footerLinks.map((link) => (
+						<Tooltip delayDuration={0} key={link.href}>
+							<TooltipTrigger asChild>
+								<Button asChild size={'icon-lg'} variant={'ghost'}>
+									<Link href={link.href}>{link.icon}</Link>
 								</Button>
 							</TooltipTrigger>
 							<TooltipContent side={'right'}>
@@ -77,89 +131,13 @@ export default function Page({ children }: PropsWithChildren) {
 						</Tooltip>
 					))}
 				</div>
-				<div className="flex-1"></div>
-				{!isPending && (
-					<div className="flex flex-col items-center py-2">
-						{user ? (
-							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button size={'icon-lg'} variant={'ghost'}>
-										<Avatar>
-											<AvatarImage src={user.image || undefined} />
-											<AvatarFallback />
-										</Avatar>
-									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent
-									align={'end'}
-									className="w-[220]"
-									side={'right'}
-								>
-									<DropdownMenuLabel>{user.name}</DropdownMenuLabel>
-									<DropdownMenuSeparator />
-									<div className="p-2 grid grid-cols-3 gap-2">
-										{[
-											{
-												class: 'bg-muted border-foreground',
-												value: 'base',
-											},
-											{
-												class: 'bg-lime-500 border-lime-300',
-												value: 'lime',
-											},
-											{
-												class: 'bg-blue-500 border-blue-300',
-												value: 'purple',
-											},
-										].map((themeOption) => (
-											<Button
-												className={cn(`h-auto p-2`)}
-												key={themeOption.value}
-												onClick={() => setTheme(themeOption.value)}
-												variant={
-													theme === themeOption.value ? 'outline' : 'ghost'
-												}
-											>
-												<div
-													className={cn(
-														'size-full aspect-square rounded-full border-4',
-														themeOption.class,
-													)}
-												></div>
-											</Button>
-										))}
-									</div>
-									<DropdownMenuItem
-										onClick={async () => {
-											useAuthStore.setState({ isPending: true });
-											await authClient.signOut();
-											backendClient.setToken(null);
-											useAuthStore.setState({ isPending: false, user: null });
-										}}
-									>
-										<span className="flex-1">Sign Out</span>
-										<LogOutIcon />
-									</DropdownMenuItem>
-								</DropdownMenuContent>
-							</DropdownMenu>
-						) : (
-							footerLinks.map((link) => (
-								<Tooltip delayDuration={0} key={link.href}>
-									<TooltipTrigger asChild>
-										<Button asChild size={'icon-lg'} variant={'ghost'}>
-											<Link href={link.href}>{link.icon}</Link>
-										</Button>
-									</TooltipTrigger>
-									<TooltipContent side={'right'}>
-										<p>{link.label}</p>
-									</TooltipContent>
-								</Tooltip>
-							))
-						)}
-					</div>
-				)}
 			</div>
-			<div className="flex flex-col w-full pl-16">{children}</div>
+			<div className="flex flex-col w-full pl-[280]">
+				<div className="h-12"></div>
+				<div className="flex flex-1 flex-col bg-muted/20 border-t border-l rounded-tl-lg">
+					{children}
+				</div>
+			</div>
 		</>
 	);
 }

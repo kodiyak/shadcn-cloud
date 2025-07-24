@@ -4,7 +4,7 @@ import { subscribeWithSelector } from 'zustand/middleware';
 import { authClient } from '../auth-client';
 
 interface AuthStore {
-	user: User | null;
+	user: (User & { username: string }) | null;
 	isPending: boolean;
 }
 
@@ -23,7 +23,10 @@ export async function initializeAuthStore() {
 
 	const { data } = await authClient.getSession();
 	if (data?.user) {
-		useAuthStore.setState({ isPending: false, user: data.user });
+		useAuthStore.setState({
+			isPending: false,
+			user: data.user as AuthStore['user'],
+		});
 	} else {
 		useAuthStore.setState({ isPending: false, user: null });
 	}

@@ -48,7 +48,7 @@ function ComponentCard({ component }: ComponentCardProps) {
 	}, [api]);
 
 	return (
-		<Card className="p-2 rounded-2xl gap-2 flex flex-col">
+		<Card className="p-1 rounded-2xl gap-2 flex flex-col bg-transparent dark:bg-transparent border-0">
 			<div className="w-full overflow-hidden aspect-video rounded-2xl bg-background relative border border-border">
 				<div className="absolute z-30 size-full inset-0 flex flex-col">
 					<div className="absolute top-0 w-full z-20 flex justify-between items-center py-1 px-3.5">
@@ -89,18 +89,15 @@ function ComponentCard({ component }: ComponentCardProps) {
 					<div
 						className={cn(
 							`w-3 h-1 rounded-lg bg-muted`,
-							i === index && 'bg-primary',
+							i === index && 'bg-foreground/20',
 						)}
 						key={`id:${preview.path}`}
 					/>
 				))}
 			</div>
 			<div className="flex flex-col gap-1">
-				<span className="text-lg font-medium cursor-default">
+				<span className="text-sm font-medium cursor-default">
 					{component.metadata.title}
-				</span>
-				<span className="text-sm text-muted-foreground line-clamp-2 cursor-default">
-					{component.metadata.description}
 				</span>
 			</div>
 		</Card>

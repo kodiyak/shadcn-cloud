@@ -10,19 +10,30 @@ datasource db {
 }
 
 model User {
-  id                String      @id @default(uuid())
+  id                String       @id @default(uuid())
   name              String
   email             String
   emailVerified     Boolean
   image             String?
-  createdAt         DateTime    @db.Timestamptz(3)
-  updatedAt         DateTime    @db.Timestamptz(3)
+  createdAt         DateTime     @db.Timestamptz(3)
+  updatedAt         DateTime     @db.Timestamptz(3)
   sessions          Session[]
   accounts          Account[]
   createdComponents Component[]
   likedComponents   Like[]
+  username          String?
+  displayUsername   String?
+  profile           Profile?
+  collections       Collection[]
+  role              UserRole     @default(user)
 
   @@unique([email])
+  @@unique([username])
+}
+
+enum UserRole {
+  user
+  admin
 }
 
 model Session {
@@ -76,6 +87,7 @@ model Jwks {
 
 // Application Models
 // ...
+
 model Component {
   id                   String          @id @default(uuid())
   name                 String
@@ -94,6 +106,7 @@ model Component {
   isTemplate           Boolean         @default(false)
   isForkable           Boolean         @default(true)
   likes                Like[]
+  collections          Collection[]
 }
 
 enum ComponentStatus {
@@ -112,4 +125,35 @@ model Like {
   userId      String?
 
   @@unique([componentId, userId])
+}
+
+model Profile {
+  id         String   @id @default(uuid())
+  username   String   @unique
+  bio        String?
+  avatarUrl  String?
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @db.Timestamptz(3)
+  githubUrl  String?
+  twitterUrl String?
+  websiteUrl String?
+
+  @@index([username])
+}
+
+model Collection {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  group       String
+  slug        String      @unique
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  components  Component[]
+  createdAt   DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime    @updatedAt @db.Timestamptz(3)
+
+  @@unique([name, userId])
 }

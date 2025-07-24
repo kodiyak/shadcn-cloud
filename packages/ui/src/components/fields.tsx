@@ -198,7 +198,7 @@ const SelectField = forwardRef<HTMLButtonElement, SelectFieldProps>(
 						<SelectItem key={option.value} value={option.value as any}>
 							{option.icon}
 							<div className="flex flex-1 flex-col">
-								<span>{option.label}</span>
+								<span className="flex-1">{option.label}</span>
 								{option.description && (
 									<span className="text-xs text-muted-foreground">
 										{option.description}

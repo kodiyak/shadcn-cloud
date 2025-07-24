@@ -129,4 +129,22 @@ export const backendClient = {
 			}).then((res) => res.json());
 		},
 	},
+	profile: {
+		getComponents: async (username: string): Promise<{ data: Component[] }> => {
+			return fetch(`/api/profile/${username}/components`, {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: getBearerToken(),
+				},
+			}).then((res) => res.json());
+		},
+		getLikes: async (username: string): Promise<{ data: Component[] }> => {
+			return fetch(`/api/profile/${username}/likes`, {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: getBearerToken(),
+				},
+			}).then((res) => res.json());
+		},
+	},
 };
