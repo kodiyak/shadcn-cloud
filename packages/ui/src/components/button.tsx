@@ -14,7 +14,8 @@ const buttonVariants = cva(
 	cn(
 		'inline-flex font-sans outline-none items-center cursor-default justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all',
 		'disabled:bg-accent disabled:from-accent disabled:to-accent disabled:opacity-40 disabled:text-muted-foreground/50 disabled:cursor-not-allowed',
-		'shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
+		'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
+		'shrink-0 outline-none aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
 		'[&_svg]:pointer-events-none [&_svg]:shrink-0',
 	),
 	{
@@ -25,7 +26,7 @@ const buttonVariants = cva(
 				destructive:
 					'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
 				outline:
-					'border bg-background/50 text-muted-foreground hover:bg-muted/35 hover:text-foreground',
+					'border bg-background text-muted-foreground hover:bg-muted hover:text-foreground',
 				secondary:
 					'border bg-background/50 bg-gradient-to-b from-accent/10 to-background text-muted-foreground hover:text-foreground',
 				ghost: cn(
@@ -47,24 +48,28 @@ const buttonVariants = cva(
 				),
 				link: 'text-muted-foreground underline-offset-4 hover:underline hover:text-foreground',
 				command: cn(
+					'flex w-fit items-center justify-between gap-2 border bg-background px-3 py-2 text-sm whitespace-nowrap',
+					'transition-[color,box-shadow] outline-none',
+					'data-[state=open]:bg-background data-[state=open]:border-foreground/50 data-[state=open]:text-foreground',
+					'data-[state=open]:ring-2 data-[state=open]:ring-ring',
 					'border-input data-[placeholder]:text-muted-foreground',
-					"[&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 ",
-					'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
-					'dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 border bg-transparent px-3 py-2 text-sm whitespace-nowrap',
-					'transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
+					'focus-visible:border-foreground/50 focus-visible:ring-2 focus-visible:ring-ring',
+					"[&_svg:not([class*='text-'])]:text-muted-foreground",
+					'aria-invalid:ring-destructive/20 aria-invalid:border-destructive',
+					'disabled:cursor-not-allowed disabled:opacity-50',
 					'*:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center',
 					"*:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 				),
 			},
 			size: {
-				default: `h-12 rounded-xl px-4 py-2 has-[>svg]:px-3 [&_svg:not([class*='size-'])]:size-5`,
-				sm: `h-10 rounded-lg gap-1.5 px-3 has-[>svg]:px-2.5 [&_svg:not([class*='size-'])]:size-5`,
-				xs: `h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5 [&_svg:not([class*='size-'])]:size-4`,
-				xxs: `h-8 text-xs rounded gap-1 p-0 h-auto [&_svg:not([class*='size-'])]:size-3`,
-				lg: `h-10 rounded-xl px-6 has-[>svg]:px-4 [&_svg:not([class*='size-'])]:size-4`,
+				default: `h-10 rounded-md px-4 py-2 has-[>svg]:px-3 [&_svg:not([class*='size-'])]:size-5`,
+				sm: `h-8 rounded-sm gap-1.5 px-3 has-[>svg]:px-2.5 [&_svg:not([class*='size-'])]:size-5`,
+				xs: `h-6 rounded-sm gap-1.5 px-3 has-[>svg]:px-2.5 [&_svg:not([class*='size-'])]:size-4`,
+				xxs: `h-5 text-xs rounded gap-1 p-0 h-auto [&_svg:not([class*='size-'])]:size-3`,
+				lg: `h-10 rounded-sm px-6 has-[>svg]:px-4 [&_svg:not([class*='size-'])]:size-4`,
 				'icon-lg':
-					"size-12 rounded-2xl [&_svg]:size-7 [&_svg:not([class*='size-'])]:size-6",
-				icon: 'size-9 rounded-lg [&_svg]:size-5',
+					"size-12 rounded-md [&_svg]:size-7 [&_svg:not([class*='size-'])]:size-6",
+				icon: 'size-9 rounded-md [&_svg]:size-5',
 				'icon-sm': 'size-8 rounded-sm [&_svg]:size-5',
 				'icon-xs': 'size-5 rounded-sm [&_svg]:size-3.5',
 				'icon-xxs': 'size-4 rounded [&_svg]:size-3',

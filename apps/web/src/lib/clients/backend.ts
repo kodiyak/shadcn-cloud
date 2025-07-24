@@ -1,4 +1,6 @@
 import {
+	type AddCollectionComponentProps,
+	addCollectionComponentSchema,
 	type Component,
 	type DeleteLikesBatchSchema,
 	type ForkProps,
@@ -6,6 +8,8 @@ import {
 	type Like,
 	type PackageJson,
 	type PublishProps,
+	type RemoveCollectionComponentProps,
+	removeCollectionComponentSchema,
 	type SaveLikesBatchSchema,
 } from '../domain';
 import { localLikes } from '../utils';
@@ -140,6 +144,51 @@ export const backendClient = {
 		},
 		getLikes: async (username: string): Promise<{ data: Component[] }> => {
 			return fetch(`/api/profile/${username}/likes`, {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: getBearerToken(),
+				},
+			}).then((res) => res.json());
+		},
+	},
+	collections: {
+		filter: async (
+			slug: string,
+			filter?: {
+				query?: string;
+				sort?: 'newest' | 'recommended' | 'most_liked';
+			},
+		): Promise<{ data: Component[]; meta: { total: number } }> => {
+			const url = new URL(
+				`/api/collections/${slug}/components`,
+				window.location.origin,
+			);
+			if (filter?.query) url.searchParams.set('s', filter.query);
+			if (filter?.sort) url.searchParams.set('sort', filter.sort);
+			return fetch(url.toString(), {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: getBearerToken(),
+				},
+			}).then((res) => res.json());
+		},
+		addComponent: async (slug: string, data: AddCollectionComponentProps) => {
+			return fetch(`/api/collections/${slug}/components`, {
+				body: JSON.stringify(addCollectionComponentSchema.parse(data)),
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: getBearerToken(),
+				},
+			}).then((res) => res.json());
+		},
+		removeComponent: async (
+			slug: string,
+			data: RemoveCollectionComponentProps,
+		) => {
+			return fetch(`/api/collections/${slug}/components`, {
+				body: JSON.stringify(removeCollectionComponentSchema.parse(data)),
+				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json',
 					Authorization: getBearerToken(),

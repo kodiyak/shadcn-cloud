@@ -30,3 +30,17 @@ export const deleteLikesBatchSchema = z.object({
 	likedItems: z.string().array(),
 });
 export type DeleteLikesBatchSchema = z.infer<typeof deleteLikesBatchSchema>;
+
+export const addCollectionComponentSchema = z.object({
+	componentId: z.string(),
+});
+export type AddCollectionComponentProps = z.infer<
+	typeof addCollectionComponentSchema
+>;
+
+export const removeCollectionComponentSchema = z.object({
+	componentId: z.string(),
+});
+export type RemoveCollectionComponentProps = z.infer<
+	typeof removeCollectionComponentSchema
+>;
