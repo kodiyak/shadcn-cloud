@@ -43,7 +43,7 @@ function DropdownMenuContent({
 					'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
 					'data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
 					'z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin)',
-					'overflow-x-hidden overflow-y-auto rounded-xl border p-2 shadow-md',
+					'overflow-x-hidden overflow-y-auto rounded-lg border p-2 shadow-md',
 					className,
 				)}
 				data-slot="dropdown-menu-content"
@@ -77,7 +77,7 @@ function DropdownMenuItem({
 				'focus:backdrop-blur-xs focus:bg-accent/50 focus:text-accent-foreground',
 				"data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground",
 				"data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-				'relative flex cursor-default items-center gap-2 rounded-xl px-2 py-1.5 text-sm outline-hidden select-none ',
+				'relative flex cursor-default items-center gap-2 rounded-lg px-3.5 py-1.5 text-sm outline-hidden select-none ',
 				'h-10',
 				className,
 			)}
@@ -176,7 +176,7 @@ function DropdownMenuSeparator({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
 	return (
 		<DropdownMenuPrimitive.Separator
-			className={cn('bg-border -mx-2 mt-1 mb-2 h-px', className)}
+			className={cn('bg-border -mx-2 my-2 h-px', className)}
 			data-slot="dropdown-menu-separator"
 			{...props}
 		/>

@@ -1,3 +1,5 @@
+'use client';
+
 import { ScrollArea } from '@workspace/ui/components/scroll-area';
 import type { PropsWithChildren, ReactNode } from 'react';
 import AppFooter from '../sections/app-footer';

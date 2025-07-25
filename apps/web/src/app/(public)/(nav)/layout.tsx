@@ -6,29 +6,18 @@ import {
 	ScrollAreaShadow,
 } from '@workspace/ui/components/scroll-area';
 import { Separator } from '@workspace/ui/components/separator';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from '@workspace/ui/components/tooltip';
 import { HomeIcon } from 'lucide-react';
-import { headers } from 'next/headers';
 import Link from 'next/link';
 import type { PropsWithChildren } from 'react';
-import { auth } from '@/lib/clients/auth';
 import { loadSidebarCollections } from '@/lib/services';
+import AuthActions from './_auth-actions';
 
 export default async function Page({ children }: PropsWithChildren) {
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
-	const user = session?.user || null;
+	const collections = await loadSidebarCollections();
 	const links = [
 		{ label: 'Home', href: '/', icon: <HomeIcon /> },
 		{ label: 'Explore', href: '/templates', icon: <GlobeIcon /> },
 	];
-
-	const collections = await loadSidebarCollections();
 
 	const groups = [
 		{
@@ -129,7 +118,9 @@ export default async function Page({ children }: PropsWithChildren) {
 				</div>
 			</div>
 			<div className="flex flex-col w-full pl-[280]">
-				<div className="h-12"></div>
+				<div className="h-12 flex items-center justify-end pr-8">
+					<AuthActions />
+				</div>
 				<div className="flex flex-1 flex-col bg-muted/20 border-t border-l rounded-tl-lg">
 					{children}
 				</div>
