@@ -18,7 +18,7 @@ export default function CopyButton({
 	content,
 	className,
 	variant = 'outline',
-	size,
+	size = 'icon',
 	copyLabel = 'Copy',
 }: CopyButtonProps) {
 	const [copied, onCopy] = useCopy(2.5);

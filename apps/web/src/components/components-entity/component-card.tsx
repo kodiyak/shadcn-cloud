@@ -1,6 +1,10 @@
 'use client';
 
-import { Badge } from '@workspace/ui/components/badge';
+import {
+	Avatar,
+	AvatarFallback,
+	AvatarImage,
+} from '@workspace/ui/components/avatar';
 import { Card } from '@workspace/ui/components/card';
 import { memo } from 'react';
 import type { Component } from '@/lib/domain';
@@ -17,12 +21,7 @@ function ComponentCard({ component }: ComponentCardProps) {
 			<div className="w-full overflow-hidden aspect-video rounded-2xl bg-background relative border border-border">
 				<div className="absolute z-30 size-full inset-0 flex flex-col">
 					<div className="absolute top-0 w-full z-20 flex justify-between items-center py-1 px-3.5">
-						<Badge
-							variant={component.status === 'published' ? 'success' : 'muted'}
-						>
-							{component.status}
-						</Badge>
-						<div className="flex items-center gap-1">
+						<div className="flex items-center gap-1 ml-auto">
 							<ComponentActions component={component} />
 						</div>
 					</div>
@@ -35,10 +34,18 @@ function ComponentCard({ component }: ComponentCardProps) {
 				</div>
 			</div>
 
-			<div className="flex flex-col gap-1">
-				<span className="text-sm font-medium cursor-default">
-					{component.metadata.title}
-				</span>
+			<div className="flex items-center gap-2">
+				{component.user && (
+					<Avatar>
+						<AvatarFallback />
+						<AvatarImage src={component.user?.image ?? undefined} />
+					</Avatar>
+				)}
+				<div className="flex flex-1 flex-col gap-1">
+					<span className="text-sm font-medium cursor-default">
+						{component.metadata.title}
+					</span>
+				</div>
 			</div>
 		</Card>
 	);

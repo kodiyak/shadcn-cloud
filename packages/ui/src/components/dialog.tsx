@@ -35,12 +35,12 @@ function DialogOverlay({
 }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
 	return (
 		<DialogPrimitive.Overlay
-			data-slot="dialog-overlay"
 			className={cn(
 				'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
 				'fixed inset-0 z-10 backdrop-blur-sm bg-zinc-500/20',
 				className,
 			)}
+			data-slot="dialog-overlay"
 			{...props}
 		/>
 	);
@@ -49,8 +49,11 @@ function DialogOverlay({
 function DialogContent({
 	className,
 	children,
+	removeClose = false,
 	...props
-}: React.ComponentProps<typeof DialogPrimitive.Content>) {
+}: React.ComponentProps<typeof DialogPrimitive.Content> & {
+	removeClose?: boolean;
+}) {
 	return (
 		<DialogPortal data-slot="dialog-portal">
 			<div
@@ -60,28 +63,30 @@ function DialogContent({
 			>
 				<DialogOverlay />
 				<DialogPrimitive.Content
-					data-slot="dialog-content"
 					className={cn(
-						'fixed z-50',
+						'fixed z-50 border border-border',
 						'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-						'relative bg-background/70 backdrop-blur-xl z-50 flex flex-col w-full max-w-[calc(100%-2rem)] gap-4 rounded-3xl p-6 duration-200 sm:max-w-lg',
+						'relative bg-background/70 backdrop-blur-xl z-50 flex flex-col w-full max-w-[calc(100%-2rem)] gap-4 rounded-xl p-6 duration-200 sm:max-w-lg',
 						'will-change-[transform,opacity]',
 						className,
 					)}
+					data-slot="dialog-content"
 					{...props}
 				>
 					{children}
-					<DialogPrimitive.Close
-						className={cn(
-							'transition-all duration-300 ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground hover:opacity-100',
-							'focus:ring-2 focus:outline-hidden disabled:pointer-events-none',
-							"[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-6",
-							'absolute top-4 right-4 rounded-xl bg-background opacity-70 p-1 border',
-						)}
-					>
-						<XIcon />
-						<span className="sr-only">Close</span>
-					</DialogPrimitive.Close>
+					{!removeClose && (
+						<DialogPrimitive.Close
+							className={cn(
+								'transition-all duration-300 ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground hover:opacity-100',
+								'focus:ring-2 focus:outline-hidden disabled:pointer-events-none',
+								"[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-6",
+								'absolute top-4 right-4 rounded-xl bg-background opacity-70 p-1 border',
+							)}
+						>
+							<XIcon />
+							<span className="sr-only">Close</span>
+						</DialogPrimitive.Close>
+					)}
 				</DialogPrimitive.Content>
 			</div>
 		</DialogPortal>
@@ -91,11 +96,11 @@ function DialogContent({
 function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
 	return (
 		<div
-			data-slot="dialog-header"
 			className={cn(
 				'flex flex-col gap-2 text-center mb-6 sm:text-left',
 				className,
 			)}
+			data-slot="dialog-header"
 			{...props}
 		/>
 	);
@@ -104,11 +109,11 @@ function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
 function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
 	return (
 		<div
-			data-slot="dialog-footer"
 			className={cn(
 				'flex flex-col-reverse gap-2 mt-6 sm:flex-row sm:justify-end',
 				className,
 			)}
+			data-slot="dialog-footer"
 			{...props}
 		/>
 	);
@@ -120,8 +125,8 @@ function DialogTitle({
 }: React.ComponentProps<typeof DialogPrimitive.Title>) {
 	return (
 		<DialogPrimitive.Title
-			data-slot="dialog-title"
 			className={cn('text-lg leading-none font-semibold', className)}
+			data-slot="dialog-title"
 			{...props}
 		/>
 	);
@@ -133,8 +138,8 @@ function DialogDescription({
 }: React.ComponentProps<typeof DialogPrimitive.Description>) {
 	return (
 		<DialogPrimitive.Description
-			data-slot="dialog-description"
 			className={cn('text-muted-foreground text-sm', className)}
+			data-slot="dialog-description"
 			{...props}
 		/>
 	);

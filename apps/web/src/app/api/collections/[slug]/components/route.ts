@@ -1,60 +1,66 @@
-import type { Prisma } from '@workspace/db';
-import type { NextRequest } from 'next/server';
-import { db } from '@/lib/clients/db';
+import type { Prisma } from "@workspace/db";
+import type { NextRequest } from "next/server";
+import { db } from "@/lib/clients/db";
 import {
 	addCollectionComponentSchema,
 	componentSchema,
 	removeCollectionComponentSchema,
-} from '@/lib/domain';
-import { findComponent } from '@/lib/services';
-import { notFound, ok, role, unauthorized } from '@/lib/utils';
+} from "@/lib/domain";
+import { findComponent } from "@/lib/services";
+import { notFound, ok, role, unauthorized } from "@/lib/utils";
 
 interface RouteProps {
 	params: Promise<{ slug: string }>;
 }
 export async function GET(req: NextRequest, { params }: RouteProps) {
 	const { slug } = await params;
-	const searchQuery = req.nextUrl.searchParams.get('s') || null;
-	const sort = req.nextUrl.searchParams.get('sort') || 'createdAt';
+	const searchQuery = req.nextUrl.searchParams.get("s") || null;
+	const sort = req.nextUrl.searchParams.get("sort") || "createdAt";
 	const collection = await db.collection.findUnique({
 		where: { slug },
 		select: { id: true },
 	});
 
-	if (!collection) return notFound('Collection not found');
+	if (!collection) return notFound("Collection not found");
 
 	const where: Prisma.ComponentWhereInput = {
 		collections: { some: { slug } },
 	};
 	const orderBy: Prisma.ComponentOrderByWithRelationInput = {};
 	if (searchQuery) {
-		where.name = { contains: searchQuery, mode: 'insensitive' };
+		where.name = { contains: searchQuery, mode: "insensitive" };
 	}
 	switch (sort) {
-		case 'recommended':
-			orderBy.createdAt = 'desc';
+		case "recommended":
+			orderBy.createdAt = "desc";
 			break;
-		case 'newest':
-			orderBy.createdAt = 'desc';
+		case "newest":
+			orderBy.createdAt = "desc";
 			break;
-		case 'most_liked':
-			orderBy.likes = { _count: 'desc' };
+		case "most_liked":
+			orderBy.likes = { _count: "desc" };
 			break;
 		default:
-			orderBy.createdAt = 'desc';
+			orderBy.createdAt = "desc";
 			break;
 	}
 
-	const components = await db.component.findMany({ where, orderBy });
+	const components = await db.component.findMany({
+		where,
+		orderBy,
+		include: {
+			user: { select: { username: true, image: true } },
+		},
+	});
 	return ok(componentSchema.array().parse(components), {
 		meta: { total: await db.component.count({ where }) },
 	});
 }
 
 export async function POST(req: NextRequest, { params }: RouteProps) {
-	if ((await role()) !== 'admin') {
+	if ((await role()) !== "admin") {
 		return unauthorized(
-			'You must be an admin to add components into a collection.',
+			"You must be an admin to add components into a collection.",
 		);
 	}
 	const { slug } = await params;
@@ -63,10 +69,10 @@ export async function POST(req: NextRequest, { params }: RouteProps) {
 		select: { id: true },
 	});
 
-	if (!collection) return notFound('Collection not found');
+	if (!collection) return notFound("Collection not found");
 	const { url } = addCollectionComponentSchema.parse(await req.json());
 	const component = await findComponent(url);
-	if (!component) return notFound('Component not found');
+	if (!component) return notFound("Component not found");
 
 	await db.collection.update({
 		where: { id: collection.id },
@@ -77,9 +83,9 @@ export async function POST(req: NextRequest, { params }: RouteProps) {
 }
 
 export async function DELETE(req: NextRequest, { params }: RouteProps) {
-	if ((await role()) !== 'admin') {
+	if ((await role()) !== "admin") {
 		return unauthorized(
-			'You must be an admin to remove components from a collection.',
+			"You must be an admin to remove components from a collection.",
 		);
 	}
 	const { slug } = await params;
@@ -88,7 +94,7 @@ export async function DELETE(req: NextRequest, { params }: RouteProps) {
 		select: { id: true },
 	});
 
-	if (!collection) return notFound('Collection not found');
+	if (!collection) return notFound("Collection not found");
 	const { componentId } = removeCollectionComponentSchema.parse(
 		await req.json(),
 	);

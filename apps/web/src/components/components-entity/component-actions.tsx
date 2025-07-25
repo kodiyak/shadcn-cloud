@@ -12,6 +12,7 @@ import type { Component } from '@/lib/domain';
 import { useAuthStore } from '@/lib/store';
 import AuthInvite from '../auth/auth-invite';
 import ShareDialog from '../sections/share-dialog';
+import ComponentModal from './component-modal';
 
 interface ComponentActionsProps {
 	component: Component;
@@ -25,6 +26,7 @@ export default function ComponentActions({ component }: ComponentActionsProps) {
 	const editorUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/editor/${component.id}`;
 	const openShare = useDisclosure();
 	const openSignup = useDisclosure();
+	const openComponent = useDisclosure();
 	const onFork = useMutation({
 		mutationFn: backendClient.fork,
 		onSuccess: (result) => {
@@ -36,6 +38,7 @@ export default function ComponentActions({ component }: ComponentActionsProps) {
 		<>
 			<AuthInvite {...openSignup} />
 			<ShareDialog key={shareUrl} url={shareUrl} {...openShare} />
+			<ComponentModal {...openComponent} component={component} />
 			<ButtonsIcons
 				items={[
 					{
@@ -60,9 +63,9 @@ export default function ComponentActions({ component }: ComponentActionsProps) {
 						},
 					},
 					{
-						label: 'Open in New Tab',
+						label: 'Open Component',
 						icon: <ExternalLinkIcon />,
-						onClick: () => window.open(shareUrl, '_blank'),
+						onClick: openComponent.onOpen,
 					},
 					{
 						label: 'Share',

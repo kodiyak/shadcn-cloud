@@ -55,7 +55,6 @@ export default function ShareDialog({
 								className="w-full aspect-square h-auto flex-col items-center justify-center p-0 [&>svg]:size-8! [&>svg]:text-foreground"
 								key={option.label}
 								onClick={() => {
-									// Handle share action here
 									console.log(`Sharing via ${option.label}`);
 								}}
 								variant={'ghost'}
@@ -66,11 +65,16 @@ export default function ShareDialog({
 						))}
 					</div>
 					<div className="relative">
-						<Input className="pr-12" readOnly value={url} />
+						<Input
+							className="pr-12! h-12 font-mono rounded-lg"
+							readOnly
+							value={url}
+						/>
 						<CopyButton
 							className="absolute right-2 top-1.5"
 							content={url}
 							copyLabel={'Copy URL'}
+							size={'icon'}
 						/>
 					</div>
 				</div>

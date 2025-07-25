@@ -34,7 +34,7 @@ export default function CollectionPageClient({
 	return (
 		<div className="container mx-auto min-h-screen flex flex-col py-8">
 			<div className="flex items-center px-6 justify-between">
-				<h2 className="text-xl font-mono font-semibold">{"Collection Name"}</h2>
+				<h2 className="text-xl font-mono font-semibold">{collection.name}</h2>
 				<CollectionFilter
 					onChange={setFilter}
 					value={filter}

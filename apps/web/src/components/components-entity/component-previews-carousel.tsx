@@ -38,7 +38,11 @@ export default function ComponentPreviewsCarousel({
 		});
 	}, [api]);
 	return (
-		<Carousel className={cn('relative', className)} setApi={setApi}>
+		<Carousel
+			className={cn('relative size-full', className)}
+			opts={{}}
+			setApi={setApi}
+		>
 			<CarouselContent>
 				{previews.map((preview) => (
 					<CarouselItem

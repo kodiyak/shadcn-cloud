@@ -7,7 +7,7 @@ import kebabCase from 'lodash.kebabcase';
 import { type ReactNode, useEffect, useState } from 'react';
 import * as runtime from 'react/jsx-runtime';
 import * as MDXComponents from '@/components/docs/mdx-components';
-import { MdxEditorPreview } from '@/components/docs/mdx-preview/mdx-editor-preview';
+import MdxPreviewComponent from '@/components/docs/mdx-preview/mdx-preview-component';
 
 /** @todo Improve components injection logic */
 const components: Record<string, (props: any) => ReactNode> = {
@@ -48,9 +48,14 @@ const components: Record<string, (props: any) => ReactNode> = {
 interface MdxContentProps {
 	content: string;
 	className?: string;
+	files: Record<string, string>;
 }
 
-export default function MdxContent({ content, className }: MdxContentProps) {
+export default function MdxContent({
+	content,
+	className,
+	files,
+}: MdxContentProps) {
 	const [mdxModule, setMdxModule] = useState<any>(null);
 	const Content = mdxModule ? mdxModule.default : 'div';
 
@@ -78,7 +83,9 @@ export default function MdxContent({ content, className }: MdxContentProps) {
 				className={className}
 				components={{
 					...components,
-					Preview: MdxEditorPreview,
+					Preview: (props: any) => (
+						<MdxPreviewComponent {...props} files={files} />
+					),
 				}}
 			/>
 		</ErrorBoundary>

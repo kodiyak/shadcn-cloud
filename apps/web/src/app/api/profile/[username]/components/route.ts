@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { db } from '@/lib/clients/db';
+import { componentSchema } from '@/lib/domain';
 import { getProfile } from '@/lib/services';
 import { badRequest, ok } from '@/lib/utils';
 
@@ -13,10 +14,8 @@ export async function GET(_: NextRequest, { params }: Props) {
 	if (!profile) return badRequest('Profile not found');
 
 	const components = await db.component.findMany({
-		where: {
-			// author: username,
-			user: { username },
-		},
+		where: { user: { username } },
+		include: { user: { select: { username: true, image: true } } },
 	});
-	return ok(components);
+	return ok(componentSchema.array().parse(components));
 }

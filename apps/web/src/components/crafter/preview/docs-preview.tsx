@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from 'react';
 import DocHeader from '@/components/docs/doc-header';
 import {
 	findNodeInTree,
+	getNodeFiles,
 	searchNodes,
 	useProjectStore,
 } from '../lib/store/use-project-store';
@@ -33,6 +34,14 @@ export default function DocsPreview() {
 			return {};
 		}
 	}, [nodes]);
+	const nodeFiles = getNodeFiles(nodes);
+	const files = Object.keys(nodeFiles).reduce(
+		(acc, filePath) => {
+			acc[filePath.replace('file://', '')] = nodeFiles[filePath];
+			return acc;
+		},
+		{} as Record<string, string>,
+	);
 
 	useEffect(() => {
 		setContent(node?.content || '');
@@ -46,7 +55,7 @@ export default function DocsPreview() {
 					<DocHeader {...metadata} />
 				</div>
 				<div className="max-w-xl w-full mx-auto min-h-screen flex flex-col gap-2">
-					<MdxContent content={content} />
+					<MdxContent content={content} files={files} />
 				</div>
 			</ScrollArea>
 		</div>

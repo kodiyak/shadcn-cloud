@@ -15,6 +15,7 @@ export async function GET() {
 
 	const components = await db.component.findMany({
 		where: { userId: session.user.id },
+		include: { user: { select: { username: true, image: true } } },
 		orderBy: { createdAt: 'desc' },
 	});
 

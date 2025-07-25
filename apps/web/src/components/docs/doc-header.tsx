@@ -13,10 +13,10 @@ export default function DocHeader({
 	tools = [],
 }: Metadata) {
 	return (
-		<div className="flex flex-col container max-w-xl w-full mx-auto">
-			<div className="flex flex-col md:flex-row md:items-end border-b border-dashed pb-6 gap-16">
+		<div className="flex flex-col w-full">
+			<div className="flex flex-col border-b border-dashed pb-6 gap-16">
 				<div className="flex flex-col flex-1 gap-6">
-					<div className="flex flex-col gap-4 text-center">
+					<div className="flex flex-col gap-4">
 						<h2 className="text-3xl font-bold font-mono">{title}</h2>
 						<h3 className="text-muted-foreground text-lg">{description}</h3>
 					</div>
@@ -44,7 +44,7 @@ export default function DocHeader({
 						size={'sm'}
 						variant={'link'}
 					>
-						<Link href={item.href}>
+						<Link href={item.href} target={'_blank'}>
 							<span className="flex-1 text-left">{item.title}</span>
 							<ArrowRightIcon className="size-3.5" />
 						</Link>
@@ -56,7 +56,7 @@ export default function DocHeader({
 					Build with
 				</span>
 				<div className="flex overflow-hidden relative items-center gap-1">
-					<div className="absolute bg-gradient-to-r from-transparent to-background w-1/2 h-full right-0 top-0 z-20"></div>
+					<div className="absolute pointer-events-none bg-gradient-to-r from-transparent to-background w-1/2 h-full right-0 top-0 z-20"></div>
 					{tools.map((item) => (
 						<Badge
 							asChild
@@ -64,7 +64,7 @@ export default function DocHeader({
 							key={`${item.title}.${item.icon}`}
 							variant={'muted'}
 						>
-							<Link href={item.href ?? '#'}>
+							<Link href={item.href ?? '#'} target={'_blank'}>
 								<ToolIcon className="size-4" type={item.icon} />
 								{item.title}
 							</Link>

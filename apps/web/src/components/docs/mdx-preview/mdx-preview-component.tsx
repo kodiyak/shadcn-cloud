@@ -1,5 +1,3 @@
-'use client';
-
 import { ButtonsIcons } from '@workspace/ui/components/button';
 import { ErrorBoundary } from '@workspace/ui/components/error-boundary';
 import { Separator } from '@workspace/ui/components/separator';
@@ -11,43 +9,33 @@ import {
 	TabsTrigger,
 } from '@workspace/ui/components/tabs';
 import { cn } from '@workspace/ui/lib/utils';
+import kebabCase from 'lodash.kebabcase';
 import { RefreshCwIcon } from 'lucide-react';
 import { type CSSProperties, useEffect, useRef, useState } from 'react';
 import { CodeBlock } from '@/components/code-block';
 import CopyButton from '@/components/copy-button';
-import {
-	findNodeInTree,
-	getNodeFiles,
-	useProjectStore,
-} from '@/components/crafter/lib/store/use-project-store';
 import {
 	type ModpackLog,
 	useModpack,
 } from '@/components/modpack/hooks/use-modpack';
 import ModpackLogs from '@/components/modpack/modpack-logs';
 
-interface PreviewProps {
+interface MdxPreviewComponentProps {
 	path: string;
 	style?: CSSProperties;
+	files: Record<string, string>;
 }
 
-export function MdxEditorPreview({ path, style }: PreviewProps) {
+export default function MdxPreviewComponent({
+	path,
+	style,
+	files,
+}: MdxPreviewComponentProps) {
 	const elementRef = useRef<HTMLDivElement | null>(null);
-	const nodes = useProjectStore((state) => state.nodes);
-	const node = findNodeInTree(nodes, path);
-	const nodeFiles = getNodeFiles(nodes);
-	const files = Object.keys(nodeFiles).reduce(
-		(acc, filePath) => {
-			acc[filePath.replace('file://', '')] = nodeFiles[filePath];
-			return acc;
-		},
-		{} as Record<string, string>,
-	);
-
+	const content = files[path];
 	const [logs, setLogs] = useState<ModpackLog[]>([]);
-
 	const { isReady, module, mount, isCompiling, refresh } = useModpack(
-		`editor`,
+		`editor-${kebabCase(path)}`,
 		{
 			elementRef,
 			onLog: (log) => setLogs((prev) => [...prev, log]),
@@ -74,15 +62,11 @@ export function MdxEditorPreview({ path, style }: PreviewProps) {
 	};
 
 	useEffect(() => {
-		if (isReady && nodes.length > 0 && !isCompiling) {
+		if (isReady && Object.keys(files).length > 0 && !isCompiling) {
 			const onLoadOrMount = Component ? onLoad : onMount;
 			onLoadOrMount();
 		}
-	}, [files[path]]);
-
-	if (Object.keys(files).length === 0) {
-		return null;
-	}
+	}, [content]);
 
 	return (
 		<Tabs
@@ -106,11 +90,7 @@ export function MdxEditorPreview({ path, style }: PreviewProps) {
 						{
 							label: 'Reload',
 							disabled: !isReady || isCompiling,
-							icon: isCompiling ? (
-								<Spinner size={16} />
-							) : (
-								<RefreshCwIcon className="size-4" />
-							),
+							icon: isCompiling ? <Spinner size={16} /> : <RefreshCwIcon />,
 							onClick: () => onMount(),
 						},
 					]}
@@ -153,12 +133,12 @@ export function MdxEditorPreview({ path, style }: PreviewProps) {
 							'[&_.line-number]:px-4!',
 							'[&>pre]:p-4 [&>pre]:bg-transparent! text-sm',
 						)}
-						code={node?.content || ''}
-						lang={(node?.path.split('.').pop() as any) || 'js'}
+						code={content ?? ''}
+						lang={(path.split('.').pop() as any) || 'js'}
 					/>
 					<CopyButton
 						className="absolute right-4 bottom-4 z-30"
-						content={node?.content}
+						content={content ?? ''}
 					/>
 				</TabsContent>
 			</div>
