@@ -1,6 +1,6 @@
 # 🌥️ shadcn.cloud
 
-A web-based platform to document, edit, and share components from the [`shadcn/ui`](https://ui.shadcn.dev/) ecosystem — with live previews, instant editing, and modpack-based architecture.
+A web-based platform to document, edit, and share components from the [`shadcn/ui`](https://ui.shadcn.com/) ecosystem — with live previews, instant editing, and modpack-based architecture.
 
 > 📦 Built for indie developers, design system creators, and DX fanatics.
 
