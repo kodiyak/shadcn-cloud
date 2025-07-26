@@ -57,4 +57,5 @@ pnpm dev
 
 ## 🧑‍💻 Author
 Built with coffee and care by [@kodiyak](https://x.com/mathews536)
-Also check out: [modpack](https://github.com/kodiyak/modpack) · [lofi.surf](https://github.com/lofizone)
+
+Also check out: [modpack](https://github.com/kodiyak/modpack) · [lofi.surf](https://github.com/kodiyak/lofizone)
