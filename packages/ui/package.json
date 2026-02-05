@@ -49,6 +49,7 @@
     "./globals.css": "./src/styles/globals.css",
     "./postcss.config.mjs": "./postcss.config.mjs",
     "./lib/*": "./src/lib/*.ts",
+    "./layouts/*": "./src/layouts/*.layouts.tsx",
     "./components/*": "./src/components/*.tsx",
     "./themes/*": "./src/styles/*",
     "./hooks/*": "./src/hooks/*.ts"

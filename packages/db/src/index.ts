@@ -1,1 +1,1 @@
-export * from './.prisma/generated';
+export * from './generated';

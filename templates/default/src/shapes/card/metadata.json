@@ -1,0 +1,34 @@
+{
+  "title": "Card",
+  "description": "Displays a card with header, content, and footer.",
+  "features": [
+    "Forms, buttons, links and more..."
+  ],
+  "references": [
+    {
+      "title": "llms.txt",
+      "href": "https://llms.ai/docs/components/card"
+    },
+    {
+      "title": "MDN Reference",
+      "href": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/card"
+    }
+  ],
+  "tools": [
+    {
+      "title": "React",
+      "icon": "react",
+      "href": "https://react.dev"
+    },
+    {
+      "title": "TypeScript",
+      "icon": "typescript",
+      "href": "https://www.typescriptlang.org"
+    },
+    {
+      "title": "Tailwind CSS",
+      "icon": "tailwindcss",
+      "href": "https://tailwindcss.com"
+    }
+  ]
+}
